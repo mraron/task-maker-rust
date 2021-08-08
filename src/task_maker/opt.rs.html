@@ -261,6 +261,8 @@
 <span id="259">259</span>
 <span id="260">260</span>
 <span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
 
@@ -356,7 +358,7 @@
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;min-cache&quot;</span>, <span class="ident">default_value</span> <span class="op">=</span> <span class="string">&quot;2048&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">min_cache</span>: <span class="ident">u64</span>,
 
-    <span class="doccomment">/// The number of CPU cores to use</span>
+    <span class="doccomment">/// The number of CPU cores to use. Ignored for workers.</span>
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;num-cores&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">num_cores</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
 
@@ -438,6 +440,8 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">WorkerOptions</span> {
     <span class="doccomment">/// Address to use to connect to a remote server</span>
     <span class="kw">pub</span> <span class="ident">server_addr</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// ID of the worker (to differentiate between multiple workers on the same machine).</span>
+    <span class="kw">pub</span> <span class="ident">worker_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
 }
 
 <span class="doccomment">/// Returns the long-help for the &quot;skip sanity checks&quot; option.</span>
