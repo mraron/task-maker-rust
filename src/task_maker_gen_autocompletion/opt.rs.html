@@ -1,7 +1,6 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/opt.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>opt.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings"></script><script src="../../storage.js"></script><script src="../../crates.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../favicon.svg">
 <link rel="alternate icon" type="image/png" href="../../favicon-16x16.png">
-<link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../task_maker_gen_autocompletion/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
-                <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../task_maker_gen_autocompletion/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img src="../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img src="../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -262,20 +261,20 @@
 <span id="259">259</span>
 <span id="260">260</span>
 <span id="261">261</span>
-</pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::<span class="ident">PathBuf</span>;
+</pre><pre class="rust">
+<span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
 
-<span class="kw">use</span> <span class="ident">structopt</span>::<span class="ident">StructOpt</span>;
+<span class="kw">use</span> <span class="ident">structopt::StructOpt</span>;
 
-<span class="kw">use</span> <span class="ident">itertools</span>::<span class="ident">Itertools</span>;
-<span class="kw">use</span> <span class="ident">task_maker_format</span>::<span class="ident">get_sanity_check_names</span>;
-<span class="kw">use</span> <span class="ident">task_maker_format</span>::<span class="ident">terry</span>::<span class="ident">Seed</span>;
+<span class="kw">use</span> <span class="ident">itertools::Itertools</span>;
+<span class="kw">use</span> <span class="ident">task_maker_format::get_sanity_check_names</span>;
+<span class="kw">use</span> <span class="ident">task_maker_format::terry::Seed</span>;
 <span class="kw">use</span> <span class="ident">task_maker_format</span>::{<span class="ident">EvaluationConfig</span>, <span class="ident">VALID_TAGS</span>};
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">StructOpt</span>, <span class="ident">Debug</span>)]</span>
 <span class="attribute">#[<span class="ident">structopt</span>(
     <span class="ident">name</span> <span class="op">=</span> <span class="string">&quot;task-maker&quot;</span>,
-    <span class="ident">setting</span> <span class="op">=</span> <span class="ident">structopt</span>::<span class="ident">clap</span>::<span class="ident">AppSettings</span>::<span class="ident">ColoredHelp</span>,
+    <span class="ident">setting</span> <span class="op">=</span> <span class="ident">structopt::clap::AppSettings::ColoredHelp</span>,
 )]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Opt</span> {
     <span class="doccomment">/// Directory of the task to evaluate</span>
@@ -286,7 +285,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Note that the JSON api is not stable yet.</span>
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;ui&quot;</span>, <span class="ident">default_value</span> <span class="op">=</span> <span class="string">&quot;curses&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">ui</span>: <span class="ident">task_maker_format</span>::<span class="ident">ui</span>::<span class="ident">UIType</span>,
+    <span class="kw">pub</span> <span class="ident">ui</span>: <span class="ident">task_maker_format::ui::UIType</span>,
 
     <span class="doccomment">/// Keep all the sandbox directories</span>
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;keep-sandboxes&quot;</span>)]</span>
@@ -302,7 +301,7 @@
 
     <span class="doccomment">/// Disable the cache for this comma separated list of tags</span>
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;no-cache&quot;</span>, <span class="ident">long_help</span> <span class="op">=</span> <span class="ident">no_cache_long_help</span>())]</span>
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">option_option</span>)]</span>
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::option_option</span>)]</span>
     <span class="kw">pub</span> <span class="ident">no_cache</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// Do not run in parallel time critical executions on the same machine</span>
@@ -443,8 +442,8 @@
 
 <span class="doccomment">/// Returns the long-help for the &quot;skip sanity checks&quot; option.</span>
 <span class="kw">fn</span> <span class="ident">skip_sanity_checks_long_help</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> {
-    <span class="macro">lazy_static</span><span class="macro">!</span> {
-        <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">DOC</span>: <span class="ident">String</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(
+    <span class="macro">lazy_static!</span> {
+        <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">DOC</span>: <span class="ident">String</span> <span class="op">=</span> <span class="macro">format!</span>(
             <span class="string">&quot;List of sanity checks to skip.\n\nThe available checks are: {}.&quot;</span>,
             <span class="ident">get_sanity_check_names</span>()
         );
@@ -454,8 +453,8 @@
 
 <span class="doccomment">/// Returns the long-help for the --no-cache option.</span>
 <span class="kw">fn</span> <span class="ident">no_cache_long_help</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> {
-    <span class="macro">lazy_static</span><span class="macro">!</span> {
-        <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">DOC</span>: <span class="ident">String</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(
+    <span class="macro">lazy_static!</span> {
+        <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">DOC</span>: <span class="ident">String</span> <span class="op">=</span> <span class="macro">format!</span>(
             <span class="string">&quot;Disable the cache for this comma separated list of tags\n\nProviding an empty list will disable all the caches. The supported tags are: {}.&quot;</span>,
             <span class="ident">VALID_TAGS</span>.<span class="ident">iter</span>().<span class="ident">join</span>(<span class="string">&quot;, &quot;</span>)
         );
@@ -483,11 +482,11 @@
         <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">store_dir</span> {
             <span class="prelude-val">Some</span>(<span class="ident">dir</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">dir</span>.<span class="ident">clone</span>(),
             <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">let</span> <span class="ident">project</span> <span class="op">=</span> <span class="ident">directories</span>::<span class="ident">ProjectDirs</span>::<span class="ident">from</span>(<span class="string">&quot;&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="string">&quot;task-maker&quot;</span>);
+                <span class="kw">let</span> <span class="ident">project</span> <span class="op">=</span> <span class="ident">directories::ProjectDirs::from</span>(<span class="string">&quot;&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="string">&quot;task-maker&quot;</span>);
                 <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">project</span>) <span class="op">=</span> <span class="ident">project</span> {
                     <span class="ident">project</span>.<span class="ident">cache_dir</span>().<span class="ident">to_owned</span>()
                 } <span class="kw">else</span> {
-                    <span class="ident">std</span>::<span class="ident">env</span>::<span class="ident">temp_dir</span>().<span class="ident">join</span>(<span class="string">&quot;task-maker&quot;</span>)
+                    <span class="ident">std::env::temp_dir</span>().<span class="ident">join</span>(<span class="string">&quot;task-maker&quot;</span>)
                 }
             }
         }
@@ -497,33 +496,32 @@
         <span class="comment">// configure the logger based on the verbosity level</span>
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">show_warning</span> <span class="op">=</span> <span class="bool-val">false</span>;
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">verbose</span> <span class="op">&gt;</span> <span class="number">0</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">task_maker_format</span>::<span class="ident">ui</span>::<span class="ident">UIType</span>::<span class="ident">Curses</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">ui</span> {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">task_maker_format::ui::UIType::Curses</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">ui</span> {
                 <span class="kw">if</span> <span class="self">self</span>.<span class="ident">remote</span>.<span class="ident">is_none</span>() {
                     <span class="comment">// warning deferred to after the logger has been initialized</span>
                     <span class="ident">show_warning</span> <span class="op">=</span> <span class="bool-val">true</span>;
                 }
-                <span class="self">self</span>.<span class="ident">ui</span> <span class="op">=</span> <span class="ident">task_maker_format</span>::<span class="ident">ui</span>::<span class="ident">UIType</span>::<span class="ident">Print</span>;
+                <span class="self">self</span>.<span class="ident">ui</span> <span class="op">=</span> <span class="ident">task_maker_format::ui::UIType::Print</span>;
             }
-            <span class="ident">std</span>::<span class="ident">env</span>::<span class="ident">set_var</span>(<span class="string">&quot;RUST_BACKTRACE&quot;</span>, <span class="string">&quot;1&quot;</span>);
+            <span class="ident">std::env::set_var</span>(<span class="string">&quot;RUST_BACKTRACE&quot;</span>, <span class="string">&quot;1&quot;</span>);
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">verbose</span> {
-                <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
-                <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">env</span>::<span class="ident">set_var</span>(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;info,tabox=info&quot;</span>),
-                <span class="number">2</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">env</span>::<span class="ident">set_var</span>(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;debug,tabox=debug&quot;</span>),
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">env</span>::<span class="ident">set_var</span>(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;trace,tabox=trace&quot;</span>),
+                <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">unreachable!</span>(),
+                <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">std::env::set_var</span>(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;info,tabox=info&quot;</span>),
+                <span class="number">2</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">std::env::set_var</span>(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;debug,tabox=debug&quot;</span>),
+                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">std::env::set_var</span>(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;trace,tabox=trace&quot;</span>),
             }
         }
 
-        <span class="ident">env_logger</span>::<span class="ident">Builder</span>::<span class="ident">from_default_env</span>()
+        <span class="ident">env_logger::Builder::from_default_env</span>()
             .<span class="ident">default_format_timestamp_nanos</span>(<span class="bool-val">true</span>)
             .<span class="ident">init</span>();
-        <span class="ident">better_panic</span>::<span class="ident">install</span>();
+        <span class="ident">better_panic::install</span>();
         <span class="kw">if</span> <span class="ident">show_warning</span> {
-            <span class="macro">warn</span><span class="macro">!</span>(
+            <span class="macro">warn!</span>(
                 <span class="string">&quot;Do not combine -v with curses ui, bad things will happen! Fallbacking to print ui&quot;</span>
             );
         }
     }
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="task_maker_gen_autocompletion" data-search-js="../../search-index.js"></div>
-    <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="task_maker_gen_autocompletion" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script></body></html>
