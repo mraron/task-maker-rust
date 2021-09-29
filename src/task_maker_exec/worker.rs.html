@@ -978,7 +978,7 @@
         <span class="kw">let</span> <span class="ident">job</span> <span class="op">=</span> <span class="ident">current_job</span>
             .<span class="ident">current_job</span>
             .<span class="ident">as_ref</span>()
-            .<span class="ident">expect</span>(<span class="string">&quot;Worker job is gone&quot;</span>);
+            .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">anyhow!</span>(<span class="string">&quot;Worker job is gone&quot;</span>))<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">boxes</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
         <span class="kw">let</span> <span class="ident">group</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">job</span>.<span class="number">0</span>.<span class="ident">group</span>;
         <span class="kw">let</span> <span class="ident">fifo_dir</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">group</span>.<span class="ident">fifo</span>.<span class="ident">is_empty</span>() {
@@ -1008,7 +1008,7 @@
                 <span class="ident">fifo_dir</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">d</span><span class="op">|</span> <span class="ident">d</span>.<span class="ident">path</span>().<span class="ident">to_owned</span>()),
             )<span class="question-mark">?</span>;
             <span class="kw">if</span> <span class="ident">keep_sandboxes</span> {
-                <span class="ident">sandbox</span>.<span class="ident">keep</span>();
+                <span class="ident">sandbox</span>.<span class="ident">keep</span>()<span class="question-mark">?</span>;
             }
             <span class="ident">boxes</span>.<span class="ident">push</span>(<span class="ident">sandbox</span>);
         }
@@ -1129,7 +1129,7 @@
         <span class="kw">for</span> <span class="ident">handle</span> <span class="kw">in</span> <span class="ident">handles</span> {
             <span class="ident">handle</span>
                 .<span class="ident">join</span>()
-                .<span class="ident">expect</span>(<span class="string">&quot;Sandbox thread panicked&quot;</span>)
+                .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="macro">anyhow!</span>(<span class="string">&quot;Sandbox thread panicked: {:?}&quot;</span>, <span class="ident">e</span>))<span class="question-mark">?</span>
                 .<span class="ident">context</span>(<span class="string">&quot;Sandbox thread failed&quot;</span>)<span class="question-mark">?</span>;
         }
     }

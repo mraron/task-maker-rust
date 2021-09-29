@@ -255,6 +255,18 @@
 <span id="255">255</span>
 <span id="256">256</span>
 <span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
 <span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
@@ -332,9 +344,19 @@
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fifo_sol2man</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
     <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">data</span>.<span class="ident">num_processes</span> {
         <span class="kw">let</span> <span class="ident">fifo1</span> <span class="op">=</span> <span class="ident">group</span>.<span class="ident">new_fifo</span>().<span class="ident">sandbox_path</span>();
-        <span class="ident">fifo_man2sol</span>.<span class="ident">push</span>(<span class="ident">fifo1</span>.<span class="ident">to_str</span>().<span class="ident">unwrap</span>().<span class="ident">to_string</span>());
+        <span class="ident">fifo_man2sol</span>.<span class="ident">push</span>(
+            <span class="ident">fifo1</span>
+                .<span class="ident">to_str</span>()
+                .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">anyhow!</span>(<span class="string">&quot;Non-UTF8 fifo path&quot;</span>))<span class="question-mark">?</span>
+                .<span class="ident">to_string</span>(),
+        );
         <span class="kw">let</span> <span class="ident">fifo2</span> <span class="op">=</span> <span class="ident">group</span>.<span class="ident">new_fifo</span>().<span class="ident">sandbox_path</span>();
-        <span class="ident">fifo_sol2man</span>.<span class="ident">push</span>(<span class="ident">fifo2</span>.<span class="ident">to_str</span>().<span class="ident">unwrap</span>().<span class="ident">to_string</span>());
+        <span class="ident">fifo_sol2man</span>.<span class="ident">push</span>(
+            <span class="ident">fifo2</span>
+                .<span class="ident">to_str</span>()
+                .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">anyhow!</span>(<span class="string">&quot;Non-UTF8 fifo path&quot;</span>))<span class="question-mark">?</span>
+                .<span class="ident">to_string</span>(),
+        );
     }
 
     <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">source_file</span>.<span class="ident">path</span>.<span class="ident">clone</span>();
@@ -426,8 +448,10 @@
     <span class="macro">bind_exec_io!</span>(<span class="ident">exec</span>, <span class="ident">task</span>, <span class="ident">input</span>, <span class="ident">validation_handle</span>);
     <span class="kw">let</span> <span class="ident">limits</span> <span class="op">=</span> <span class="ident">exec</span>.<span class="ident">limits_mut</span>();
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">time_limit</span>) <span class="op">=</span> <span class="ident">task</span>.<span class="ident">time_limit</span> {
-        <span class="ident">limits</span>.<span class="ident">cpu_time</span>((<span class="ident">time_limit</span> <span class="op">+</span> <span class="number">1.0</span>) <span class="op">*</span> <span class="ident">num_processes</span> <span class="kw">as</span> <span class="ident">f64</span>);
-        <span class="ident">limits</span>.<span class="ident">wall_time</span>(<span class="ident">limits</span>.<span class="ident">cpu_time</span>.<span class="ident">unwrap</span>() <span class="op">*</span> <span class="number">1.5</span> <span class="op">+</span> <span class="number">1.0</span>); <span class="comment">// some margin</span>
+        <span class="kw">let</span> <span class="ident">cpu_time</span> <span class="op">=</span> (<span class="ident">time_limit</span> <span class="op">+</span> <span class="number">1.0</span>) <span class="op">*</span> <span class="ident">num_processes</span> <span class="kw">as</span> <span class="ident">f64</span>;
+        <span class="kw">let</span> <span class="ident">wall_time</span> <span class="op">=</span> <span class="ident">cpu_time</span> <span class="op">*</span> <span class="number">1.5</span> <span class="op">+</span> <span class="number">1.0</span>; <span class="comment">// some margin</span>
+        <span class="ident">limits</span>.<span class="ident">cpu_time</span>(<span class="ident">cpu_time</span>);
+        <span class="ident">limits</span>.<span class="ident">wall_time</span>(<span class="ident">wall_time</span>);
     }
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">memory_limit</span>) <span class="op">=</span> <span class="ident">task</span>.<span class="ident">memory_limit</span> {
         <span class="ident">limits</span>.<span class="ident">memory</span>(<span class="ident">memory_limit</span> <span class="op">*</span> <span class="number">1024</span>); <span class="comment">// MiB -&gt; KiB</span>

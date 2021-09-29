@@ -308,7 +308,7 @@
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
 
-<span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">anyhow</span>, <span class="ident">Error</span>};
+<span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">anyhow</span>, <span class="ident">Context</span>, <span class="ident">Error</span>};
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
 
 <span class="kw">use</span> <span class="ident">task_maker_dag</span>::{<span class="ident">Execution</span>, <span class="ident">ExecutionLimits</span>, <span class="ident">FileUuid</span>};
@@ -605,9 +605,9 @@
             <span class="ident">solution</span>.<span class="ident">executable</span>(<span class="ident">eval</span>)<span class="question-mark">?</span>,
             <span class="ident">solution</span>
                 .<span class="ident">write_bin_to</span>()
-                .<span class="ident">expect</span>(<span class="string">&quot;managers should always be copied&quot;</span>)
+                .<span class="ident">context</span>(<span class="string">&quot;managers should always be copied&quot;</span>)<span class="question-mark">?</span>
                 .<span class="ident">file_name</span>()
-                .<span class="ident">unwrap</span>(),
+                .<span class="ident">context</span>(<span class="string">&quot;Invalid solution path&quot;</span>)<span class="question-mark">?</span>,
             <span class="bool-val">true</span>,
         );
     }

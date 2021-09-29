@@ -1096,7 +1096,7 @@
             <span class="ident">TaskInputEntry::Testcase</span>(<span class="ident">testcase</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="ident">last_subtask</span>
                     .<span class="ident">as_mut</span>()
-                    .<span class="ident">expect</span>(<span class="string">&quot;Testcase before Subtask&quot;</span>)
+                    .<span class="ident">context</span>(<span class="string">&quot;Testcase before Subtask&quot;</span>)<span class="question-mark">?</span>
                     .<span class="ident">testcases</span>
                     .<span class="ident">insert</span>(<span class="ident">testcase</span>.<span class="ident">id</span>, <span class="ident">testcase</span>);
             }

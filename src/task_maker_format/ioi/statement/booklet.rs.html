@@ -494,7 +494,7 @@
             }
             <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::new</span>(<span class="macro">format!</span>(
                 <span class="string">&quot;Booklet template file {:?}&quot;</span>,
-                <span class="ident">path</span>.<span class="ident">file_name</span>().<span class="ident">expect</span>(<span class="string">&quot;Invalid template file&quot;</span>)
+                <span class="ident">path</span>.<span class="ident">file_name</span>().<span class="ident">context</span>(<span class="string">&quot;Invalid template file&quot;</span>)<span class="question-mark">?</span>
             ));
             <span class="ident">eval</span>.<span class="ident">dag</span>
                 .<span class="ident">provide_file</span>(<span class="ident">file</span>.<span class="ident">clone</span>(), <span class="kw-2">&amp;</span><span class="ident">path</span>)

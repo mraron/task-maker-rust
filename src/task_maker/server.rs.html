@@ -28,6 +28,8 @@
 <span id="28">28</span>
 <span id="29">29</span>
 <span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::opt</span>::{<span class="ident">Opt</span>, <span class="ident">ServerOptions</span>};
 <span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
@@ -51,13 +53,15 @@
 
     <span class="kw">let</span> <span class="ident">remote_executor</span> <span class="op">=</span> <span class="ident">RemoteExecutor::new</span>(<span class="ident">file_store</span>);
 
-    <span class="ident">remote_executor</span>.<span class="ident">start</span>(
-        <span class="kw-2">&amp;</span><span class="ident">server_opt</span>.<span class="ident">client_addr</span>,
-        <span class="kw-2">&amp;</span><span class="ident">server_opt</span>.<span class="ident">worker_addr</span>,
-        <span class="ident">server_opt</span>.<span class="ident">client_password</span>,
-        <span class="ident">server_opt</span>.<span class="ident">worker_password</span>,
-        <span class="ident">cache</span>,
-    );
+    <span class="ident">remote_executor</span>
+        .<span class="ident">start</span>(
+            <span class="kw-2">&amp;</span><span class="ident">server_opt</span>.<span class="ident">client_addr</span>,
+            <span class="kw-2">&amp;</span><span class="ident">server_opt</span>.<span class="ident">worker_addr</span>,
+            <span class="ident">server_opt</span>.<span class="ident">client_password</span>,
+            <span class="ident">server_opt</span>.<span class="ident">worker_password</span>,
+            <span class="ident">cache</span>,
+        )
+        .<span class="ident">expect</span>(<span class="string">&quot;Executor failed&quot;</span>);
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="task_maker" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>

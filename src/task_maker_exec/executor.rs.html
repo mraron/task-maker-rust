@@ -431,6 +431,13 @@
 <span id="431">431</span>
 <span id="432">432</span>
 <span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="ident">std::collections</span>::{<span class="ident">HashMap</span>, <span class="ident">HashSet</span>};
 <span class="kw">use</span> <span class="ident">std::sync::mpsc</span>::{<span class="ident">channel</span>, <span class="ident">Receiver</span>, <span class="ident">Sender</span>};
@@ -439,7 +446,7 @@
 <span class="kw">use</span> <span class="ident">std::time::Duration</span>;
 <span class="kw">use</span> <span class="ident">std::time::SystemTime</span>;
 
-<span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">Context</span>, <span class="ident">Error</span>};
+<span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">anyhow</span>, <span class="ident">Context</span>, <span class="ident">Error</span>};
 <span class="kw">use</span> <span class="ident">chashmap::CHashMap</span>;
 <span class="kw">use</span> <span class="ident">ductile</span>::{<span class="ident">ChannelReceiver</span>, <span class="ident">ChannelSender</span>};
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
@@ -615,19 +622,16 @@
         );
         <span class="kw">let</span> <span class="ident">scheduler_thread</span> <span class="op">=</span> <span class="ident">thread::Builder::new</span>()
             .<span class="ident">name</span>(<span class="string">&quot;Scheduler thread&quot;</span>.<span class="ident">to_string</span>())
-            .<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> <span class="ident">scheduler</span>.<span class="ident">run</span>().<span class="ident">expect</span>(<span class="string">&quot;Scheduler failed&quot;</span>))
+            .<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> <span class="ident">scheduler</span>.<span class="ident">run</span>())
             .<span class="ident">expect</span>(<span class="string">&quot;Failed to spawn scheduler&quot;</span>);
         <span class="kw">let</span> <span class="ident">worker_manager_thread</span> <span class="op">=</span> <span class="ident">thread::Builder::new</span>()
             .<span class="ident">name</span>(<span class="string">&quot;Worker Manager thread&quot;</span>.<span class="ident">to_string</span>())
-            .<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> <span class="ident">worker_manager</span>.<span class="ident">run</span>().<span class="ident">expect</span>(<span class="string">&quot;Worker manager failed&quot;</span>))
+            .<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> <span class="ident">worker_manager</span>.<span class="ident">run</span>())
             .<span class="ident">expect</span>(<span class="string">&quot;Failed to spawn worker manager&quot;</span>);
         <span class="kw">let</span> <span class="ident">clients2</span> <span class="op">=</span> <span class="ident">clients</span>.<span class="ident">clone</span>();
         <span class="kw">let</span> <span class="ident">scheduler_binder_thread</span> <span class="op">=</span> <span class="ident">thread::Builder::new</span>()
             .<span class="ident">name</span>(<span class="string">&quot;Scheduler binder&quot;</span>.<span class="ident">to_string</span>())
-            .<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> {
-                <span class="ident">Executor::handle_scheduler_messages</span>(<span class="ident">sched_executor_rx</span>, <span class="ident">clients2</span>)
-                    .<span class="ident">expect</span>(<span class="string">&quot;Scheduler binder failed&quot;</span>)
-            })
+            .<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> <span class="ident">Executor::handle_scheduler_messages</span>(<span class="ident">sched_executor_rx</span>, <span class="ident">clients2</span>))
             .<span class="ident">expect</span>(<span class="string">&quot;Failed to spawn scheduler binder&quot;</span>);
 
         <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">message</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">receiver</span>.<span class="ident">recv</span>() {
@@ -642,43 +646,53 @@
                     <span class="kw">let</span> <span class="ident">file_store</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">file_store</span>.<span class="ident">clone</span>();
                     <span class="kw">let</span> <span class="ident">long_running</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">long_running</span>;
                     <span class="comment">// handle the new client in a new thread called &quot;Client Manager&quot;</span>
+                    <span class="comment">// FIXME: this thread is leaked, maybe we can join it as well</span>
                     <span class="ident">thread::Builder::new</span>()
                         .<span class="ident">name</span>(<span class="macro">format!</span>(
                             <span class="string">&quot;Client manager for {} ({})&quot;</span>,
                             <span class="ident">client</span>.<span class="ident">name</span>, <span class="ident">client</span>.<span class="ident">uuid</span>
                         ))
-                        .<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> {
+                        .<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
                             <span class="ident">Executor::handle_client_messages</span>(
                                 <span class="ident">file_store</span>,
                                 <span class="ident">client</span>,
                                 <span class="ident">sender</span>,
                                 <span class="ident">receiver</span>,
                                 <span class="ident">scheduler</span>.<span class="ident">clone</span>(),
-                            )
-                            .<span class="ident">expect</span>(<span class="string">&quot;Client manager failed&quot;</span>);
+                            )<span class="question-mark">?</span>;
                             <span class="comment">// if not in long running mode, the first client should tear down the</span>
                             <span class="comment">// executor. To do so it&#39;s just required to tell the scheduler to exit,</span>
                             <span class="comment">// it will bring down the WorkerManager and all should exit.</span>
                             <span class="kw">if</span> <span class="op">!</span><span class="ident">long_running</span> {
                                 <span class="ident">scheduler</span>
                                     .<span class="ident">send</span>(<span class="ident">SchedulerInMessage::Exit</span>)
-                                    .<span class="ident">expect</span>(<span class="string">&quot;Cannot stop the scheduler&quot;</span>);
+                                    .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="macro">anyhow!</span>(<span class="string">&quot;Cannot stop the scheduler: {:?}&quot;</span>, <span class="ident">e</span>))<span class="question-mark">?</span>;
                             }
+                            <span class="prelude-val">Ok</span>(())
                         })
                         .<span class="ident">expect</span>(<span class="string">&quot;Failed to spawn client manager&quot;</span>);
                 }
                 <span class="ident">ExecutorInMessage::WorkerConnected</span> { <span class="ident">worker</span> } <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="ident">worker_manager_tx</span>
                         .<span class="ident">send</span>(<span class="ident">WorkerManagerInMessage::WorkerConnected</span> { <span class="ident">worker</span> })
-                        .<span class="ident">expect</span>(<span class="string">&quot;WorkerManager died&quot;</span>);
+                        .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="macro">anyhow!</span>(<span class="string">&quot;Cannot send WorkerConnected: {:?}&quot;</span>, <span class="ident">e</span>))<span class="question-mark">?</span>;
                 }
             }
         }
         <span class="macro">debug!</span>(<span class="string">&quot;Executor no longer waits for clients/workers&quot;</span>);
 
-        <span class="ident">scheduler_thread</span>.<span class="ident">join</span>().<span class="ident">unwrap</span>();
-        <span class="ident">worker_manager_thread</span>.<span class="ident">join</span>().<span class="ident">unwrap</span>();
-        <span class="ident">scheduler_binder_thread</span>.<span class="ident">join</span>().<span class="ident">unwrap</span>();
+        <span class="ident">scheduler_thread</span>
+            .<span class="ident">join</span>()
+            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="macro">anyhow!</span>(<span class="string">&quot;Scheduler thread panicked: {:?}&quot;</span>, <span class="ident">e</span>))<span class="question-mark">?</span>
+            .<span class="ident">context</span>(<span class="string">&quot;Scheduler thread failed&quot;</span>)<span class="question-mark">?</span>;
+        <span class="ident">worker_manager_thread</span>
+            .<span class="ident">join</span>()
+            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="macro">anyhow!</span>(<span class="string">&quot;Worker manager panicked: {:?}&quot;</span>, <span class="ident">e</span>))<span class="question-mark">?</span>
+            .<span class="ident">context</span>(<span class="string">&quot;Worker manager thread failed&quot;</span>)<span class="question-mark">?</span>;
+        <span class="ident">scheduler_binder_thread</span>
+            .<span class="ident">join</span>()
+            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="macro">anyhow!</span>(<span class="string">&quot;Scheduler binder panicked: {:?}&quot;</span>, <span class="ident">e</span>))<span class="question-mark">?</span>
+            .<span class="ident">context</span>(<span class="string">&quot;Scheduler binder thread failed&quot;</span>)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 

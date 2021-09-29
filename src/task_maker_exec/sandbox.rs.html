@@ -607,6 +607,8 @@
 <span id="607">607</span>
 <span id="608">608</span>
 <span id="609">609</span>
+<span id="610">610</span>
+<span id="611">611</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 <span class="kw">use</span> <span class="ident">std::fs::Permissions</span>;
@@ -838,27 +840,28 @@
     }
 
     <span class="doccomment">/// Make the sandbox persistent, the sandbox directory won&#39;t be deleted after the execution.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">keep</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">keep</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">data</span>
             .<span class="ident">boxdir</span>
             .<span class="ident">as_ref</span>()
-            .<span class="ident">expect</span>(<span class="string">&quot;Box dir has gone?!?&quot;</span>)
+            .<span class="ident">context</span>(<span class="string">&quot;Box dir has gone&quot;</span>)<span class="question-mark">?</span>
             .<span class="ident">path</span>()
             .<span class="ident">to_owned</span>();
         <span class="macro">debug!</span>(<span class="string">&quot;Keeping sandbox at {:?}&quot;</span>, <span class="ident">path</span>);
         <span class="ident">data</span>.<span class="ident">keep_sandbox</span> <span class="op">=</span> <span class="bool-val">true</span>;
-        <span class="kw">let</span> <span class="ident">serialized</span> <span class="op">=</span>
-            <span class="ident">serde_json::to_string_pretty</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>.<span class="ident">execution</span>).<span class="ident">expect</span>(<span class="string">&quot;Cannot serialize execution&quot;</span>);
+        <span class="kw">let</span> <span class="ident">serialized</span> <span class="op">=</span> <span class="ident">serde_json::to_string_pretty</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>.<span class="ident">execution</span>)
+            .<span class="ident">context</span>(<span class="string">&quot;Failed to serialize execution&quot;</span>)<span class="question-mark">?</span>;
         <span class="ident">std::fs::write</span>(<span class="ident">path</span>.<span class="ident">join</span>(<span class="string">&quot;info.json&quot;</span>), <span class="ident">serialized</span>)
-            .<span class="ident">expect</span>(<span class="string">&quot;Cannot write execution info inside sandbox&quot;</span>);
+            .<span class="ident">context</span>(<span class="string">&quot;Cannot write execution info inside sandbox&quot;</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">SandboxConfiguration::default</span>();
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(()) <span class="op">=</span>
             <span class="self">self</span>.<span class="ident">build_command</span>(<span class="kw-2">&amp;</span><span class="ident">path</span>, <span class="kw-2">&amp;</span><span class="ident">data</span>.<span class="ident">execution</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">config</span>, <span class="ident">data</span>.<span class="ident">fifo_dir</span>.<span class="ident">clone</span>())
         {
             <span class="ident">std::fs::write</span>(<span class="ident">path</span>.<span class="ident">join</span>(<span class="string">&quot;tabox.txt&quot;</span>), <span class="macro">format!</span>(<span class="string">&quot;{:#?}\n&quot;</span>, <span class="ident">config</span>))
-                .<span class="ident">expect</span>(<span class="string">&quot;Cannot write command info inside sandbox&quot;</span>);
+                .<span class="ident">context</span>(<span class="string">&quot;Cannot write command info inside sandbox&quot;</span>)<span class="question-mark">?</span>;
         }
+        <span class="prelude-val">Ok</span>(())
     }
 
     <span class="doccomment">/// Path of the file where the standard output is written to.</span>
@@ -1024,7 +1027,7 @@
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">stdin</span>) <span class="op">=</span> <span class="ident">execution</span>.<span class="ident">stdin</span> {
             <span class="ident">Sandbox::write_sandbox_file</span>(
                 <span class="kw-2">&amp;</span><span class="ident">box_dir</span>.<span class="ident">join</span>(<span class="string">&quot;stdin&quot;</span>),
-                <span class="ident">dep_keys</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">stdin</span>).<span class="ident">expect</span>(<span class="string">&quot;stdin not provided&quot;</span>).<span class="ident">path</span>(),
+                <span class="ident">dep_keys</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">stdin</span>).<span class="ident">context</span>(<span class="string">&quot;stdin not provided&quot;</span>)<span class="question-mark">?</span>.<span class="ident">path</span>(),
                 <span class="bool-val">false</span>,
             )<span class="question-mark">?</span>;
         }
@@ -1037,7 +1040,10 @@
         <span class="kw">for</span> (<span class="ident">path</span>, <span class="ident">input</span>) <span class="kw">in</span> <span class="ident">execution</span>.<span class="ident">inputs</span>.<span class="ident">iter</span>() {
             <span class="ident">Sandbox::write_sandbox_file</span>(
                 <span class="kw-2">&amp;</span><span class="ident">box_dir</span>.<span class="ident">join</span>(<span class="string">&quot;box&quot;</span>).<span class="ident">join</span>(<span class="kw-2">&amp;</span><span class="ident">path</span>),
-                <span class="ident">dep_keys</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">input</span>.<span class="ident">file</span>).<span class="ident">expect</span>(<span class="string">&quot;file not provided&quot;</span>).<span class="ident">path</span>(),
+                <span class="ident">dep_keys</span>
+                    .<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">input</span>.<span class="ident">file</span>)
+                    .<span class="ident">context</span>(<span class="string">&quot;file not provided&quot;</span>)<span class="question-mark">?</span>
+                    .<span class="ident">path</span>(),
                 <span class="ident">input</span>.<span class="ident">executable</span>,
             )<span class="question-mark">?</span>;
         }
@@ -1066,7 +1072,7 @@
     <span class="doccomment">/// - `r--------` (0o400) if not executable.</span>
     <span class="doccomment">/// - `r-x------` (0o500) if executable.</span>
     <span class="kw">fn</span> <span class="ident">write_sandbox_file</span>(<span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">source</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">executable</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="ident">std::fs::create_dir_all</span>(<span class="ident">dest</span>.<span class="ident">parent</span>().<span class="ident">expect</span>(<span class="string">&quot;Invalid destination path&quot;</span>))
+        <span class="ident">std::fs::create_dir_all</span>(<span class="ident">dest</span>.<span class="ident">parent</span>().<span class="ident">context</span>(<span class="string">&quot;Invalid destination path&quot;</span>)<span class="question-mark">?</span>)
             .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;Failed to create parent directory of {}&quot;</span>, <span class="ident">dest</span>.<span class="ident">display</span>()))<span class="question-mark">?</span>;
         <span class="comment">// First try to hardlink the file to the destination, this is faster and less prone to race</span>
         <span class="comment">// conditions. If another thread forks while copying the executable (for example spawning a</span>
@@ -1087,7 +1093,7 @@
 
     <span class="doccomment">/// Create an empty file inside the sandbox and chmod-it.</span>
     <span class="kw">fn</span> <span class="ident">touch_file</span>(<span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">mode</span>: <span class="ident">u32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="ident">std::fs::create_dir_all</span>(<span class="ident">dest</span>.<span class="ident">parent</span>().<span class="ident">expect</span>(<span class="string">&quot;Invalid file path&quot;</span>))
+        <span class="ident">std::fs::create_dir_all</span>(<span class="ident">dest</span>.<span class="ident">parent</span>().<span class="ident">context</span>(<span class="string">&quot;Invalid file path&quot;</span>)<span class="question-mark">?</span>)
             .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;Failed to create parent directory of {}&quot;</span>, <span class="ident">dest</span>.<span class="ident">display</span>()))<span class="question-mark">?</span>;
         <span class="ident">std::fs::File::create</span>(<span class="ident">dest</span>)
             .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;Failed to create {}&quot;</span>, <span class="ident">dest</span>.<span class="ident">display</span>()))<span class="question-mark">?</span>;
@@ -1122,7 +1128,7 @@
 <span class="kw">impl</span> <span class="ident">SandboxData</span> {
     <span class="kw">fn</span> <span class="ident">path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">Path</span> {
         <span class="comment">// this unwrap is safe since only `Drop` will remove the boxdir</span>
-        <span class="self">self</span>.<span class="ident">boxdir</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>().<span class="ident">path</span>()
+        <span class="self">self</span>.<span class="ident">boxdir</span>.<span class="ident">as_ref</span>().<span class="ident">expect</span>(<span class="string">&quot;boxdir is gone&quot;</span>).<span class="ident">path</span>()
     }
 }
 
@@ -1131,9 +1137,7 @@
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">keep_sandbox</span> {
             <span class="comment">// this will unwrap the directory, dropping the `TempDir` without deleting the directory</span>
             <span class="self">self</span>.<span class="ident">boxdir</span>.<span class="ident">take</span>().<span class="ident">map</span>(<span class="ident">TempDir::into_path</span>);
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">Sandbox::set_permissions</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">boxdir</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>().<span class="ident">path</span>().<span class="ident">join</span>(<span class="string">&quot;box&quot;</span>), <span class="number">0o700</span>)
-            .<span class="ident">is_err</span>()
-        {
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">Sandbox::set_permissions</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">path</span>().<span class="ident">join</span>(<span class="string">&quot;box&quot;</span>), <span class="number">0o700</span>).<span class="ident">is_err</span>() {
             <span class="macro">warn!</span>(<span class="string">&quot;Cannot &#39;chmod 700&#39; the sandbox directory&quot;</span>);
         }
     }

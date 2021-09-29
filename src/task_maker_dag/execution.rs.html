@@ -1390,7 +1390,7 @@
             <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::new</span>(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;Stdout of &#39;{}&#39;&quot;</span>, <span class="self">self</span>.<span class="ident">description</span>));
             <span class="self">self</span>.<span class="ident">stdout</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">file</span>);
         }
-        <span class="self">self</span>.<span class="ident">stdout</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>().<span class="ident">clone</span>()
+        <span class="self">self</span>.<span class="ident">stdout</span>.<span class="ident">clone</span>().<span class="ident">unwrap</span>()
     }
 
     <span class="doccomment">/// Handle to the standard error of the execution. This should be called at least once before</span>
@@ -1409,7 +1409,7 @@
             <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::new</span>(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;Stderr of &#39;{}&#39;&quot;</span>, <span class="self">self</span>.<span class="ident">description</span>));
             <span class="self">self</span>.<span class="ident">stderr</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">file</span>);
         }
-        <span class="self">self</span>.<span class="ident">stderr</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>().<span class="ident">clone</span>()
+        <span class="self">self</span>.<span class="ident">stderr</span>.<span class="ident">clone</span>().<span class="ident">unwrap</span>()
     }
 
     <span class="doccomment">/// Tell the executor to include the first `count` bytes of the standard output in the result.</span>

@@ -123,7 +123,7 @@
 <span class="kw">fn</span> <span class="ident">getcwd</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PathBuf</span> {
     <span class="ident">std::env::var</span>(<span class="string">&quot;PWD&quot;</span>)
         .<span class="ident">map</span>(<span class="ident">PathBuf::from</span>)
-        .<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">std::env::current_dir</span>().<span class="ident">unwrap</span>())
+        .<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">std::env::current_dir</span>().<span class="ident">expect</span>(<span class="string">&quot;Cannot get current working directory&quot;</span>))
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="task_maker" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>

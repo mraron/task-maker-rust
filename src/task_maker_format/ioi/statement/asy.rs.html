@@ -323,7 +323,7 @@
         )<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">deps</span> <span class="op">=</span> <span class="ident">AsyFile::find_asy_deps</span>(
             <span class="kw-2">&amp;</span><span class="ident">source_path</span>,
-            <span class="ident">source_path</span>.<span class="ident">parent</span>().<span class="ident">expect</span>(<span class="string">&quot;Invalid asy file&quot;</span>),
+            <span class="ident">source_path</span>.<span class="ident">parent</span>().<span class="ident">context</span>(<span class="string">&quot;Invalid asy file&quot;</span>)<span class="question-mark">?</span>,
         )
         .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> {
             <span class="macro">format!</span>(

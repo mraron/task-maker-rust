@@ -201,7 +201,7 @@
             );
             <span class="ident">executor_tx</span>
                 .<span class="ident">send</span>(<span class="ident">ExecutorInMessage::WorkerConnected</span> { <span class="ident">worker</span>: <span class="ident">conn</span> })
-                .<span class="ident">unwrap</span>();
+                .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="macro">anyhow!</span>(<span class="string">&quot;Failed to send WorkerConnected: {:?}&quot;</span>, <span class="ident">e</span>))<span class="question-mark">?</span>;
             <span class="kw">let</span> <span class="ident">worker_name</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;Worker {}&quot;</span>, <span class="ident">worker</span>);
             <span class="ident">workers</span>.<span class="ident">push</span>(
                 <span class="ident">thread::Builder::new</span>()
@@ -224,7 +224,7 @@
                 <span class="ident">sender</span>,
                 <span class="ident">receiver</span>,
             })
-            .<span class="ident">unwrap</span>();
+            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="macro">anyhow!</span>(<span class="string">&quot;Failed to send ClientConnected: {:?}&quot;</span>, <span class="ident">e</span>))<span class="question-mark">?</span>;
 
         <span class="comment">// no new client/worker can connect, make the executor stop accepting connections</span>
         <span class="ident">drop</span>(<span class="ident">executor_tx</span>);
