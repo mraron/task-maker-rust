@@ -255,6 +255,7 @@
 <span id="255">255</span>
 <span id="256">256</span>
 <span id="257">257</span>
+<span id="258">258</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 <span class="kw">use</span> <span class="ident">std::path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
@@ -300,6 +301,7 @@
         <span class="ident">comp</span>.<span class="ident">limits_mut</span>()
             .<span class="ident">read_only</span>(<span class="bool-val">false</span>)
             .<span class="ident">wall_time</span>(<span class="number">10.0</span>) <span class="comment">// asy tends to deadlock on failure</span>
+            .<span class="ident">stack</span>(<span class="number">8192</span> <span class="op">*</span> <span class="number">1024</span>) <span class="comment">// due to a libgc bug, asy may crash with unlimited stack</span>
             .<span class="ident">nproc</span>(<span class="number">1000</span>)
             .<span class="ident">add_extra_readable_dir</span>(<span class="string">&quot;/etc&quot;</span>)
             .<span class="ident">mount_tmpfs</span>(<span class="bool-val">true</span>);

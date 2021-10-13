@@ -1060,7 +1060,7 @@
     <span class="kw">pub</span> <span class="ident">fsize</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>,
     <span class="doccomment">/// RLIMIT_MEMLOCK</span>
     <span class="kw">pub</span> <span class="ident">memlock</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Limit on the stack size for the process. 0 means unlimited.</span>
+    <span class="doccomment">/// Limit on the stack size for the process in KiB.</span>
     <span class="kw">pub</span> <span class="ident">stack</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Whether the process in the sandbox is not allowed to create new files inside the sandbox.</span>
     <span class="kw">pub</span> <span class="ident">read_only</span>: <span class="ident">bool</span>,
@@ -1229,7 +1229,7 @@
             <span class="ident">nofile</span>: <span class="prelude-val">None</span>,
             <span class="ident">fsize</span>: <span class="prelude-val">Some</span>(<span class="number">1024u64</span>.<span class="ident">pow</span>(<span class="number">3</span>)),
             <span class="ident">memlock</span>: <span class="prelude-val">None</span>,
-            <span class="ident">stack</span>: <span class="prelude-val">Some</span>(<span class="number">0</span>),
+            <span class="ident">stack</span>: <span class="prelude-val">None</span>,
             <span class="ident">read_only</span>: <span class="bool-val">true</span>,
             <span class="ident">mount_tmpfs</span>: <span class="bool-val">false</span>,
             <span class="ident">extra_readable_dirs</span>: <span class="ident">Vec::new</span>(),

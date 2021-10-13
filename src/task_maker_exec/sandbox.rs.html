@@ -609,6 +609,9 @@
 <span id="609">609</span>
 <span id="610">610</span>
 <span id="611">611</span>
+<span id="612">612</span>
+<span id="613">613</span>
+<span id="614">614</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 <span class="kw">use</span> <span class="ident">std::fs::Permissions</span>;
@@ -945,6 +948,9 @@
         }
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">mem</span>) <span class="op">=</span> <span class="ident">execution</span>.<span class="ident">limits</span>.<span class="ident">memory</span> {
             <span class="ident">config</span>.<span class="ident">memory_limit</span>(<span class="ident">mem</span> <span class="op">*</span> <span class="number">1024</span>);
+        }
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">stack</span>) <span class="op">=</span> <span class="ident">execution</span>.<span class="ident">limits</span>.<span class="ident">stack</span> {
+            <span class="ident">config</span>.<span class="ident">stack_limit</span>(<span class="ident">stack</span> <span class="op">*</span> <span class="number">1024</span>);
         }
         <span class="kw">let</span> <span class="ident">multiproc</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="number">1</span>) <span class="op">!</span><span class="op">=</span> <span class="ident">execution</span>.<span class="ident">limits</span>.<span class="ident">nproc</span>;
         <span class="ident">config</span>.<span class="ident">syscall_filter</span>(<span class="ident">SyscallFilter::build</span>(<span class="ident">multiproc</span>, <span class="op">!</span><span class="ident">execution</span>.<span class="ident">limits</span>.<span class="ident">read_only</span>));
