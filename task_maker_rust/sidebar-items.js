@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["local",""],["opt",""],["print_dag",""],["remote",""],["sandbox",""],["server",""],["worker",""]]});
+initSidebarItems({"mod":[["error",""],["local",""],["opt",""],["print_dag",""],["remote",""],["sandbox",""],["tools",""]]});

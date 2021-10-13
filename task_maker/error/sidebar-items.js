@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["print_error",""]],"trait":[["NiceError","Adds methods for failing without panic. Like `expect` but without panic."]]});

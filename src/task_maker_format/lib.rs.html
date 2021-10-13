@@ -398,6 +398,8 @@
 <span id="398">398</span>
 <span id="399">399</span>
 <span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
 </pre><pre class="rust">
 <span class="doccomment">//! Task parsing and execution using computation DAGs.</span>
 <span class="doccomment">//!</span>
@@ -430,6 +432,7 @@
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
 <span class="kw">use</span> <span class="ident">typescript_definitions::TypeScriptify</span>;
 
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">detect_format::find_task</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">sanity_checks::get_sanity_check_names</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">source_file::SourceFile</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">tag</span>::{<span class="ident">Tag</span>, <span class="ident">VALID_TAGS</span>};
@@ -440,6 +443,7 @@
 <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::terry::Seed</span>;
 <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::ui::UI</span>;
 
+<span class="kw">mod</span> <span class="ident">detect_format</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">ioi</span>;
 <span class="kw">mod</span> <span class="ident">sanity_checks</span>;
 <span class="kw">mod</span> <span class="ident">source_file</span>;

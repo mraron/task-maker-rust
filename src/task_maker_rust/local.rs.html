@@ -235,6 +235,9 @@
 <span id="235">235</span>
 <span id="236">236</span>
 <span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
 
@@ -246,11 +249,11 @@
 <span class="kw">use</span> <span class="ident">task_maker_exec::executors</span>::{<span class="ident">LocalExecutor</span>, <span class="ident">RemoteEntityMessage</span>, <span class="ident">RemoteEntityMessageResponse</span>};
 <span class="kw">use</span> <span class="ident">task_maker_exec::proto::ExecutorClientMessage</span>;
 <span class="kw">use</span> <span class="ident">task_maker_exec::ExecutorClient</span>;
+<span class="kw">use</span> <span class="ident">task_maker_format::find_task</span>;
 <span class="kw">use</span> <span class="ident">task_maker_format::ui</span>::{<span class="ident">UIMessage</span>, <span class="ident">UIType</span>, <span class="ident">UI</span>};
 <span class="kw">use</span> <span class="ident">task_maker_format</span>::{<span class="ident">EvaluationData</span>, <span class="ident">TaskFormat</span>, <span class="ident">UISender</span>, <span class="ident">VALID_TAGS</span>};
 <span class="kw">use</span> <span class="ident">task_maker_store::FileStore</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::detect_format::find_task</span>;
 <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::error::NiceError</span>;
 <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::opt::Opt</span>;
 <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::print_dag</span>;
@@ -313,6 +316,7 @@
 
     <span class="comment">// clean the task</span>
     <span class="kw">if</span> <span class="ident">opt</span>.<span class="ident">clean</span> {
+        <span class="macro">warn!</span>(<span class="string">&quot;--clean is deprecated: use `task-maker-tools clear`&quot;</span>);
         <span class="ident">task</span>.<span class="ident">clean</span>().<span class="ident">context</span>(<span class="string">&quot;Cannot clear the task directory&quot;</span>)<span class="question-mark">?</span>;
         <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Evaluation::Clean</span>);
     }
@@ -334,14 +338,16 @@
     }
 
     <span class="comment">// setup the file store</span>
-    <span class="kw">let</span> <span class="ident">store_path</span> <span class="op">=</span> <span class="ident">opt</span>.<span class="ident">store_dir</span>();
+    <span class="kw">let</span> <span class="ident">store_path</span> <span class="op">=</span> <span class="ident">opt</span>.<span class="ident">storage</span>.<span class="ident">store_dir</span>();
     <span class="kw">let</span> <span class="ident">file_store</span> <span class="op">=</span> <span class="ident">Arc::new</span>(
         <span class="ident">FileStore::new</span>(
             <span class="ident">store_path</span>.<span class="ident">join</span>(<span class="string">&quot;store&quot;</span>),
-            <span class="ident">opt</span>.<span class="ident">max_cache</span> <span class="op">*</span> <span class="number">1024</span> <span class="op">*</span> <span class="number">1024</span>,
-            <span class="ident">opt</span>.<span class="ident">min_cache</span> <span class="op">*</span> <span class="number">1024</span> <span class="op">*</span> <span class="number">1024</span>,
+            <span class="ident">opt</span>.<span class="ident">storage</span>.<span class="ident">max_cache</span> <span class="op">*</span> <span class="number">1024</span> <span class="op">*</span> <span class="number">1024</span>,
+            <span class="ident">opt</span>.<span class="ident">storage</span>.<span class="ident">min_cache</span> <span class="op">*</span> <span class="number">1024</span> <span class="op">*</span> <span class="number">1024</span>,
         )
-        .<span class="ident">context</span>(<span class="string">&quot;Cannot create the file store (You can try wiping it with --dont-panic)&quot;</span>)<span class="question-mark">?</span>,
+        .<span class="ident">context</span>(
+            <span class="string">&quot;Cannot create the file store (You can try wiping it with task-maker-tools reset)&quot;</span>,
+        )<span class="question-mark">?</span>,
     );
 
     <span class="comment">// setup the executor</span>
