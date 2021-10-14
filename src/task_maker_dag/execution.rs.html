@@ -873,6 +873,23 @@
 <span id="873">873</span>
 <span id="874">874</span>
 <span id="875">875</span>
+<span id="876">876</span>
+<span id="877">877</span>
+<span id="878">878</span>
+<span id="879">879</span>
+<span id="880">880</span>
+<span id="881">881</span>
+<span id="882">882</span>
+<span id="883">883</span>
+<span id="884">884</span>
+<span id="885">885</span>
+<span id="886">886</span>
+<span id="887">887</span>
+<span id="888">888</span>
+<span id="889">889</span>
+<span id="890">890</span>
+<span id="891">891</span>
+<span id="892">892</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 <span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
@@ -1022,6 +1039,8 @@
 
     <span class="doccomment">/// Environment variables to set.</span>
     <span class="kw">pub</span> <span class="ident">env</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Environment variables to copy from the sandbox host.</span>
+    <span class="kw">pub</span> <span class="ident">copy_env</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// Limits on the execution.</span>
     <span class="kw">pub</span> <span class="ident">limits</span>: <span class="ident">ExecutionLimits</span>,
@@ -1286,6 +1305,7 @@
             <span class="ident">outputs</span>: <span class="ident">HashMap::new</span>(),
 
             <span class="ident">env</span>: <span class="ident">HashMap::new</span>(),
+            <span class="ident">copy_env</span>: <span class="ident">Vec::new</span>(),
 
             <span class="ident">limits</span>: <span class="ident">ExecutionLimits::default</span>(),
 
@@ -1499,6 +1519,20 @@
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">env</span><span class="op">&lt;</span><span class="ident">S1</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">S2</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">key</span>: <span class="ident">S1</span>, <span class="ident">value</span>: <span class="ident">S2</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span> {
         <span class="self">self</span>.<span class="ident">env</span>.<span class="ident">insert</span>(<span class="ident">key</span>.<span class="ident">into</span>(), <span class="ident">value</span>.<span class="ident">into</span>());
+        <span class="self">self</span>
+    }
+
+    <span class="doccomment">/// Add an environment variable to the execution copying the value from the sandbox host.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// use task_maker_dag::{Execution, ExecutionCommand};</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let mut exec = Execution::new(&quot;random exec&quot;, ExecutionCommand::local(&quot;foo&quot;));</span>
+    <span class="doccomment">/// exec.copy_env(&quot;PATH&quot;);</span>
+    <span class="doccomment">/// assert_eq!(&amp;exec.copy_env[0], &quot;PATH&quot;);</span>
+    <span class="doccomment">/// ```</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">copy_env</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">key</span>: <span class="ident">S</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">copy_env</span>.<span class="ident">push</span>(<span class="ident">key</span>.<span class="ident">into</span>());
         <span class="self">self</span>
     }
 

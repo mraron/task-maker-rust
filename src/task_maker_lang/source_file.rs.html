@@ -389,6 +389,9 @@
 <span id="389">389</span>
 <span id="390">390</span>
 <span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
+<span id="394">394</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="ident">std::path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
 <span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
@@ -571,6 +574,9 @@
             }
         }
         <span class="self">self</span>.<span class="ident">language</span>.<span class="ident">custom_limits</span>(<span class="ident">exec</span>.<span class="ident">limits_mut</span>());
+        <span class="comment">// some languages (e.g. Python) may behave strangely with LC_ALL=C</span>
+        <span class="ident">exec</span>.<span class="ident">copy_env</span>(<span class="string">&quot;LANG&quot;</span>);
+        <span class="ident">exec</span>.<span class="ident">copy_env</span>(<span class="string">&quot;LC_ALL&quot;</span>);
         <span class="prelude-val">Ok</span>((<span class="ident">comp</span>, <span class="ident">exec</span>))
     }
 

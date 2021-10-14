@@ -406,7 +406,7 @@
             <span class="ident">UIType::Raw</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">Box::new</span>(<span class="ident">RawUI::new</span>())),
             <span class="ident">UIType::Json</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">Box::new</span>(<span class="ident">JsonUI::new</span>())),
             <span class="ident">UIType::Silent</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">Box::new</span>(<span class="ident">SilentUI::new</span>())),
-            <span class="ident">UIType::Print</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">Box::new</span>(<span class="ident">PrintUI::new</span>())),
+            <span class="ident">UIType::Print</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">Box::new</span>(<span class="ident">PrintUI</span>::<span class="op">&lt;</span><span class="ident">UIState</span><span class="op">&gt;</span><span class="ident">::new</span>())),
             <span class="ident">UIType::Curses</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">Box::new</span>(<span class="ident">CursesUI::new</span>(<span class="ident">UIState::new</span>(<span class="self">self</span>))<span class="question-mark">?</span>)),
         }
     }
