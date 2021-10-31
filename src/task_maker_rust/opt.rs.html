@@ -251,6 +251,12 @@
 <span id="251">251</span>
 <span id="252">252</span>
 <span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
 
 <span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">Context</span>, <span class="ident">Error</span>};
@@ -271,44 +277,15 @@
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">flatten</span>)]</span>
     <span class="kw">pub</span> <span class="ident">find_task</span>: <span class="ident">FindTaskOpt</span>,
 
-    <span class="doccomment">/// Which UI to use, available UIS are: print, raw, curses, json.</span>
+    <span class="doccomment">/// Which UI to use, available UIs are: print, raw, curses, json.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Note that the JSON api is not stable yet.</span>
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;ui&quot;</span>, <span class="ident">default_value</span> <span class="op">=</span> <span class="string">&quot;curses&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">ui</span>: <span class="ident">task_maker_format::ui::UIType</span>,
 
-    <span class="doccomment">/// Keep all the sandbox directories</span>
-    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;keep-sandboxes&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">keep_sandboxes</span>: <span class="ident">bool</span>,
-
-    <span class="doccomment">/// Do not write any file inside the task directory</span>
-    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;dry-run&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">dry_run</span>: <span class="ident">bool</span>,
-
-    <span class="doccomment">/// Disable the cache for this comma separated list of tags</span>
-    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;no-cache&quot;</span>, <span class="ident">long_help</span> <span class="op">=</span> <span class="ident">no_cache_long_help</span>())]</span>
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::option_option</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">no_cache</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-
     <span class="doccomment">/// Do not run in parallel time critical executions on the same machine</span>
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;exclusive&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">exclusive</span>: <span class="ident">bool</span>,
-
-    <span class="doccomment">/// Give to the solution some extra time before being killed</span>
-    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;extra-time&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">extra_time</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
-
-    <span class="doccomment">/// Copy the executables to the bin/ folder</span>
-    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;copy-exe&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">copy_exe</span>: <span class="ident">bool</span>,
-
-    <span class="doccomment">/// Copy the logs of some executions to the bin/logs/ folder</span>
-    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;copy-logs&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">copy_logs</span>: <span class="ident">bool</span>,
-
-    <span class="doccomment">/// Store the DAG in DOT format inside of bin/DAG.dot</span>
-    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;copy-dag&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">copy_dag</span>: <span class="ident">bool</span>,
 
     <span class="doccomment">/// Execute only the solutions whose names start with the filter</span>
     <span class="doccomment">///</span>
@@ -332,10 +309,6 @@
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;clean&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">clean</span>: <span class="ident">bool</span>,
 
-    <span class="doccomment">/// The number of CPU cores to use. Ignored for workers.</span>
-    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;num-cores&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">num_cores</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-
     <span class="doccomment">/// Include the solutions in the booklet</span>
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;booklet-solutions&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">booklet_solutions</span>: <span class="ident">bool</span>,
@@ -344,17 +317,9 @@
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;no-statement&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">no_statement</span>: <span class="ident">bool</span>,
 
-    <span class="doccomment">/// Run the evaluation on a remote server instead of locally</span>
-    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;evaluate-on&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">evaluate_on</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-
     <span class="doccomment">/// List of sanity checks to skip.</span>
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">short</span> <span class="op">=</span> <span class="string">&quot;-W&quot;</span>, <span class="ident">long_help</span> <span class="op">=</span> <span class="ident">skip_sanity_checks_long_help</span>())]</span>
     <span class="kw">pub</span> <span class="ident">skip_sanity_checks</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-
-    <span class="doccomment">/// The name to use for the client in remote executions</span>
-    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// Run the sandbox instead of the normal task-maker.</span>
     <span class="doccomment">///</span>
@@ -368,10 +333,8 @@
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">flatten</span>)]</span>
     <span class="kw">pub</span> <span class="ident">storage</span>: <span class="ident">StorageOpt</span>,
 
-    <span class="doccomment">/// Priority of the evaluations spawned by this invocation of task-maker; no effect if running</span>
-    <span class="doccomment">/// locally.</span>
-    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span>, <span class="ident">default_value</span> <span class="op">=</span> <span class="string">&quot;0&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">priority</span>: <span class="ident">DagPriority</span>,
+    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">flatten</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">execution</span>: <span class="ident">ExecutionOpt</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">StructOpt</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
@@ -390,6 +353,55 @@
     <span class="doccomment">/// Look at most for this number of parents for searching the task</span>
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;max-depth&quot;</span>, <span class="ident">default_value</span> <span class="op">=</span> <span class="string">&quot;3&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">max_depth</span>: <span class="ident">u32</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">StructOpt</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExecutionOpt</span> {
+    <span class="doccomment">/// Keep all the sandbox directories</span>
+    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;keep-sandboxes&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">keep_sandboxes</span>: <span class="ident">bool</span>,
+
+    <span class="doccomment">/// Do not write any file inside the task directory</span>
+    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;dry-run&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">dry_run</span>: <span class="ident">bool</span>,
+
+    <span class="doccomment">/// Disable the cache for this comma separated list of tags</span>
+    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;no-cache&quot;</span>, <span class="ident">long_help</span> <span class="op">=</span> <span class="ident">no_cache_long_help</span>())]</span>
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::option_option</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">no_cache</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+
+    <span class="doccomment">/// Give to the solution some extra time before being killed</span>
+    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;extra-time&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">extra_time</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
+
+    <span class="doccomment">/// Copy the executables to the bin/ folder</span>
+    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;copy-exe&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">copy_exe</span>: <span class="ident">bool</span>,
+
+    <span class="doccomment">/// Copy the logs of some executions to the bin/logs/ folder</span>
+    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;copy-logs&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">copy_logs</span>: <span class="ident">bool</span>,
+
+    <span class="doccomment">/// Store the DAG in DOT format inside of bin/DAG.dot</span>
+    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;copy-dag&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">copy_dag</span>: <span class="ident">bool</span>,
+
+    <span class="doccomment">/// The number of CPU cores to use.</span>
+    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;num-cores&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">num_cores</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
+
+    <span class="doccomment">/// Run the evaluation on a remote server instead of locally</span>
+    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;evaluate-on&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">evaluate_on</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+
+    <span class="doccomment">/// The name to use for the client in remote executions</span>
+    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+
+    <span class="doccomment">/// Priority of the evaluations spawned by this invocation of task-maker; no effect if running</span>
+    <span class="doccomment">/// locally.</span>
+    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span>, <span class="ident">default_value</span> <span class="op">=</span> <span class="string">&quot;0&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">priority</span>: <span class="ident">DagPriority</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">StructOpt</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
@@ -439,7 +451,7 @@
             <span class="ident">solution_paths</span>: <span class="self">self</span>.<span class="ident">solution</span>.<span class="ident">clone</span>(),
             <span class="ident">disabled_sanity_checks</span>: <span class="self">self</span>.<span class="ident">skip_sanity_checks</span>.<span class="ident">clone</span>(),
             <span class="ident">seed</span>: <span class="self">self</span>.<span class="ident">seed</span>,
-            <span class="ident">dry_run</span>: <span class="self">self</span>.<span class="ident">dry_run</span>,
+            <span class="ident">dry_run</span>: <span class="self">self</span>.<span class="ident">execution</span>.<span class="ident">dry_run</span>,
         }
     }
 
