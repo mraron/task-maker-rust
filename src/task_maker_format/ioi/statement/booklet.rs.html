@@ -337,6 +337,22 @@
 <span id="337">337</span>
 <span id="338">338</span>
 <span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::collections::HashSet</span>;
 <span class="kw">use</span> <span class="ident">std::path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
 <span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
@@ -408,17 +424,19 @@
 
 <span class="doccomment">/// Part of the schema of `contest.yaml`, used for extracting the configuration of the booklet.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Deserialize</span>)]</span>
-<span class="kw">struct</span> <span class="ident">ContestYAML</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ContestYAML</span> {
     <span class="doccomment">/// The description of the contest.</span>
-    <span class="ident">description</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">description</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The location of the contest.</span>
-    <span class="ident">location</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">location</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The date of the contest.</span>
-    <span class="ident">date</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">date</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The logo of the contest.</span>
-    <span class="ident">logo</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">logo</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// `Some(&quot;True&quot;)` if the time and memory limits should be put in the booklet.</span>
-    <span class="ident">show_summary</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">show_summary</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// The list of the tasks in the contest (in the correct order).</span>
+    <span class="kw">pub</span> <span class="ident">tasks</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Booklet</span> {
@@ -595,16 +613,8 @@
         <span class="ident">contest_dir</span>: <span class="ident">P</span>,
         <span class="ident">booklet_solutions</span>: <span class="ident">bool</span>,
     ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">BookletConfig</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">contest_yaml_path</span> <span class="op">=</span> <span class="ident">contest_dir</span>.<span class="ident">into</span>().<span class="ident">join</span>(<span class="string">&quot;contest.yaml&quot;</span>);
-        <span class="kw">if</span> <span class="ident">contest_yaml_path</span>.<span class="ident">exists</span>() {
-            <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">std::fs::File::open</span>(<span class="kw-2">&amp;</span><span class="ident">contest_yaml_path</span>).<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> {
-                <span class="macro">format!</span>(
-                    <span class="string">&quot;Failed to open contest.yaml at {}&quot;</span>,
-                    <span class="ident">contest_yaml_path</span>.<span class="ident">display</span>()
-                )
-            })<span class="question-mark">?</span>;
-            <span class="kw">let</span> <span class="ident">contest_yaml</span>: <span class="ident">ContestYAML</span> <span class="op">=</span>
-                <span class="ident">serde_yaml::from_reader</span>(<span class="ident">file</span>).<span class="ident">context</span>(<span class="string">&quot;Failed to deserialize contest.yaml&quot;</span>)<span class="question-mark">?</span>;
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">contest_yaml</span>) <span class="op">=</span> <span class="ident"><span class="self">Self</span>::contest_yaml</span>(<span class="ident">contest_dir</span>) {
+            <span class="kw">let</span> <span class="ident">contest_yaml</span> <span class="op">=</span> <span class="ident">contest_yaml</span><span class="question-mark">?</span>;
             <span class="prelude-val">Ok</span>(<span class="ident">BookletConfig</span> {
                 <span class="ident">language</span>: <span class="ident">language</span>.<span class="ident">into</span>(),
                 <span class="ident">show_solutions</span>: <span class="ident">booklet_solutions</span>,
@@ -628,6 +638,28 @@
                 <span class="ident">date</span>: <span class="prelude-val">None</span>,
                 <span class="ident">logo</span>: <span class="prelude-val">None</span>,
             })
+        }
+    }
+
+    <span class="doccomment">/// Find and parse the contest.yaml in the provided contest root.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">contest_yaml</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">contest_dir</span>: <span class="ident">P</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ContestYAML</span>, <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">contest_yaml_path</span> <span class="op">=</span> <span class="ident">contest_dir</span>.<span class="ident">into</span>().<span class="ident">join</span>(<span class="string">&quot;contest.yaml&quot;</span>);
+        <span class="kw">let</span> <span class="ident">parse_yaml</span> <span class="op">=</span> <span class="op">|</span><span class="op">|</span> {
+            <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">std::fs::File::open</span>(<span class="kw-2">&amp;</span><span class="ident">contest_yaml_path</span>).<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> {
+                <span class="macro">format!</span>(
+                    <span class="string">&quot;Failed to open contest.yaml at {}&quot;</span>,
+                    <span class="ident">contest_yaml_path</span>.<span class="ident">display</span>()
+                )
+            })<span class="question-mark">?</span>;
+            <span class="kw">let</span> <span class="ident">contest_yaml</span>: <span class="ident">ContestYAML</span> <span class="op">=</span>
+                <span class="ident">serde_yaml::from_reader</span>(<span class="ident">file</span>).<span class="ident">context</span>(<span class="string">&quot;Failed to deserialize contest.yaml&quot;</span>)<span class="question-mark">?</span>;
+            <span class="prelude-val">Ok</span>(<span class="ident">contest_yaml</span>)
+        };
+
+        <span class="kw">if</span> <span class="ident">contest_yaml_path</span>.<span class="ident">exists</span>() {
+            <span class="prelude-val">Some</span>(<span class="ident">parse_yaml</span>())
+        } <span class="kw">else</span> {
+            <span class="prelude-val">None</span>
         }
     }
 }

@@ -299,6 +299,7 @@
 <span id="299">299</span>
 <span id="300">300</span>
 <span id="301">301</span>
+<span id="302">302</span>
 </pre><pre class="rust"><code><span class="doccomment">//! This mod exposes an interface for setting up and running an execution.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! The structs here follow a multi-step builder pattern, moving from a struct to the next adding</span>
@@ -330,6 +331,7 @@
     <span class="ident">task</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">TaskFormat</span><span class="op">&gt;</span>,
     <span class="ident">eval</span>: <span class="ident">EvaluationData</span>,
     <span class="ident">ui_receiver</span>: <span class="ident">UIChannelReceiver</span>,
+    <span class="ident">sandbox_runner</span>: <span class="ident">SelfExecSandboxRunner</span>,
 }
 
 <span class="doccomment">/// Second step: connect to an executor (either local or remote). This opens the local store and</span>
@@ -409,7 +411,13 @@
             <span class="ident">task</span>,
             <span class="ident">eval</span>,
             <span class="ident">ui_receiver</span>,
+            <span class="ident">sandbox_runner</span>: <span class="ident">SelfExecSandboxRunner::default</span>(),
         })
+    }
+
+    <span class="doccomment">/// Change the default sandbox runner for the local executor.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sandbox_runner</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">sandbox_runner</span>: <span class="ident">SelfExecSandboxRunner</span>) {
+        <span class="self">self</span>.<span class="ident">sandbox_runner</span> <span class="op">=</span> <span class="ident">sandbox_runner</span>;
     }
 
     <span class="doccomment">/// Start the local executor or connect to a remote one.</span>
@@ -463,16 +471,10 @@
             <span class="kw">let</span> <span class="ident">num_cores</span> <span class="op">=</span> <span class="ident">opt</span>.<span class="ident">num_cores</span>.<span class="ident">unwrap_or_else</span>(<span class="ident">num_cpus::get</span>);
             <span class="kw">let</span> <span class="ident">sandbox_path</span> <span class="op">=</span> <span class="ident">storage_opt</span>.<span class="ident">store_dir</span>().<span class="ident">join</span>(<span class="string">&quot;sandboxes&quot;</span>);
             <span class="kw">let</span> <span class="ident">executor</span> <span class="op">=</span> <span class="ident">LocalExecutor::new</span>(<span class="ident">file_store</span>.<span class="ident">clone</span>(), <span class="ident">num_cores</span>, <span class="ident">sandbox_path</span>);
+            <span class="kw">let</span> <span class="ident">sandbox_runner</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sandbox_runner</span>;
             <span class="kw">let</span> <span class="ident">local_executor</span> <span class="op">=</span> <span class="ident">std::thread::Builder::new</span>()
                 .<span class="ident">name</span>(<span class="string">&quot;Executor thread&quot;</span>.<span class="ident">into</span>())
-                .<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> {
-                    <span class="ident">executor</span>.<span class="ident">evaluate</span>(
-                        <span class="ident">tx_remote</span>,
-                        <span class="ident">rx_remote</span>,
-                        <span class="ident">cache</span>,
-                        <span class="ident">SelfExecSandboxRunner::default</span>(),
-                    )
-                })
+                .<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> <span class="ident">executor</span>.<span class="ident">evaluate</span>(<span class="ident">tx_remote</span>, <span class="ident">rx_remote</span>, <span class="ident">cache</span>, <span class="ident">sandbox_runner</span>))
                 .<span class="ident">context</span>(<span class="string">&quot;Failed to spawn the executor thread&quot;</span>)<span class="question-mark">?</span>;
             (<span class="ident">tx</span>, <span class="ident">rx</span>, <span class="prelude-val">Some</span>(<span class="ident">local_executor</span>))
         };

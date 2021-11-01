@@ -661,6 +661,7 @@
 <span id="661">661</span>
 <span id="662">662</span>
 <span id="663">663</span>
+<span id="664">664</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The `italian_yaml` format is defined by [`cms`](https://cms.readthedocs.io/en/v1.4/External%20contest%20formats.html#italian-import-format)</span>
 <span class="doccomment">//! and it&#39;s the most used format in the Italian Olympiads.</span>
 <span class="doccomment">//!</span>
@@ -934,7 +935,7 @@
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ioi::sanity_checks::get_sanity_checks</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ioi::TM_VALIDATION_FILE_NAME</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ioi</span>::{
-    <span class="ident">make_booklets</span>, <span class="ident">Checker</span>, <span class="ident">IOITask</span>, <span class="ident">InputValidator</span>, <span class="ident">OutputGenerator</span>, <span class="ident">SubtaskId</span>, <span class="ident">SubtaskInfo</span>,
+    <span class="ident">make_task_booklets</span>, <span class="ident">Checker</span>, <span class="ident">IOITask</span>, <span class="ident">InputValidator</span>, <span class="ident">OutputGenerator</span>, <span class="ident">SubtaskId</span>, <span class="ident">SubtaskInfo</span>,
     <span class="ident">TaskType</span>, <span class="ident">TestcaseId</span>, <span class="ident">TestcaseInfo</span>, <span class="ident">TestcaseScoreAggregator</span>,
 };
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ioi</span>::{<span class="ident">BatchTypeData</span>, <span class="ident">CommunicationTypeData</span>};
@@ -1137,7 +1138,8 @@
     };
     <span class="comment">// split the creation of the task because make_booklets need an instance of Task</span>
     <span class="kw">if</span> <span class="op">!</span><span class="ident">eval_config</span>.<span class="ident">no_statement</span> {
-        <span class="ident">task</span>.<span class="ident">booklets</span> <span class="op">=</span> <span class="ident">make_booklets</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="ident">eval_config</span>).<span class="ident">context</span>(<span class="string">&quot;Failed to make booklets&quot;</span>)<span class="question-mark">?</span>;
+        <span class="ident">task</span>.<span class="ident">booklets</span> <span class="op">=</span>
+            <span class="ident">make_task_booklets</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="ident">eval_config</span>).<span class="ident">context</span>(<span class="string">&quot;Failed to make booklets&quot;</span>)<span class="question-mark">?</span>;
     }
     <span class="prelude-val">Ok</span>(<span class="ident">task</span>)
 }

@@ -88,6 +88,10 @@
 <span id="88">88</span>
 <span id="89">89</span>
 <span id="90">90</span>
+<span id="91">91</span>
+<span id="92">92</span>
+<span id="93">93</span>
+<span id="94">94</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
 
 <span class="kw">use</span> <span class="ident">anyhow::Error</span>;
@@ -114,6 +118,8 @@
     <span class="doccomment">/// The solution is executed in parallel with a manager and communicate using FIFO pipes. There</span>
     <span class="doccomment">/// are only input files since the manager computes the score of the solution.</span>
     <span class="ident">Communication</span>(<span class="ident">CommunicationTypeData</span>),
+    <span class="doccomment">/// Not an actual task.</span>
+    <span class="prelude-val">None</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">TaskType</span> {
@@ -157,6 +163,7 @@
                 <span class="ident">score_manager</span>,
                 <span class="ident">data</span>,
             ),
+            <span class="ident">TaskType::None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(()),
         }
     }
 
@@ -174,6 +181,7 @@
             <span class="ident">TaskType::Communication</span>(<span class="ident">communication</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="ident">communication</span>.<span class="ident">manager</span>.<span class="ident">prepare</span>(<span class="ident">eval</span>)<span class="question-mark">?</span>;
             }
+            <span class="ident">TaskType::None</span> <span class="op">=</span><span class="op">&gt;</span> {}
         }
         <span class="prelude-val">Ok</span>(())
     }
