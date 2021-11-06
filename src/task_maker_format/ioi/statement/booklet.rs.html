@@ -353,6 +353,7 @@
 <span id="353">353</span>
 <span id="354">354</span>
 <span id="355">355</span>
+<span id="356">356</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::collections::HashSet</span>;
 <span class="kw">use</span> <span class="ident">std::path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
 <span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
@@ -468,6 +469,7 @@
             <span class="ident">ExecutionCommand::system</span>(<span class="string">&quot;latexmk&quot;</span>),
         );
         <span class="ident">exec</span>.<span class="ident">args</span>(<span class="macro">vec!</span>[
+            <span class="string">&quot;-shell-escape&quot;</span>,
             <span class="string">&quot;-f&quot;</span>,
             <span class="string">&quot;-interaction=nonstopmode&quot;</span>,
             <span class="string">&quot;-pdf&quot;</span>,
