@@ -330,6 +330,17 @@
 <span id="330">330</span>
 <span id="331">331</span>
 <span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
 
 <span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">Context</span>, <span class="ident">Error</span>};
@@ -442,6 +453,17 @@
                         <span class="ident">path</span>.<span class="ident">display</span>()
                     )
                 })<span class="question-mark">?</span>;
+        }
+        <span class="kw">for</span> <span class="ident">path</span> <span class="kw">in</span> <span class="kw-2">&amp;</span>[<span class="ident">Path::new</span>(<span class="string">&quot;../gen/limiti.py&quot;</span>), <span class="ident">Path::new</span>(<span class="string">&quot;../gen/GEN&quot;</span>)] {
+            <span class="kw">let</span> <span class="ident">full_path</span> <span class="op">=</span> <span class="ident">base_dir</span>.<span class="ident">join</span>(<span class="ident">path</span>);
+            <span class="kw">if</span> <span class="op">!</span><span class="ident">full_path</span>.<span class="ident">is_file</span>() {
+                <span class="kw">continue</span>;
+            }
+            <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::new</span>(<span class="macro">format!</span>(<span class="string">&quot;Dependency of {} at {:?}&quot;</span>, <span class="self">self</span>.<span class="ident">config</span>.<span class="ident">name</span>, <span class="ident">path</span>));
+            <span class="ident">eval</span>.<span class="ident">dag</span>
+                .<span class="ident">provide_file</span>(<span class="ident">file</span>.<span class="ident">clone</span>(), <span class="kw-2">&amp;</span><span class="ident">full_path</span>)
+                .<span class="ident">context</span>(<span class="string">&quot;Failed to provide statement dependency&quot;</span>)<span class="question-mark">?</span>;
+            <span class="ident">deps</span>.<span class="ident">push</span>((<span class="ident">path</span>.<span class="ident">file_name</span>().<span class="ident">unwrap</span>().<span class="ident">into</span>(), <span class="ident">file</span>));
         }
         <span class="prelude-val">Ok</span>(<span class="ident">deps</span>)
     }
