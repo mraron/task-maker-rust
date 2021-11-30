@@ -104,6 +104,7 @@
 <span id="104">104</span>
 <span id="105">105</span>
 <span id="106">106</span>
+<span id="107">107</span>
 </pre><pre class="rust"><code><span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>))]</span>
 <span class="kw">use</span> <span class="ident">std::path::Path</span>;
 
@@ -124,10 +125,9 @@
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">SandboxConfiguration::default</span>();
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>))]</span>
-    {
+    <span class="kw">let</span> <span class="ident">_tempdir</span> <span class="op">=</span> {
         <span class="kw">let</span> <span class="ident">tempdir</span> <span class="op">=</span> <span class="ident">TempDir::new</span>(<span class="string">&quot;tm-tools-sandbox&quot;</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">etcdir</span> <span class="op">=</span> <span class="ident">tempdir</span>.<span class="ident">path</span>();
-
         <span class="ident">config</span>.<span class="ident">working_directory</span>(<span class="string">&quot;/box&quot;</span>);
 
         <span class="kw">let</span> <span class="ident">workdir</span> <span class="op">=</span> <span class="ident">opt</span>
@@ -173,7 +173,9 @@
         <span class="kw">if</span> <span class="ident">opt</span>.<span class="ident">mount_tmpfs</span> {
             <span class="ident">config</span>.<span class="ident">mount_tmpfs</span>(<span class="bool-val">true</span>);
         }
-    }
+
+        <span class="ident">tempdir</span>
+    };
 
     <span class="ident">config</span>.<span class="ident">env</span>(<span class="string">&quot;PATH&quot;</span>, <span class="ident">std::env::var</span>(<span class="string">&quot;PATH&quot;</span>).<span class="ident">unwrap_or_default</span>());
     <span class="ident">config</span>.<span class="ident">env</span>(<span class="string">&quot;LANG&quot;</span>, <span class="ident">std::env::var</span>(<span class="string">&quot;LANG&quot;</span>).<span class="ident">unwrap_or_default</span>());
