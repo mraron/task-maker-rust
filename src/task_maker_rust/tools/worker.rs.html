@@ -118,7 +118,7 @@
         <span class="ident">sandbox_path</span>,
         <span class="ident">executor_tx</span>.<span class="ident">change_type</span>(),
         <span class="ident">executor_rx</span>.<span class="ident">change_type</span>(),
-        <span class="ident">SelfExecSandboxRunner::default</span>(),
+        <span class="ident">SelfExecSandboxRunner::new</span>(<span class="string">&quot;internal-sandbox&quot;</span>),
     );
     <span class="ident">worker</span>.<span class="ident">work</span>()
 }
