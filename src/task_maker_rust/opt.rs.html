@@ -251,12 +251,6 @@
 <span id="251">251</span>
 <span id="252">252</span>
 <span id="253">253</span>
-<span id="254">254</span>
-<span id="255">255</span>
-<span id="256">256</span>
-<span id="257">257</span>
-<span id="258">258</span>
-<span id="259">259</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
 
 <span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">Context</span>, <span class="ident">Error</span>};
@@ -320,12 +314,6 @@
     <span class="doccomment">/// List of sanity checks to skip.</span>
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">short</span> <span class="op">=</span> <span class="string">&quot;-W&quot;</span>, <span class="ident">long_help</span> <span class="op">=</span> <span class="ident">skip_sanity_checks_long_help</span>())]</span>
     <span class="kw">pub</span> <span class="ident">skip_sanity_checks</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-
-    <span class="doccomment">/// Run the sandbox instead of the normal task-maker.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This option is left as undocumented as it&#39;s not part of the public API.</span>
-    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span>, <span class="ident">hidden</span>(<span class="bool-val">true</span>))]</span>
-    <span class="kw">pub</span> <span class="ident">sandbox</span>: <span class="ident">bool</span>,
 
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">flatten</span>)]</span>
     <span class="kw">pub</span> <span class="ident">logger</span>: <span class="ident">LoggerOpt</span>,

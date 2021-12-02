@@ -189,13 +189,6 @@
 <span id="189">189</span>
 <span id="190">190</span>
 <span id="191">191</span>
-<span id="192">192</span>
-<span id="193">193</span>
-<span id="194">194</span>
-<span id="195">195</span>
-<span id="196">196</span>
-<span id="197">197</span>
-<span id="198">198</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The new cmsMake!</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! [![asciicast](https://asciinema.org/a/301849.svg)](https://asciinema.org/a/301849)</span>
@@ -379,19 +372,12 @@
 
 <span class="kw">use</span> <span class="ident">structopt::StructOpt</span>;
 
+<span class="kw">use</span> <span class="ident">task_maker_rust::main_local</span>;
 <span class="kw">use</span> <span class="ident">task_maker_rust::opt</span>;
-<span class="kw">use</span> <span class="ident">task_maker_rust</span>::{<span class="ident">main_local</span>, <span class="ident">main_sandbox</span>};
 
 <span class="kw">fn</span> <span class="ident">main</span>() {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">opt</span> <span class="op">=</span> <span class="ident">opt::Opt::from_args</span>();
     <span class="ident">opt</span>.<span class="ident">enable_log</span>();
-
-    <span class="comment">// internal API: run in sandbox mode if `--sandbox` is provided</span>
-    <span class="kw">if</span> <span class="ident">opt</span>.<span class="ident">sandbox</span> {
-        <span class="ident">main_sandbox</span>();
-        <span class="kw">return</span>;
-    }
-
     <span class="ident">main_local</span>(<span class="ident">opt</span>);
 }
 </code></pre></div>
