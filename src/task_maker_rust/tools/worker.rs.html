@@ -69,7 +69,7 @@
 <span class="kw">use</span> <span class="ident">task_maker_store::FileStore</span>;
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::remote::connect_to_remote_server</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::sandbox::ToolsSandboxRunner</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::sandbox::SelfExecSandboxRunner</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::tools::opt::WorkerOpt</span>;
 
 <span class="doccomment">/// Version of task-maker</span>
@@ -118,7 +118,7 @@
         <span class="ident">sandbox_path</span>,
         <span class="ident">executor_tx</span>.<span class="ident">change_type</span>(),
         <span class="ident">executor_rx</span>.<span class="ident">change_type</span>(),
-        <span class="ident">ToolsSandboxRunner::default</span>(),
+        <span class="ident">SelfExecSandboxRunner::new</span>(<span class="string">&quot;internal-sandbox&quot;</span>),
     );
     <span class="ident">worker</span>.<span class="ident">work</span>()
 }
