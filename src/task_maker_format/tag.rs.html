@@ -65,12 +65,12 @@
 }
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Tag</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ExecutionTag</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">tag</span>: <span class="ident">Tag</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">tag</span>: <span class="ident">Tag</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">match</span> <span class="ident">tag</span> {
-            <span class="ident">Tag::Generation</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">ExecutionTag::from</span>(<span class="string">&quot;generation&quot;</span>),
-            <span class="ident">Tag::Evaluation</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">ExecutionTag::from</span>(<span class="string">&quot;evaluation&quot;</span>),
-            <span class="ident">Tag::Checking</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">ExecutionTag::from</span>(<span class="string">&quot;checking&quot;</span>),
-            <span class="ident">Tag::Booklet</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">ExecutionTag::from</span>(<span class="string">&quot;booklet&quot;</span>),
+            <span class="ident">Tag::Generation</span> =&gt; <span class="ident">ExecutionTag::from</span>(<span class="string">&quot;generation&quot;</span>),
+            <span class="ident">Tag::Evaluation</span> =&gt; <span class="ident">ExecutionTag::from</span>(<span class="string">&quot;evaluation&quot;</span>),
+            <span class="ident">Tag::Checking</span> =&gt; <span class="ident">ExecutionTag::from</span>(<span class="string">&quot;checking&quot;</span>),
+            <span class="ident">Tag::Booklet</span> =&gt; <span class="ident">ExecutionTag::from</span>(<span class="string">&quot;booklet&quot;</span>),
         }
     }
 }

@@ -125,12 +125,12 @@
 <span class="kw">mod</span> <span class="ident">task</span>;
 
 <span class="doccomment">/// Make a new `SanityChecks` for a IOI task skipping the checks with the provided names.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_sanity_checks</span>(<span class="ident">skip</span>: <span class="kw-2">&amp;</span>[<span class="ident">String</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SanityChecks</span><span class="op">&lt;</span><span class="ident">IOITask</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_sanity_checks</span>(<span class="ident">skip</span>: <span class="kw-2">&amp;</span>[<span class="ident">String</span>]) -&gt; <span class="ident">SanityChecks</span><span class="op">&lt;</span><span class="ident">IOITask</span><span class="op">&gt;</span> {
     <span class="ident">SanityChecks::new</span>(<span class="ident">get_sanity_check_list</span>(<span class="ident">skip</span>))
 }
 
 <span class="doccomment">/// Return the list of sanity checks excluding the ones with their name in the provided list.</span>
-<span class="kw">fn</span> <span class="ident">get_sanity_check_list</span>(<span class="ident">skip</span>: <span class="kw-2">&amp;</span>[<span class="ident">String</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">SanityCheck</span><span class="op">&lt;</span><span class="ident">IOITask</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">get_sanity_check_list</span>(<span class="ident">skip</span>: <span class="kw-2">&amp;</span>[<span class="ident">String</span>]) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">SanityCheck</span><span class="op">&lt;</span><span class="ident">IOITask</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">all</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">SanityCheck</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec!</span>[
         <span class="ident">Box::new</span>(<span class="ident">task::TaskMaxScore::default</span>()),
         <span class="ident">Box::new</span>(<span class="ident">task::BrokenSymlinks::default</span>()),
@@ -150,7 +150,7 @@
 }
 
 <span class="doccomment">/// Return a comma separated list of the names of all the sanity checks.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_sanity_check_names</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_sanity_check_names</span>() -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
     <span class="ident">get_sanity_check_list</span>(<span class="kw-2">&amp;</span>[])
         .<span class="ident">iter</span>()
         .<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">name</span>())
@@ -163,7 +163,7 @@
     <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">IOITask</span>,
     <span class="ident">eval</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">EvaluationData</span>,
     <span class="ident">folder</span>: <span class="ident">P</span>,
-) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="kw">if</span> <span class="op">!</span><span class="ident">has_grader</span>(<span class="ident">task</span>) {
         <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
     }
@@ -173,15 +173,15 @@
         .<span class="ident">grader_map</span>
         .<span class="ident">all_paths</span>()
         .<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">file_stem</span>())
-        .<span class="ident">any</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span> <span class="op">=</span><span class="op">=</span> <span class="string">&quot;stub&quot;</span>);
+        .<span class="ident">any</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span> <span class="op">==</span> <span class="string">&quot;stub&quot;</span>);
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">graders</span> <span class="op">=</span> <span class="ident">HashSet::new</span>();
     <span class="kw">for</span> <span class="ident">file</span> <span class="kw">in</span> <span class="ident">list_files</span>(<span class="ident">task</span>.<span class="ident">path</span>.<span class="ident">join</span>(<span class="ident">folder</span>.<span class="ident">as_ref</span>()), <span class="macro">vec!</span>[<span class="string">&quot;*.*&quot;</span>]) {
         <span class="kw">let</span> <span class="ident">stem</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">file</span>.<span class="ident">file_stem</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">stem</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">stem</span>,
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">continue</span>,
+            <span class="prelude-val">Some</span>(<span class="ident">stem</span>) =&gt; <span class="ident">stem</span>,
+            <span class="prelude-val">None</span> =&gt; <span class="kw">continue</span>,
         };
         <span class="comment">// do not check the graders</span>
-        <span class="kw">if</span> <span class="ident">stem</span> <span class="op">=</span><span class="op">=</span> <span class="string">&quot;grader&quot;</span> <span class="op">|</span><span class="op">|</span> <span class="ident">stem</span> <span class="op">=</span><span class="op">=</span> <span class="string">&quot;stub&quot;</span> {
+        <span class="kw">if</span> <span class="ident">stem</span> <span class="op">==</span> <span class="string">&quot;grader&quot;</span> <span class="op">|</span><span class="op">|</span> <span class="ident">stem</span> <span class="op">==</span> <span class="string">&quot;stub&quot;</span> {
             <span class="kw">continue</span>;
         }
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">lang</span>) <span class="op">=</span> <span class="ident">LanguageManager::detect_language</span>(<span class="kw-2">&amp;</span><span class="ident">file</span>) {
@@ -209,7 +209,7 @@
 }
 
 <span class="doccomment">/// Check if the task uses the graders.</span>
-<span class="kw">fn</span> <span class="ident">has_grader</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">IOITask</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">has_grader</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">IOITask</span>) -&gt; <span class="ident">bool</span> {
     <span class="ident">task</span>.<span class="ident">grader_map</span>.<span class="ident">all_paths</span>().<span class="ident">count</span>() <span class="op">!</span><span class="op">=</span> <span class="number">0</span>
 }
 </code></pre></div>

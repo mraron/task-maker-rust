@@ -469,23 +469,23 @@
 <span class="doccomment">/// execution abilities.</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">TaskFormat</span> {
     <span class="doccomment">/// Get the root directory of the task.</span>
-    <span class="kw">fn</span> <span class="ident">path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">Path</span>;
+    <span class="kw">fn</span> <span class="ident">path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">Path</span>;
 
     <span class="doccomment">/// Get an appropriate `UI` for this task.</span>
-    <span class="kw">fn</span> <span class="ident">ui</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ui_type</span>: <span class="kw-2">&amp;</span><span class="ident">ui::UIType</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">UI</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">ui</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ui_type</span>: <span class="kw-2">&amp;</span><span class="ident">ui::UIType</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">UI</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span>;
 
     <span class="doccomment">/// Add the executions required for evaluating this task to the execution DAG.</span>
-    <span class="kw">fn</span> <span class="ident">build_dag</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">eval</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">EvaluationData</span>, <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">EvaluationConfig</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">build_dag</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">eval</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">EvaluationData</span>, <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">EvaluationConfig</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span>;
 
     <span class="doccomment">/// Hook called after the execution completed, useful for sending messages to the UI about the</span>
     <span class="doccomment">/// results of the sanity checks with data available only after the evaluation.</span>
-    <span class="kw">fn</span> <span class="ident">sanity_check_post_hook</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ui</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ui::UIMessageSender</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">sanity_check_post_hook</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ui</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ui::UIMessageSender</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span>;
 
     <span class="doccomment">/// Clean the task folder removing the files that can be generated automatically.</span>
-    <span class="kw">fn</span> <span class="ident">clean</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">clean</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span>;
 
     <span class="doccomment">/// Get task information</span>
-    <span class="kw">fn</span> <span class="ident">task_info</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">TaskInfo</span>, <span class="ident">Error</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">task_info</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">TaskInfo</span>, <span class="ident">Error</span><span class="op">&gt;</span>;
 }
 
 <span class="doccomment">/// Information about a parsed task, returned with the `--task-info` option.</span>
@@ -530,7 +530,7 @@
 
 <span class="kw">impl</span> <span class="ident">EvaluationData</span> {
     <span class="doccomment">/// Crate a new `EvaluationData` returning the data and the receiving part of the UI channel.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">task_root</span>: <span class="ident">P</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">EvaluationData</span>, <span class="ident">ui::UIChannelReceiver</span>) {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">task_root</span>: <span class="ident">P</span>) -&gt; (<span class="ident">EvaluationData</span>, <span class="ident">ui::UIChannelReceiver</span>) {
         <span class="kw">let</span> (<span class="ident">sender</span>, <span class="ident">receiver</span>) <span class="op">=</span> <span class="ident">ui::UIMessageSender::new</span>();
         (
             <span class="ident">EvaluationData</span> {
@@ -546,13 +546,13 @@
 <span class="doccomment">/// What can send [`UIMessage`](ui/enum.UIMessage.html)s.</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">UISender</span> {
     <span class="doccomment">/// Send that `UIMessage` to the UI.</span>
-    <span class="kw">fn</span> <span class="ident">send</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">message</span>: <span class="ident">ui::UIMessage</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">send</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">message</span>: <span class="ident">ui::UIMessage</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span>;
 }
 
 <span class="doccomment">/// Implement `.send(message)` for `Mutex&lt;UIMessageSender&gt;` in order to do</span>
 <span class="doccomment">/// `EvaluationData.sender.send(message)`. This will lock the mutex and send the message to the UI.</span>
 <span class="kw">impl</span> <span class="ident">UISender</span> <span class="kw">for</span> <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">ui::UIMessageSender</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">send</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">message</span>: <span class="ident">ui::UIMessage</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">send</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">message</span>: <span class="ident">ui::UIMessage</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">send</span>(<span class="ident">message</span>)
     }
 }
@@ -560,7 +560,7 @@
 <span class="kw">impl</span> <span class="ident">EvaluationConfig</span> {
     <span class="doccomment">/// Returns the solution filters as a vector of strings with the file names of provided</span>
     <span class="doccomment">/// patterns.</span>
-    <span class="kw">fn</span> <span class="ident">solution_filters</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">solution_filters</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">solution_filter</span>
             .<span class="ident">iter</span>()
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">filter</span><span class="op">|</span> {
@@ -577,7 +577,7 @@
 
     <span class="doccomment">/// Returns the fixed solutions in the config or, if none is specified, all the ones matching</span>
     <span class="doccomment">/// the provided pattern in the provided base directory.</span>
-    <span class="kw">fn</span> <span class="ident">solution_paths</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">base_dir</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">patterns</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">solution_paths</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">base_dir</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">patterns</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">solution_paths</span>.<span class="ident">is_empty</span>() {
             <span class="ident">list_files</span>(<span class="ident">base_dir</span>, <span class="ident">patterns</span>)
         } <span class="kw">else</span> {
@@ -596,7 +596,7 @@
         <span class="ident">base_dir</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>,
         <span class="ident">patterns</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>,
         <span class="ident">grader_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">GraderMap</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SourceFile</span><span class="op">&gt;</span> {
+    ) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SourceFile</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">solutions_paths</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">solution_paths</span>(<span class="ident">base_dir</span>, <span class="ident">patterns</span>);
         <span class="kw">let</span> <span class="ident">filter</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">solution_filters</span>();
         <span class="kw">let</span> <span class="ident">graders</span>: <span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">grader_map</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">grader_map</span> {
@@ -631,7 +631,7 @@
 
 <span class="doccomment">/// List all the files inside `cwd` that matches a list of glob patterns. The results are in the</span>
 <span class="doccomment">/// same order of the patterns.</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">list_files</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Path</span><span class="op">&gt;</span>, <span class="ident">S</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">cwd</span>: <span class="ident">P</span>, <span class="ident">patterns</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">list_files</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Path</span><span class="op">&gt;</span>, <span class="ident">S</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">cwd</span>: <span class="ident">P</span>, <span class="ident">patterns</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">results</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
     <span class="kw">for</span> <span class="ident">pattern</span> <span class="kw">in</span> <span class="ident">patterns</span>.<span class="ident">into_iter</span>() {
         <span class="kw">let</span> <span class="ident">pattern</span> <span class="op">=</span> <span class="ident">cwd</span>.<span class="ident">as_ref</span>().<span class="ident">join</span>(<span class="ident">pattern</span>.<span class="ident">as_ref</span>());
@@ -658,7 +658,7 @@
     <span class="ident">base_path</span>: <span class="ident">P3</span>,
     <span class="ident">grader_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">GraderMap</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">write_bin_to</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">P2</span><span class="op">&gt;</span>,
-) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SourceFile</span><span class="op">&gt;</span> {
+) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SourceFile</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> <span class="macro">vec!</span>[];
     <span class="kw">let</span> <span class="ident">base_path</span> <span class="op">=</span> <span class="ident">base_path</span>.<span class="ident">into</span>();
     <span class="kw">let</span> <span class="ident">write_bin_to</span> <span class="op">=</span> <span class="ident">write_bin_to</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">into</span>());
@@ -693,7 +693,7 @@
 <span class="doccomment">/// - `extra` is a series of identifiers of `Clone`able variables.</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">bind_exec_callbacks</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">eval</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">exec_uuid</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="kw">enum</span>:<span class="macro-nonterminal">expr</span> $(,<span class="macro-nonterminal">$</span><span class="macro-nonterminal">extra</span>:<span class="ident">ident</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">eval</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">exec_uuid</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="kw">enum</span>:<span class="macro-nonterminal">expr</span> $(,<span class="macro-nonterminal">$</span><span class="macro-nonterminal">extra</span>:<span class="ident">ident</span>)<span class="kw-2">*</span>) =&gt; {
         {
             <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::redundant_closure_call</span>)]</span>
             {

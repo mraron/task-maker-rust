@@ -101,7 +101,7 @@
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">SandboxRunner</span>: <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> {
     <span class="doccomment">/// Spawn a sandbox with the provided configuration, set the PID as soon as possible and wait</span>
     <span class="doccomment">/// for it to exit. Parse the outcome of the sandbox and return it.</span>
-    <span class="kw">fn</span> <span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">config</span>: <span class="ident">SandboxConfiguration</span>, <span class="ident">pid</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">AtomicU32</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RawSandboxResult</span>;
+    <span class="kw">fn</span> <span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">config</span>: <span class="ident">SandboxConfiguration</span>, <span class="ident">pid</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">AtomicU32</span><span class="op">&gt;</span>) -&gt; <span class="ident">RawSandboxResult</span>;
 }
 
 <span class="doccomment">/// A fake sandbox that don&#39;t actually spawn anything and always return an error.</span>
@@ -109,7 +109,7 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ErrorSandboxRunner</span>;
 
 <span class="kw">impl</span> <span class="ident">SandboxRunner</span> <span class="kw">for</span> <span class="ident">ErrorSandboxRunner</span> {
-    <span class="kw">fn</span> <span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_config</span>: <span class="ident">SandboxConfiguration</span>, <span class="ident">_pid</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">AtomicU32</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RawSandboxResult</span> {
+    <span class="kw">fn</span> <span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_config</span>: <span class="ident">SandboxConfiguration</span>, <span class="ident">_pid</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">AtomicU32</span><span class="op">&gt;</span>) -&gt; <span class="ident">RawSandboxResult</span> {
         <span class="ident">RawSandboxResult::Error</span>(<span class="string">&quot;Nope&quot;</span>.<span class="ident">to_owned</span>())
     }
 }
@@ -120,7 +120,7 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SuccessSandboxRunner</span>;
 
 <span class="kw">impl</span> <span class="ident">SandboxRunner</span> <span class="kw">for</span> <span class="ident">SuccessSandboxRunner</span> {
-    <span class="kw">fn</span> <span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_config</span>: <span class="ident">SandboxConfiguration</span>, <span class="ident">_pid</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">AtomicU32</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RawSandboxResult</span> {
+    <span class="kw">fn</span> <span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_config</span>: <span class="ident">SandboxConfiguration</span>, <span class="ident">_pid</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">AtomicU32</span><span class="op">&gt;</span>) -&gt; <span class="ident">RawSandboxResult</span> {
         <span class="ident">RawSandboxResult::Success</span>(<span class="ident">SandboxExecutionResult</span> {
             <span class="ident">status</span>: <span class="ident">ExitStatus::ExitCode</span>(<span class="number">0</span>),
             <span class="ident">resource_usage</span>: <span class="ident">ResourceUsage</span> {
@@ -141,7 +141,7 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">impl</span> <span class="ident">SandboxRunner</span> <span class="kw">for</span> <span class="ident">UnsafeSandboxRunner</span> {
-    <span class="kw">fn</span> <span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">config</span>: <span class="ident">SandboxConfiguration</span>, <span class="ident">_pid</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">AtomicU32</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RawSandboxResult</span> {
+    <span class="kw">fn</span> <span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">config</span>: <span class="ident">SandboxConfiguration</span>, <span class="ident">_pid</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">AtomicU32</span><span class="op">&gt;</span>) -&gt; <span class="ident">RawSandboxResult</span> {
         <span class="kw">use</span> <span class="ident">std::fs</span>::{<span class="ident">File</span>, <span class="ident">OpenOptions</span>};
         <span class="kw">use</span> <span class="ident">std::process::Stdio</span>;
 
@@ -176,7 +176,7 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">SandboxRunner</span><span class="op">&gt;</span> <span class="ident">SandboxRunner</span> <span class="kw">for</span> <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">conf</span>: <span class="ident">SandboxConfiguration</span>, <span class="ident">pid</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">AtomicU32</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RawSandboxResult</span> {
+    <span class="kw">fn</span> <span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">conf</span>: <span class="ident">SandboxConfiguration</span>, <span class="ident">pid</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">AtomicU32</span><span class="op">&gt;</span>) -&gt; <span class="ident">RawSandboxResult</span> {
         <span class="self">self</span>.<span class="ident">as_ref</span>().<span class="ident">run</span>(<span class="ident">conf</span>, <span class="ident">pid</span>)
     }
 }

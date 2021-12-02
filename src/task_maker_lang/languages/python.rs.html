@@ -231,35 +231,35 @@
 
 <span class="kw">impl</span> <span class="ident">LanguagePython</span> {
     <span class="doccomment">/// Make a new LanguagePython using the specified version.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">version</span>: <span class="ident">LanguagePythonVersion</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">LanguagePython</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">version</span>: <span class="ident">LanguagePythonVersion</span>) -&gt; <span class="ident">LanguagePython</span> {
         <span class="ident">LanguagePython</span> { <span class="ident">version</span> }
     }
 }
 
 <span class="kw">impl</span> <span class="ident">Language</span> <span class="kw">for</span> <span class="ident">LanguagePython</span> {
-    <span class="kw">fn</span> <span class="ident">name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> {
+    <span class="kw">fn</span> <span class="ident">name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">version</span> {
-            <span class="ident">LanguagePythonVersion::Autodetect</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;Python / Autodetect&quot;</span>,
-            <span class="ident">LanguagePythonVersion::Python2</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;Python2&quot;</span>,
-            <span class="ident">LanguagePythonVersion::Python3</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;Python3&quot;</span>,
+            <span class="ident">LanguagePythonVersion::Autodetect</span> =&gt; <span class="string">&quot;Python / Autodetect&quot;</span>,
+            <span class="ident">LanguagePythonVersion::Python2</span> =&gt; <span class="string">&quot;Python2&quot;</span>,
+            <span class="ident">LanguagePythonVersion::Python3</span> =&gt; <span class="string">&quot;Python3&quot;</span>,
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">extensions</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">extensions</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
         <span class="macro">vec!</span>[<span class="string">&quot;py&quot;</span>]
     }
 
-    <span class="kw">fn</span> <span class="ident">need_compilation</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">need_compilation</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
         <span class="bool-val">false</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">runtime_command</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">write_to</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Path</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ExecutionCommand</span> {
+    <span class="kw">fn</span> <span class="ident">runtime_command</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">write_to</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Path</span><span class="op">&gt;</span>) -&gt; <span class="ident">ExecutionCommand</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">version</span> {
-            <span class="ident">LanguagePythonVersion::Autodetect</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">LanguagePythonVersion::Autodetect</span> =&gt; {
                 <span class="ident">ExecutionCommand::local</span>(<span class="self">self</span>.<span class="ident">executable_name</span>(<span class="ident">path</span>, <span class="ident">write_to</span>))
             }
-            <span class="ident">LanguagePythonVersion::Python2</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">ExecutionCommand::system</span>(<span class="string">&quot;python2&quot;</span>),
-            <span class="ident">LanguagePythonVersion::Python3</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">ExecutionCommand::system</span>(<span class="string">&quot;python3&quot;</span>),
+            <span class="ident">LanguagePythonVersion::Python2</span> =&gt; <span class="ident">ExecutionCommand::system</span>(<span class="string">&quot;python2&quot;</span>),
+            <span class="ident">LanguagePythonVersion::Python3</span> =&gt; <span class="ident">ExecutionCommand::system</span>(<span class="string">&quot;python3&quot;</span>),
         }
     }
 
@@ -268,10 +268,10 @@
         <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>,
         <span class="ident">write_to</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Path</span><span class="op">&gt;</span>,
         <span class="kw-2">mut</span> <span class="ident">args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+    ) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">version</span> {
-            <span class="ident">LanguagePythonVersion::Autodetect</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">args</span>,
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">LanguagePythonVersion::Autodetect</span> =&gt; <span class="ident">args</span>,
+            <span class="kw">_</span> =&gt; {
                 <span class="comment">// will run for example: python3 program.py args...</span>
                 <span class="ident">args</span>.<span class="ident">insert</span>(
                     <span class="number">0</span>,
@@ -284,13 +284,13 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">runtime_dependencies</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Dependency</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">runtime_dependencies</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Dependency</span><span class="op">&gt;</span> {
         <span class="ident">find_python_deps</span>(<span class="ident">path</span>)
     }
 }
 
 <span class="doccomment">/// Extract all the dependencies of a python file recursively.</span>
-<span class="kw">fn</span> <span class="ident">find_python_deps</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Dependency</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">find_python_deps</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Dependency</span><span class="op">&gt;</span> {
     <span class="ident">find_dependencies</span>(<span class="ident">path</span>, <span class="ident">extract_imports</span>)
 }
 
@@ -303,14 +303,14 @@
 <span class="doccomment">/// The returned values are in the form (local_path, sandbox_path). Those paths</span>
 <span class="doccomment">/// are equal, and are just the import followed by `.py`, because of that the</span>
 <span class="doccomment">/// imports should not contain a dot (i.e. python modules are not supported).</span>
-<span class="kw">fn</span> <span class="ident">extract_imports</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">PathBuf</span>, <span class="ident">PathBuf</span>)<span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">extract_imports</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">PathBuf</span>, <span class="ident">PathBuf</span>)<span class="op">&gt;</span> {
     <span class="macro">lazy_static!</span> {
         <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">RE</span>: <span class="ident">Regex</span> <span class="op">=</span>
             <span class="ident">Regex::new</span>(<span class="string">&quot;import +(.+)|from +(.+) +import&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;Invalid regex&quot;</span>);
     }
     <span class="kw">let</span> <span class="ident">content</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">std::fs::read_to_string</span>(<span class="ident">path</span>) {
-        <span class="prelude-val">Ok</span>(<span class="ident">content</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">content</span>,
-        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="macro">vec!</span>[],
+        <span class="prelude-val">Ok</span>(<span class="ident">content</span>) =&gt; <span class="ident">content</span>,
+        <span class="kw">_</span> =&gt; <span class="kw">return</span> <span class="macro">vec!</span>[],
     };
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
     <span class="kw">for</span> <span class="ident">cap</span> <span class="kw">in</span> <span class="ident">RE</span>.<span class="ident">captures_iter</span>(<span class="kw-2">&amp;</span><span class="ident">content</span>) {

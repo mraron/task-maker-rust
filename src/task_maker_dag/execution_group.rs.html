@@ -153,21 +153,21 @@
 
 <span class="kw">impl</span> <span class="ident">Fifo</span> {
     <span class="doccomment">/// Make a new Fifo with a random uuid.</span>
-    <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Fifo</span> {
+    <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="ident">Fifo</span> {
         <span class="ident">Fifo</span> {
             <span class="ident">uuid</span>: <span class="ident">Uuid::new_v4</span>(),
         }
     }
 
     <span class="doccomment">/// The path inside the sandbox that this pipe is mapped to.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sandbox_path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PathBuf</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sandbox_path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PathBuf</span> {
         <span class="ident">Path::new</span>(<span class="ident">FIFO_SANDBOX_DIR</span>).<span class="ident">join</span>(<span class="self">self</span>.<span class="ident">uuid</span>.<span class="ident">to_string</span>())
     }
 }
 
 <span class="kw">impl</span> <span class="ident">ExecutionGroup</span> {
     <span class="doccomment">/// Create an empty execution group.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">descr</span>: <span class="ident">S</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ExecutionGroup</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">descr</span>: <span class="ident">S</span>) -&gt; <span class="ident">ExecutionGroup</span> {
         <span class="ident">ExecutionGroup</span> {
             <span class="ident">uuid</span>: <span class="ident">Uuid::new_v4</span>(),
             <span class="ident">description</span>: <span class="ident">descr</span>.<span class="ident">into</span>(),
@@ -177,13 +177,13 @@
     }
 
     <span class="doccomment">/// Add a new execution to the group.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_execution</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">exec</span>: <span class="ident">Execution</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_execution</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">exec</span>: <span class="ident">Execution</span>) -&gt; <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span> {
         <span class="self">self</span>.<span class="ident">executions</span>.<span class="ident">push</span>(<span class="ident">exec</span>);
         <span class="self">self</span>
     }
 
     <span class="doccomment">/// Create a new `Fifo` and return it.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_fifo</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Fifo</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_fifo</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="ident">Fifo</span> {
         <span class="kw">let</span> <span class="ident">fifo</span> <span class="op">=</span> <span class="ident">Fifo::new</span>();
         <span class="self">self</span>.<span class="ident">fifo</span>.<span class="ident">push</span>(<span class="ident">fifo</span>);
         <span class="ident">fifo</span>
@@ -191,7 +191,7 @@
 
     <span class="doccomment">/// Priority of this execution group. The actual value is computed based on the executions</span>
     <span class="doccomment">/// contained in this group.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">priority</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Priority</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">priority</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Priority</span> {
         <span class="self">self</span>.<span class="ident">executions</span>
             .<span class="ident">iter</span>()
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">priority</span>)
@@ -200,7 +200,7 @@
     }
 
     <span class="doccomment">/// A reference to the configuration of the underlying DAG.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">config</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">ExecutionDAGConfig</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">config</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">ExecutionDAGConfig</span> {
         <span class="self">self</span>.<span class="ident">executions</span>
             .<span class="ident">get</span>(<span class="number">0</span>)
             .<span class="ident">expect</span>(<span class="string">&quot;Invalid group with zero executions&quot;</span>)
@@ -208,7 +208,7 @@
     }
 
     <span class="doccomment">/// The tag of one of the executions in this group.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tag</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ExecutionTag</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tag</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ExecutionTag</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">executions</span>
             .<span class="ident">get</span>(<span class="number">0</span>)
             .<span class="ident">expect</span>(<span class="string">&quot;Invalid group with zero executions&quot;</span>)
@@ -218,7 +218,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Execution</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ExecutionGroup</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">exec</span>: <span class="ident">Execution</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">exec</span>: <span class="ident">Execution</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">group</span> <span class="op">=</span> <span class="ident">ExecutionGroup::new</span>(<span class="ident">exec</span>.<span class="ident">description</span>.<span class="ident">clone</span>());
         <span class="ident">group</span>.<span class="ident">add_execution</span>(<span class="ident">exec</span>);
         <span class="ident">group</span>

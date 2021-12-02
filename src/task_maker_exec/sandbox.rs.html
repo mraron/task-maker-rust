@@ -729,7 +729,7 @@
         <span class="ident">execution</span>: <span class="kw-2">&amp;</span><span class="ident">Execution</span>,
         <span class="ident">dep_keys</span>: <span class="kw-2">&amp;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">FileUuid</span>, <span class="ident">FileStoreHandle</span><span class="op">&gt;</span>,
         <span class="ident">fifo_dir</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Sandbox</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Sandbox</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="ident">std::fs::create_dir_all</span>(<span class="ident">sandboxes_dir</span>).<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> {
             <span class="macro">format!</span>(
                 <span class="string">&quot;Failed to create sandbox directory at {}&quot;</span>,
@@ -751,7 +751,7 @@
     }
 
     <span class="doccomment">/// Starts the sandbox and blocks the thread until the sandbox exits.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">runner</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">SandboxRunner</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">SandboxResult</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">runner</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">SandboxRunner</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">SandboxResult</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">SandboxConfiguration::default</span>();
         <span class="kw">let</span> (<span class="ident">boxdir</span>, <span class="ident">pid</span>, <span class="ident">keep</span>, <span class="ident">cmd</span>) <span class="op">=</span> {
             <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
@@ -784,8 +784,8 @@
         }
 
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">raw_result</span> {
-            <span class="ident">RawSandboxResult::Success</span>(<span class="ident">res</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">res</span>,
-            <span class="ident">RawSandboxResult::Error</span>(<span class="ident">e</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">bail!</span>(<span class="string">&quot;Sandbox failed: {}&quot;</span>, <span class="ident">e</span>),
+            <span class="ident">RawSandboxResult::Success</span>(<span class="ident">res</span>) =&gt; <span class="ident">res</span>,
+            <span class="ident">RawSandboxResult::Error</span>(<span class="ident">e</span>) =&gt; <span class="macro">bail!</span>(<span class="string">&quot;Sandbox failed: {}&quot;</span>, <span class="ident">e</span>),
         };
         <span class="macro">trace!</span>(<span class="string">&quot;Sandbox output: {:?}&quot;</span>, <span class="ident">res</span>);
 
@@ -798,13 +798,13 @@
 
         <span class="kw">use</span> <span class="ident">tabox::result::ExitStatus</span>::<span class="kw-2">*</span>;
         <span class="kw">match</span> <span class="ident">res</span>.<span class="ident">status</span> {
-            <span class="ident">ExitCode</span>(<span class="ident">code</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">SandboxResult::Success</span> {
+            <span class="ident">ExitCode</span>(<span class="ident">code</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">SandboxResult::Success</span> {
                 <span class="ident">exit_status</span>: <span class="ident">code</span> <span class="kw">as</span> <span class="ident">u32</span>,
                 <span class="ident">signal</span>: <span class="prelude-val">None</span>,
                 <span class="ident">resources</span>,
                 <span class="ident">was_killed</span>: <span class="bool-val">false</span>,
             }),
-            <span class="ident">Signal</span>(<span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">SandboxResult::Success</span> {
+            <span class="ident">Signal</span>(<span class="ident">s</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">SandboxResult::Success</span> {
                 <span class="ident">exit_status</span>: <span class="number">0</span>,
                 <span class="ident">signal</span>: <span class="prelude-val">Some</span>((
                     <span class="ident">s</span> <span class="kw">as</span> <span class="ident">u32</span>,
@@ -813,7 +813,7 @@
                 <span class="ident">resources</span>,
                 <span class="ident">was_killed</span>: <span class="bool-val">false</span>,
             }),
-            <span class="ident">Killed</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">SandboxResult::Success</span> {
+            <span class="ident">Killed</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">SandboxResult::Success</span> {
                 <span class="ident">exit_status</span>: <span class="number">1</span>,
                 <span class="ident">signal</span>: <span class="prelude-val">Some</span>((<span class="number">9</span>, <span class="string">&quot;Killed by sandbox&quot;</span>.<span class="ident">into</span>())),
                 <span class="ident">resources</span>,
@@ -845,7 +845,7 @@
             }
         }
         <span class="comment">// if after many tries the PID has not been set lose hope and don&#39;t kill the sandbox.</span>
-        <span class="kw">if</span> <span class="ident">pid</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+        <span class="kw">if</span> <span class="ident">pid</span> <span class="op">==</span> <span class="number">0</span> {
             <span class="macro">warn!</span>(<span class="string">&quot;Cannot kill sandbox at {} since the pid is unknown&quot;</span>, <span class="ident">path</span>);
             <span class="kw">return</span>;
         }
@@ -856,7 +856,7 @@
     }
 
     <span class="doccomment">/// Make the sandbox persistent, the sandbox directory won&#39;t be deleted after the execution.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">keep</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">keep</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">data</span>
             .<span class="ident">boxdir</span>
@@ -881,17 +881,17 @@
     }
 
     <span class="doccomment">/// Path of the file where the standard output is written to.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">stdout_path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PathBuf</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">stdout_path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PathBuf</span> {
         <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">path</span>().<span class="ident">join</span>(<span class="string">&quot;stdout&quot;</span>)
     }
 
     <span class="doccomment">/// Path of the file where the standard error is written to.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">stderr_path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PathBuf</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">stderr_path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PathBuf</span> {
         <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">path</span>().<span class="ident">join</span>(<span class="string">&quot;stderr&quot;</span>)
     }
 
     <span class="doccomment">/// Path of the file where that output file is written to.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">output_path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">output</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PathBuf</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">output_path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">output</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) -&gt; <span class="ident">PathBuf</span> {
         <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">path</span>().<span class="ident">join</span>(<span class="string">&quot;box&quot;</span>).<span class="ident">join</span>(<span class="ident">output</span>)
     }
 
@@ -902,7 +902,7 @@
     <span class="doccomment">/// this limitation, only under macos the original path is kept. This leaks some information</span>
     <span class="doccomment">/// about the host, but since the sandbox is pretty fake anyway this is not really a problem.</span>
     <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused_variables</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">box_root</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">boxdir</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PathBuf</span> {
+    <span class="kw">fn</span> <span class="ident">box_root</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">boxdir</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) -&gt; <span class="ident">PathBuf</span> {
         <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>))]</span>
         {
             <span class="ident">PathBuf::from</span>(<span class="string">&quot;/box&quot;</span>)
@@ -920,7 +920,7 @@
         <span class="ident">execution</span>: <span class="kw-2">&amp;</span><span class="ident">Execution</span>,
         <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">SandboxConfiguration</span>,
         <span class="ident">fifo_dir</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">box_root</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">box_root</span>(<span class="ident">boxdir</span>);
         <span class="ident">config</span>.<span class="ident">working_directory</span>(<span class="kw-2">&amp;</span><span class="ident">box_root</span>);
         <span class="comment">// the box directory must be writable otherwise the output files cannot be written</span>
@@ -951,10 +951,10 @@
         }
 
         <span class="kw">let</span> <span class="ident">cpu_limit</span> <span class="op">=</span> <span class="kw">match</span> (<span class="ident">execution</span>.<span class="ident">limits</span>.<span class="ident">cpu_time</span>, <span class="ident">execution</span>.<span class="ident">limits</span>.<span class="ident">sys_time</span>) {
-            (<span class="prelude-val">Some</span>(<span class="ident">cpu</span>), <span class="prelude-val">Some</span>(<span class="ident">sys</span>)) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">cpu</span> <span class="op">+</span> <span class="ident">sys</span>),
-            (<span class="prelude-val">Some</span>(<span class="ident">cpu</span>), <span class="prelude-val">None</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">cpu</span>),
-            (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="ident">sys</span>)) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">sys</span>),
-            (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+            (<span class="prelude-val">Some</span>(<span class="ident">cpu</span>), <span class="prelude-val">Some</span>(<span class="ident">sys</span>)) =&gt; <span class="prelude-val">Some</span>(<span class="ident">cpu</span> <span class="op">+</span> <span class="ident">sys</span>),
+            (<span class="prelude-val">Some</span>(<span class="ident">cpu</span>), <span class="prelude-val">None</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">cpu</span>),
+            (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="ident">sys</span>)) =&gt; <span class="prelude-val">Some</span>(<span class="ident">sys</span>),
+            (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; <span class="prelude-val">None</span>,
         };
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">cpu</span>) <span class="op">=</span> <span class="ident">cpu_limit</span> {
             <span class="kw">let</span> <span class="ident">cpu</span> <span class="op">=</span> <span class="ident">cpu</span> <span class="op">+</span> <span class="ident">execution</span>.<span class="ident">config</span>().<span class="ident">extra_time</span>;
@@ -997,14 +997,14 @@
             <span class="ident">config</span>.<span class="ident">mount_proc</span>(<span class="bool-val">true</span>);
         }
         <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">execution</span>.<span class="ident">command</span> {
-            <span class="ident">ExecutionCommand::System</span>(<span class="ident">cmd</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">ExecutionCommand::System</span>(<span class="ident">cmd</span>) =&gt; {
                 <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">cmd</span>) <span class="op">=</span> <span class="ident">which::which</span>(<span class="ident">cmd</span>) {
                     <span class="ident">config</span>.<span class="ident">executable</span>(<span class="ident">cmd</span>);
                 } <span class="kw">else</span> {
                     <span class="macro">bail!</span>(<span class="string">&quot;Executable {:?} not found&quot;</span>, <span class="ident">cmd</span>);
                 }
             }
-            <span class="ident">ExecutionCommand::Local</span>(<span class="ident">cmd</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">ExecutionCommand::Local</span>(<span class="ident">cmd</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">host_cmd</span> <span class="op">=</span> <span class="ident">boxdir</span>.<span class="ident">join</span>(<span class="string">&quot;box&quot;</span>).<span class="ident">join</span>(<span class="ident">cmd</span>);
                 <span class="self">self</span>.<span class="ident">validate_local_executable</span>(<span class="kw-2">&amp;</span><span class="ident">host_cmd</span>).<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> {
                     <span class="macro">format!</span>(
@@ -1029,7 +1029,7 @@
         <span class="ident">box_dir</span>: <span class="ident">P</span>,
         <span class="ident">execution</span>: <span class="kw-2">&amp;</span><span class="ident">Execution</span>,
         <span class="ident">dep_keys</span>: <span class="kw-2">&amp;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">FileUuid</span>, <span class="ident">FileStoreHandle</span><span class="op">&gt;</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">box_dir</span> <span class="op">=</span> <span class="ident">box_dir</span>.<span class="ident">as_ref</span>();
         <span class="macro">trace!</span>(
             <span class="string">&quot;Setting up sandbox at {:?} for &#39;{}&#39;&quot;</span>,
@@ -1086,7 +1086,7 @@
     }
 
     <span class="doccomment">/// Create a directory inside the sandbox.</span>
-    <span class="kw">fn</span> <span class="ident">create_sandbox_dir</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Path</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">box_dir</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">path</span>: <span class="ident">P</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">create_sandbox_dir</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Path</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">box_dir</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">path</span>: <span class="ident">P</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">target</span> <span class="op">=</span> <span class="ident">box_dir</span>.<span class="ident">join</span>(<span class="ident">path</span>.<span class="ident">as_ref</span>());
         <span class="ident">std::fs::create_dir_all</span>(<span class="kw-2">&amp;</span><span class="ident">target</span>)
             .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;Failed to create sandbox directory: {}&quot;</span>, <span class="ident">target</span>.<span class="ident">display</span>()))
@@ -1098,7 +1098,7 @@
     <span class="doccomment">/// The file will have the most restrictive permissions possible:</span>
     <span class="doccomment">/// - `r--------` (0o400) if not executable.</span>
     <span class="doccomment">/// - `r-x------` (0o500) if executable.</span>
-    <span class="kw">fn</span> <span class="ident">write_sandbox_file</span>(<span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">source</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">executable</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">write_sandbox_file</span>(<span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">source</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">executable</span>: <span class="ident">bool</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="ident">std::fs::create_dir_all</span>(<span class="ident">dest</span>.<span class="ident">parent</span>().<span class="ident">context</span>(<span class="string">&quot;Invalid destination path&quot;</span>)<span class="question-mark">?</span>)
             .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;Failed to create parent directory of {}&quot;</span>, <span class="ident">dest</span>.<span class="ident">display</span>()))<span class="question-mark">?</span>;
         <span class="comment">// First try to hardlink the file to the destination, this is faster and less prone to race</span>
@@ -1119,7 +1119,7 @@
     }
 
     <span class="doccomment">/// Create an empty file inside the sandbox and chmod-it.</span>
-    <span class="kw">fn</span> <span class="ident">touch_file</span>(<span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">mode</span>: <span class="ident">u32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">touch_file</span>(<span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">mode</span>: <span class="ident">u32</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="ident">std::fs::create_dir_all</span>(<span class="ident">dest</span>.<span class="ident">parent</span>().<span class="ident">context</span>(<span class="string">&quot;Invalid file path&quot;</span>)<span class="question-mark">?</span>)
             .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;Failed to create parent directory of {}&quot;</span>, <span class="ident">dest</span>.<span class="ident">display</span>()))<span class="question-mark">?</span>;
         <span class="ident">std::fs::File::create</span>(<span class="ident">dest</span>)
@@ -1128,7 +1128,7 @@
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn</span> <span class="ident">set_permissions</span>(<span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">perm</span>: <span class="ident">u32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">set_permissions</span>(<span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">perm</span>: <span class="ident">u32</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">permissions</span> <span class="op">=</span> <span class="ident">Permissions::from_mode</span>(<span class="ident">perm</span>);
         <span class="ident">std::fs::set_permissions</span>(<span class="ident">dest</span>, <span class="ident">permissions</span>)
             .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;Failed to chmod {:03o} {}&quot;</span>, <span class="ident">perm</span>, <span class="ident">dest</span>.<span class="ident">display</span>()))<span class="question-mark">?</span>;
@@ -1139,7 +1139,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// To be a valid executable the file must be _a file_ and should be in a recognized executable</span>
     <span class="doccomment">/// format.</span>
-    <span class="kw">fn</span> <span class="ident">validate_local_executable</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Path</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="ident">P</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">validate_local_executable</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Path</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="ident">P</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">as_ref</span>();
         <span class="kw">if</span> <span class="op">!</span><span class="ident">path</span>.<span class="ident">is_file</span>() {
             <span class="macro">bail!</span>(<span class="string">&quot;Executable is not a file&quot;</span>);
@@ -1153,7 +1153,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">SandboxData</span> {
-    <span class="kw">fn</span> <span class="ident">path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">Path</span> {
+    <span class="kw">fn</span> <span class="ident">path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">Path</span> {
         <span class="comment">// this unwrap is safe since only `Drop` will remove the boxdir</span>
         <span class="self">self</span>.<span class="ident">boxdir</span>.<span class="ident">as_ref</span>().<span class="ident">expect</span>(<span class="string">&quot;boxdir is gone&quot;</span>).<span class="ident">path</span>()
     }

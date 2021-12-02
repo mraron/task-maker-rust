@@ -357,7 +357,7 @@
 <span class="doccomment">/// Validate the DAG checking if all the required pieces are present and they actually make a DAG.</span>
 <span class="doccomment">/// It&#39;s checked that no duplicated UUID are present, no files are missing, all the executions are</span>
 <span class="doccomment">/// reachable and no cycles are present.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">check_dag</span>(<span class="ident">dag</span>: <span class="kw-2">&amp;</span><span class="ident">ExecutionDAGData</span>, <span class="ident">callbacks</span>: <span class="kw-2">&amp;</span><span class="ident">ExecutionDAGWatchSet</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">DAGError</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">check_dag</span>(<span class="ident">dag</span>: <span class="kw-2">&amp;</span><span class="ident">ExecutionDAGData</span>, <span class="ident">callbacks</span>: <span class="kw-2">&amp;</span><span class="ident">ExecutionDAGWatchSet</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">DAGError</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dependencies</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">FileUuid</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ExecutionGroupUuid</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">num_dependencies</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">ExecutionGroupUuid</span>, <span class="ident">usize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">known_files</span>: <span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">FileUuid</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">HashSet::new</span>();
@@ -414,7 +414,7 @@
             }
         }
         <span class="ident">num_dependencies</span>.<span class="ident">insert</span>(<span class="kw-2">*</span><span class="ident">group_uuid</span>, <span class="ident">count</span>);
-        <span class="kw">if</span> <span class="ident">count</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+        <span class="kw">if</span> <span class="ident">count</span> <span class="op">==</span> <span class="number">0</span> {
             <span class="ident">ready_groups</span>.<span class="ident">push_back</span>(<span class="kw-2">*</span><span class="ident">group_uuid</span>);
         }
     }
@@ -441,7 +441,7 @@
                     <span class="ident">group_uuid</span>
                 );
                 <span class="kw-2">*</span><span class="ident">num_deps</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
-                <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">num_deps</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+                <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">num_deps</span> <span class="op">==</span> <span class="number">0</span> {
                     <span class="ident">ready_groups</span>.<span class="ident">push_back</span>(<span class="kw-2">*</span><span class="ident">group_uuid</span>);
                 }
             }
@@ -460,7 +460,7 @@
     }
     <span class="comment">// search for unreachable execution / cycles</span>
     <span class="kw">for</span> (<span class="ident">group_uuid</span>, <span class="ident">count</span>) <span class="kw">in</span> <span class="ident">num_dependencies</span>.<span class="ident">iter</span>() {
-        <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">count</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+        <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">count</span> <span class="op">==</span> <span class="number">0</span> {
             <span class="kw">continue</span>;
         }
         <span class="kw">let</span> <span class="ident">group</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">dag</span>.<span class="ident">execution_groups</span>[<span class="ident">group_uuid</span>];

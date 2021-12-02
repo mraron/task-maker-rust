@@ -284,17 +284,17 @@
 <span class="doccomment">/// - `compilation_builder`</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Language</span>: <span class="ident">std::fmt::Debug</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> {
     <span class="doccomment">/// Full name of the language. This must be unique between all the other languages.</span>
-    <span class="kw">fn</span> <span class="ident">name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>;
+    <span class="kw">fn</span> <span class="ident">name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>;
 
     <span class="doccomment">/// List of valid extensions for this language. A file is considered in this language if its</span>
     <span class="doccomment">/// extension is inside this list.</span>
-    <span class="kw">fn</span> <span class="ident">extensions</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">extensions</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span>;
 
     <span class="doccomment">/// Whether this language needs a compilation step. Returning `true` here triggers many changes</span>
     <span class="doccomment">/// in the behaviour of the execution. Of course the compilation step will be added, because of</span>
     <span class="doccomment">/// that there is the need to know how to compile the source file, forcing the implementation of</span>
     <span class="doccomment">/// some extra methods.</span>
-    <span class="kw">fn</span> <span class="ident">need_compilation</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span>;
+    <span class="kw">fn</span> <span class="ident">need_compilation</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span>;
 
     <span class="doccomment">/// Return the `CompiledLanguageBuilder` for compiling a source file with this language.</span>
     <span class="doccomment">///</span>
@@ -303,14 +303,14 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">_source</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>,
         <span class="ident">_settings</span>: <span class="ident">CompilationSettings</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">CompiledLanguageBuilder</span> <span class="op">+</span> <span class="lifetime">&#39;_</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">CompiledLanguageBuilder</span> <span class="op">+</span> <span class="lifetime">&#39;_</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="prelude-val">None</span>
     }
 
     <span class="doccomment">/// Command to use to run the program. It defaults to the executable name of the program.</span>
     <span class="doccomment">/// Languages that need to run a separate program (e.g. a system-wise interpreter) may change</span>
     <span class="doccomment">/// the return value of this method.</span>
-    <span class="kw">fn</span> <span class="ident">runtime_command</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">write_to</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Path</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ExecutionCommand</span> {
+    <span class="kw">fn</span> <span class="ident">runtime_command</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">write_to</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Path</span><span class="op">&gt;</span>) -&gt; <span class="ident">ExecutionCommand</span> {
         <span class="ident">ExecutionCommand::local</span>(<span class="self">self</span>.<span class="ident">executable_name</span>(<span class="ident">path</span>, <span class="ident">write_to</span>))
     }
 
@@ -320,7 +320,7 @@
         <span class="ident">_path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>,
         <span class="ident">_write_to</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Path</span><span class="op">&gt;</span>,
         <span class="ident">args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+    ) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
         <span class="ident">args</span>
     }
 
@@ -328,12 +328,12 @@
     <span class="doccomment">/// time dependency and it&#39;s relative to the sandbox.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// The new runtime arguments should be returned.</span>
-    <span class="kw">fn</span> <span class="ident">runtime_add_file</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">_file</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">runtime_add_file</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">_file</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
         <span class="ident">args</span>
     }
 
     <span class="doccomment">/// The dependencies to put inside the execution sandbox. This does not include the executable.</span>
-    <span class="kw">fn</span> <span class="ident">runtime_dependencies</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Dependency</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">runtime_dependencies</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Dependency</span><span class="op">&gt;</span> {
         <span class="macro">vec!</span>[]
     }
 
@@ -344,7 +344,7 @@
     <span class="doccomment">/// The name of the executable inside the sandbox. If this binary will be written elsewhere in</span>
     <span class="doccomment">/// the system, use the same name. Otherwise fallback to the original file name, without</span>
     <span class="doccomment">/// extension.</span>
-    <span class="kw">fn</span> <span class="ident">executable_name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">write_to</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Path</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PathBuf</span> {
+    <span class="kw">fn</span> <span class="ident">executable_name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">write_to</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Path</span><span class="op">&gt;</span>) -&gt; <span class="ident">PathBuf</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">write_to</span>) <span class="op">=</span> <span class="ident">write_to</span> {
             <span class="ident">PathBuf::from</span>(<span class="ident">write_to</span>.<span class="ident">file_name</span>().<span class="ident">expect</span>(<span class="string">&quot;Invalid file name&quot;</span>))
         } <span class="kw">else</span> {
@@ -375,7 +375,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// After calling this method, the builder cannot be used anymore. This cannot be enforced by</span>
     <span class="doccomment">/// taking self because otherwise this trait is no longer object-safe.</span>
-    <span class="kw">fn</span> <span class="ident">finalize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">dag</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ExecutionDAG</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">Execution</span>, <span class="ident">File</span>), <span class="ident">Error</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">finalize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">dag</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ExecutionDAG</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">Execution</span>, <span class="ident">File</span>), <span class="ident">Error</span><span class="op">&gt;</span>;
 }
 
 <span class="doccomment">/// A simple `CompiledLanguageBuilder` that is able to compile file in most of the languages.</span>
@@ -432,7 +432,7 @@
         <span class="ident">source_path</span>: <span class="ident">P</span>,
         <span class="ident">settings</span>: <span class="ident">CompilationSettings</span>,
         <span class="ident">compiler</span>: <span class="ident">ExecutionCommand</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    ) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">source_path</span> <span class="op">=</span> <span class="ident">source_path</span>.<span class="ident">into</span>();
         <span class="kw">let</span> <span class="ident">source_name</span> <span class="op">=</span> <span class="ident">source_path</span>
             .<span class="ident">file_name</span>()
@@ -455,7 +455,7 @@
     }
 
     <span class="doccomment">/// Add a new argument to the list.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_arg</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">arg</span>: <span class="ident">S</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_arg</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">arg</span>: <span class="ident">S</span>) -&gt; <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span> {
         <span class="self">self</span>.<span class="ident">args</span>.<span class="ident">push</span>(<span class="ident">arg</span>.<span class="ident">into</span>());
         <span class="self">self</span>
     }
@@ -484,7 +484,7 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">finalize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">dag</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ExecutionDAG</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">Execution</span>, <span class="ident">File</span>), <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">finalize</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">dag</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ExecutionDAG</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">Execution</span>, <span class="ident">File</span>), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">comp</span> <span class="op">=</span> <span class="ident">Execution::new</span>(
             <span class="macro">format!</span>(<span class="string">&quot;Compilation of {}&quot;</span>, <span class="self">self</span>.<span class="ident">source_name</span>),
             <span class="self">self</span>.<span class="ident">compiler</span>.<span class="ident">clone</span>(),

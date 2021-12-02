@@ -130,7 +130,7 @@
 
 <span class="doccomment">/// Print to stdout the type definition for the specified type.</span>
 <span class="macro">macro_rules!</span> <span class="ident">export_ts</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> : <span class="ident">ty</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> : <span class="ident">ty</span>) =&gt; {
         <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">fix_bug_1</span>(<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="ident">::type_script_ify</span>()))
     };
 }
@@ -138,14 +138,14 @@
 <span class="doccomment">/// Apply the fix from PR#1 fixing some invalid types.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// https://github.com/arabidopsis/typescript-definitions/pull/1</span>
-<span class="kw">fn</span> <span class="ident">fix_bug_1</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">def</span>: <span class="ident">S</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+<span class="kw">fn</span> <span class="ident">fix_bug_1</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">def</span>: <span class="ident">S</span>) -&gt; <span class="ident">String</span> {
     <span class="kw">let</span> <span class="ident">regex</span> <span class="op">=</span> <span class="ident">Regex::new</span>(<span class="string">r&quot;(?m)\[\s*(\w+)\s*:\s*(\w+)\s*\]&quot;</span>).<span class="ident">unwrap</span>();
     <span class="kw">let</span> <span class="ident">substitution</span> <span class="op">=</span> <span class="string">&quot;[$1 in $2]&quot;</span>;
     <span class="ident">regex</span>.<span class="ident">replace_all</span>(<span class="ident">def</span>.<span class="ident">as_ref</span>(), <span class="ident">substitution</span>).<span class="ident">to_string</span>()
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">debug_assertions</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">main_typescriptify</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">main_typescriptify</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="macro">println!</span>(<span class="string">&quot;// Type aliases&quot;</span>);
     <span class="macro">println!</span>(<span class="string">&quot;export type SubtaskId = number;&quot;</span>);
     <span class="macro">println!</span>(<span class="string">&quot;export type TestcaseId = number;&quot;</span>);
@@ -203,7 +203,7 @@
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">debug_assertions</span>))]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">main_typescriptify</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">main_typescriptify</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="macro">anyhow::bail!</span>(<span class="string">&quot;This program should be compiled in debug mode&quot;</span>);
 }
 </code></pre></div>

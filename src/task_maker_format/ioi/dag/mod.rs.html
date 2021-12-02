@@ -601,37 +601,37 @@
 <span class="doccomment">/// - `validation_handle: Option&lt;File&gt;`</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">bind_exec_io</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">exec</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">task</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">validation_handle</span>:<span class="ident">expr</span>) <span class="op">=</span><span class="op">&gt;</span> {{
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">exec</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">task</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">validation_handle</span>:<span class="ident">expr</span>) =&gt; {{
         <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">task</span>.<span class="ident">infile</span> {
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">exec</span>.<span class="ident">stdin</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>),
-            <span class="prelude-val">Some</span>(<span class="ident">infile</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">exec</span>.<span class="ident">input</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>, <span class="ident">infile</span>, <span class="bool-val">false</span>),
+            <span class="prelude-val">None</span> =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">exec</span>.<span class="ident">stdin</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">infile</span>) =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">exec</span>.<span class="ident">input</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>, <span class="ident">infile</span>, <span class="bool-val">false</span>),
         };
         <span class="kw">match</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">validation_handle</span> {
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> {}
-            <span class="prelude-val">Some</span>(<span class="ident">file</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="prelude-val">None</span> =&gt; {}
+            <span class="prelude-val">Some</span>(<span class="ident">file</span>) =&gt; {
                 <span class="macro-nonterminal">$</span><span class="macro-nonterminal">exec</span>.<span class="ident">input</span>(<span class="ident">file</span>, <span class="string">&quot;wait_for_validation&quot;</span>, <span class="bool-val">false</span>);
             }
         };
         <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">task</span>.<span class="ident">outfile</span> {
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">exec</span>.<span class="ident">stdout</span>(),
-            <span class="prelude-val">Some</span>(<span class="ident">outfile</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">exec</span>.<span class="ident">output</span>(<span class="ident">outfile</span>),
+            <span class="prelude-val">None</span> =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">exec</span>.<span class="ident">stdout</span>(),
+            <span class="prelude-val">Some</span>(<span class="ident">outfile</span>) =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">exec</span>.<span class="ident">output</span>(<span class="ident">outfile</span>),
         }
     }};
 }
 
 <span class="kw">impl</span> <span class="ident">TestcaseScoreAggregator</span> {
     <span class="doccomment">/// Aggregate the scores of a subtask from an iterator with the scores of the testcases.</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">aggregate</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">iter</span>: <span class="ident">I</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">f64</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">aggregate</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">iter</span>: <span class="ident">I</span>) -&gt; <span class="ident">f64</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">TestcaseScoreAggregator::Min</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">iter</span>
+            <span class="ident">TestcaseScoreAggregator::Min</span> =&gt; <span class="ident">iter</span>
                 .<span class="ident">into_iter</span>()
                 .<span class="ident">min_by</span>(<span class="op">|</span><span class="ident">a</span>, <span class="ident">b</span><span class="op">|</span> <span class="ident">a</span>.<span class="ident">partial_cmp</span>(<span class="ident">b</span>).<span class="ident">unwrap</span>())
                 .<span class="ident">unwrap_or</span>(<span class="number">1.0</span>),
-            <span class="ident">TestcaseScoreAggregator::Sum</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">TestcaseScoreAggregator::Sum</span> =&gt; {
                 <span class="kw">let</span> <span class="ident">sum_count</span> <span class="op">=</span> <span class="ident">iter</span>
                     .<span class="ident">into_iter</span>()
                     .<span class="ident">fold</span>((<span class="number">0.0</span>, <span class="number">0</span>), <span class="op">|</span><span class="ident">prev</span>, <span class="ident">cur</span><span class="op">|</span> (<span class="ident">prev</span>.<span class="number">0</span> <span class="op">+</span> <span class="ident">cur</span>, <span class="ident">prev</span>.<span class="number">1</span> <span class="op">+</span> <span class="number">1</span>));
-                <span class="kw">if</span> <span class="ident">sum_count</span>.<span class="number">1</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+                <span class="kw">if</span> <span class="ident">sum_count</span>.<span class="number">1</span> <span class="op">==</span> <span class="number">0</span> {
                     <span class="kw">return</span> <span class="number">1.0</span>;
                 }
                 <span class="ident">sum_count</span>.<span class="number">0</span> <span class="op">/</span> (<span class="ident">f64::from</span>(<span class="ident">sum_count</span>.<span class="number">1</span>))
@@ -654,7 +654,7 @@
 
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
-    <span class="kw">fn</span> <span class="ident">make_task</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">path</span>: <span class="ident">P</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">IOITask</span> {
+    <span class="kw">fn</span> <span class="ident">make_task</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">path</span>: <span class="ident">P</span>) -&gt; <span class="ident">IOITask</span> {
         <span class="ident">IOITask</span> {
             <span class="ident">path</span>: <span class="ident">path</span>.<span class="ident">into</span>(),
             <span class="ident">task_type</span>: <span class="ident">TaskType::Batch</span>(<span class="ident">BatchTypeData</span> {

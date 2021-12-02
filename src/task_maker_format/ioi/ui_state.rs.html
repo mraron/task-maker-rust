@@ -712,7 +712,7 @@
 
 <span class="kw">impl</span> <span class="ident">SolutionEvaluationState</span> {
     <span class="doccomment">/// Make a new, empty, `SolutionEvaluationState`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">IOITask</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SolutionEvaluationState</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">IOITask</span>) -&gt; <span class="ident">SolutionEvaluationState</span> {
         <span class="ident">SolutionEvaluationState</span> {
             <span class="ident">score</span>: <span class="prelude-val">None</span>,
             <span class="ident">subtasks</span>: <span class="ident">task</span>
@@ -786,7 +786,7 @@
 
 <span class="kw">impl</span> <span class="ident">TestcaseEvaluationStatus</span> {
     <span class="doccomment">/// Whether the testcase evaluation has completed, either successfully or not.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">has_completed</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">has_completed</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
         <span class="op">!</span><span class="macro">matches!</span>(
             <span class="self">self</span>,
             <span class="ident">TestcaseEvaluationStatus::Pending</span>
@@ -797,57 +797,57 @@
     }
 
     <span class="doccomment">/// Whether the testcase evaluation has completed successfully.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_success</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_success</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
         <span class="macro">matches!</span>(<span class="self">self</span>, <span class="ident">TestcaseEvaluationStatus::Accepted</span>(<span class="kw">_</span>))
     }
 
     <span class="doccomment">/// Whether the testcase evaluation has completed with a partial score.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_partial</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_partial</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
         <span class="macro">matches!</span>(<span class="self">self</span>, <span class="ident">TestcaseEvaluationStatus::Partial</span>(<span class="kw">_</span>))
     }
 
     <span class="doccomment">/// A message representing this status.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">message</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">message</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">String</span> {
         <span class="kw">use</span> <span class="ident">TestcaseEvaluationStatus</span>::<span class="kw-2">*</span>;
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Pending</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;Not done&quot;</span>.<span class="ident">into</span>(),
-            <span class="ident">Solving</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;Solution running&quot;</span>.<span class="ident">into</span>(),
-            <span class="ident">Solved</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;Solution completed&quot;</span>.<span class="ident">into</span>(),
-            <span class="ident">Checking</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;Checker running&quot;</span>.<span class="ident">into</span>(),
-            <span class="ident">Accepted</span>(<span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">Pending</span> =&gt; <span class="string">&quot;Not done&quot;</span>.<span class="ident">into</span>(),
+            <span class="ident">Solving</span> =&gt; <span class="string">&quot;Solution running&quot;</span>.<span class="ident">into</span>(),
+            <span class="ident">Solved</span> =&gt; <span class="string">&quot;Solution completed&quot;</span>.<span class="ident">into</span>(),
+            <span class="ident">Checking</span> =&gt; <span class="string">&quot;Checker running&quot;</span>.<span class="ident">into</span>(),
+            <span class="ident">Accepted</span>(<span class="ident">s</span>) =&gt; {
                 <span class="kw">if</span> <span class="ident">s</span>.<span class="ident">is_empty</span>() {
                     <span class="string">&quot;Output is correct&quot;</span>.<span class="ident">into</span>()
                 } <span class="kw">else</span> {
                     <span class="ident">s</span>.<span class="ident">clone</span>()
                 }
             }
-            <span class="ident">WrongAnswer</span>(<span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">WrongAnswer</span>(<span class="ident">s</span>) =&gt; {
                 <span class="kw">if</span> <span class="ident">s</span>.<span class="ident">is_empty</span>() {
                     <span class="string">&quot;Output is not correct&quot;</span>.<span class="ident">into</span>()
                 } <span class="kw">else</span> {
                     <span class="ident">s</span>.<span class="ident">clone</span>()
                 }
             }
-            <span class="ident">Partial</span>(<span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">Partial</span>(<span class="ident">s</span>) =&gt; {
                 <span class="kw">if</span> <span class="ident">s</span>.<span class="ident">is_empty</span>() {
                     <span class="string">&quot;Partially correct&quot;</span>.<span class="ident">into</span>()
                 } <span class="kw">else</span> {
                     <span class="ident">s</span>.<span class="ident">clone</span>()
                 }
             }
-            <span class="ident">TimeLimitExceeded</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;Time limit exceeded&quot;</span>.<span class="ident">into</span>(),
-            <span class="ident">WallTimeLimitExceeded</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;Execution took too long&quot;</span>.<span class="ident">into</span>(),
-            <span class="ident">MemoryLimitExceeded</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;Memory limit exceeded&quot;</span>.<span class="ident">into</span>(),
-            <span class="ident">RuntimeError</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;Runtime error&quot;</span>.<span class="ident">into</span>(),
-            <span class="ident">Failed</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;Execution failed&quot;</span>.<span class="ident">into</span>(),
-            <span class="ident">Skipped</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;Execution skipped&quot;</span>.<span class="ident">into</span>(),
+            <span class="ident">TimeLimitExceeded</span> =&gt; <span class="string">&quot;Time limit exceeded&quot;</span>.<span class="ident">into</span>(),
+            <span class="ident">WallTimeLimitExceeded</span> =&gt; <span class="string">&quot;Execution took too long&quot;</span>.<span class="ident">into</span>(),
+            <span class="ident">MemoryLimitExceeded</span> =&gt; <span class="string">&quot;Memory limit exceeded&quot;</span>.<span class="ident">into</span>(),
+            <span class="ident">RuntimeError</span> =&gt; <span class="string">&quot;Runtime error&quot;</span>.<span class="ident">into</span>(),
+            <span class="ident">Failed</span> =&gt; <span class="string">&quot;Execution failed&quot;</span>.<span class="ident">into</span>(),
+            <span class="ident">Skipped</span> =&gt; <span class="string">&quot;Execution skipped&quot;</span>.<span class="ident">into</span>(),
         }
     }
 }
 
 <span class="kw">impl</span> <span class="ident">UIState</span> {
     <span class="doccomment">/// Make a new `UIState`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">IOITask</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">UIState</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">IOITask</span>) -&gt; <span class="ident">UIState</span> {
         <span class="kw">let</span> <span class="ident">generations</span> <span class="op">=</span> <span class="ident">task</span>
             .<span class="ident">subtasks</span>
             .<span class="ident">iter</span>()
@@ -888,29 +888,29 @@
 }
 
 <span class="kw">impl</span> <span class="ident">UIStateT</span> <span class="kw">for</span> <span class="ident">UIState</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">message</span>: <span class="kw-2">&amp;</span><span class="ident">UIMessage</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">message</span>: <span class="kw-2">&amp;</span><span class="ident">UIMessage</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">match</span> <span class="ident">message</span> {
-            <span class="ident">UIMessage::IOITask</span> { <span class="ident">task</span> } <span class="op">=</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::new</span>(<span class="ident">task</span>.<span class="ident">as_ref</span>()),
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">unreachable!</span>(<span class="string">&quot;Expecting IOITask, got {:?}&quot;</span>, <span class="ident">message</span>),
+            <span class="ident">UIMessage::IOITask</span> { <span class="ident">task</span> } =&gt; <span class="ident"><span class="self">Self</span>::new</span>(<span class="ident">task</span>.<span class="ident">as_ref</span>()),
+            <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;Expecting IOITask, got {:?}&quot;</span>, <span class="ident">message</span>),
         }
     }
 
     <span class="doccomment">/// Apply a `UIMessage` to this state.</span>
     <span class="kw">fn</span> <span class="ident">apply</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">message</span>: <span class="ident">UIMessage</span>) {
         <span class="kw">match</span> <span class="ident">message</span> {
-            <span class="ident">UIMessage::StopUI</span> <span class="op">=</span><span class="op">&gt;</span> {}
-            <span class="ident">UIMessage::ServerStatus</span> { <span class="ident">status</span> } <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">executor_status</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">status</span>),
-            <span class="ident">UIMessage::Compilation</span> { <span class="ident">file</span>, <span class="ident">status</span> } <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>
+            <span class="ident">UIMessage::StopUI</span> =&gt; {}
+            <span class="ident">UIMessage::ServerStatus</span> { <span class="ident">status</span> } =&gt; <span class="self">self</span>.<span class="ident">executor_status</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">status</span>),
+            <span class="ident">UIMessage::Compilation</span> { <span class="ident">file</span>, <span class="ident">status</span> } =&gt; <span class="self">self</span>
                 .<span class="ident">compilations</span>
                 .<span class="ident">entry</span>(<span class="ident">file</span>)
                 .<span class="ident">or_insert</span>(<span class="ident">CompilationStatus::Pending</span>)
                 .<span class="ident">apply_status</span>(<span class="ident">status</span>),
-            <span class="ident">UIMessage::IOITask</span> { .. } <span class="op">=</span><span class="op">&gt;</span> {}
+            <span class="ident">UIMessage::IOITask</span> { .. } =&gt; {}
             <span class="ident">UIMessage::IOIGeneration</span> {
                 <span class="ident">subtask</span>,
                 <span class="ident">testcase</span>,
                 <span class="ident">status</span>,
-            } <span class="op">=</span><span class="op">&gt;</span> {
+            } =&gt; {
                 <span class="kw">let</span> <span class="ident">gen</span> <span class="op">=</span> <span class="self">self</span>
                     .<span class="ident">generations</span>
                     .<span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="ident">subtask</span>)
@@ -919,11 +919,11 @@
                     .<span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="ident">testcase</span>)
                     .<span class="ident">expect</span>(<span class="string">&quot;Testcase is gone&quot;</span>);
                 <span class="kw">match</span> <span class="ident">status</span> {
-                    <span class="ident">UIExecutionStatus::Pending</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">gen</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseGenerationStatus::Pending</span>,
-                    <span class="ident">UIExecutionStatus::Started</span> { .. } <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="ident">UIExecutionStatus::Pending</span> =&gt; <span class="ident">gen</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseGenerationStatus::Pending</span>,
+                    <span class="ident">UIExecutionStatus::Started</span> { .. } =&gt; {
                         <span class="ident">gen</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseGenerationStatus::Generating</span>
                     }
-                    <span class="ident">UIExecutionStatus::Done</span> { <span class="ident">result</span> } <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="ident">UIExecutionStatus::Done</span> { <span class="ident">result</span> } =&gt; {
                         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ExecutionStatus::Success</span> <span class="op">=</span> <span class="ident">result</span>.<span class="ident">status</span> {
                             <span class="ident">gen</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseGenerationStatus::Generated</span>;
                         } <span class="kw">else</span> {
@@ -931,14 +931,14 @@
                         }
                         <span class="ident">gen</span>.<span class="ident">generation</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">result</span>);
                     }
-                    <span class="ident">UIExecutionStatus::Skipped</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">gen</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseGenerationStatus::Skipped</span>,
+                    <span class="ident">UIExecutionStatus::Skipped</span> =&gt; <span class="ident">gen</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseGenerationStatus::Skipped</span>,
                 }
             }
             <span class="ident">UIMessage::IOIValidation</span> {
                 <span class="ident">subtask</span>,
                 <span class="ident">testcase</span>,
                 <span class="ident">status</span>,
-            } <span class="op">=</span><span class="op">&gt;</span> {
+            } =&gt; {
                 <span class="kw">let</span> <span class="ident">gen</span> <span class="op">=</span> <span class="self">self</span>
                     .<span class="ident">generations</span>
                     .<span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="ident">subtask</span>)
@@ -947,11 +947,11 @@
                     .<span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="ident">testcase</span>)
                     .<span class="ident">expect</span>(<span class="string">&quot;Testcase is gone&quot;</span>);
                 <span class="kw">match</span> <span class="ident">status</span> {
-                    <span class="ident">UIExecutionStatus::Pending</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">gen</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseGenerationStatus::Pending</span>,
-                    <span class="ident">UIExecutionStatus::Started</span> { .. } <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="ident">UIExecutionStatus::Pending</span> =&gt; <span class="ident">gen</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseGenerationStatus::Pending</span>,
+                    <span class="ident">UIExecutionStatus::Started</span> { .. } =&gt; {
                         <span class="ident">gen</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseGenerationStatus::Validating</span>
                     }
-                    <span class="ident">UIExecutionStatus::Done</span> { <span class="ident">result</span> } <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="ident">UIExecutionStatus::Done</span> { <span class="ident">result</span> } =&gt; {
                         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ExecutionStatus::Success</span> <span class="op">=</span> <span class="ident">result</span>.<span class="ident">status</span> {
                             <span class="ident">gen</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseGenerationStatus::Validated</span>;
                         } <span class="kw">else</span> {
@@ -959,7 +959,7 @@
                         }
                         <span class="ident">gen</span>.<span class="ident">validation</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">result</span>);
                     }
-                    <span class="ident">UIExecutionStatus::Skipped</span> <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="ident">UIExecutionStatus::Skipped</span> =&gt; {
                         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">TestcaseGenerationStatus::Failed</span> <span class="op">=</span> <span class="ident">gen</span>.<span class="ident">status</span> {
                         } <span class="kw">else</span> {
                             <span class="ident">gen</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseGenerationStatus::Skipped</span>;
@@ -971,7 +971,7 @@
                 <span class="ident">subtask</span>,
                 <span class="ident">testcase</span>,
                 <span class="ident">status</span>,
-            } <span class="op">=</span><span class="op">&gt;</span> {
+            } =&gt; {
                 <span class="kw">let</span> <span class="ident">gen</span> <span class="op">=</span> <span class="self">self</span>
                     .<span class="ident">generations</span>
                     .<span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="ident">subtask</span>)
@@ -980,11 +980,11 @@
                     .<span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="ident">testcase</span>)
                     .<span class="ident">expect</span>(<span class="string">&quot;Testcase is gone&quot;</span>);
                 <span class="kw">match</span> <span class="ident">status</span> {
-                    <span class="ident">UIExecutionStatus::Pending</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">gen</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseGenerationStatus::Pending</span>,
-                    <span class="ident">UIExecutionStatus::Started</span> { .. } <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="ident">UIExecutionStatus::Pending</span> =&gt; <span class="ident">gen</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseGenerationStatus::Pending</span>,
+                    <span class="ident">UIExecutionStatus::Started</span> { .. } =&gt; {
                         <span class="ident">gen</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseGenerationStatus::Solving</span>
                     }
-                    <span class="ident">UIExecutionStatus::Done</span> { <span class="ident">result</span> } <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="ident">UIExecutionStatus::Done</span> { <span class="ident">result</span> } =&gt; {
                         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ExecutionStatus::Success</span> <span class="op">=</span> <span class="ident">result</span>.<span class="ident">status</span> {
                             <span class="ident">gen</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseGenerationStatus::Solved</span>;
                         } <span class="kw">else</span> {
@@ -992,7 +992,7 @@
                         }
                         <span class="ident">gen</span>.<span class="ident">solution</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">result</span>);
                     }
-                    <span class="ident">UIExecutionStatus::Skipped</span> <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="ident">UIExecutionStatus::Skipped</span> =&gt; {
                         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">TestcaseGenerationStatus::Failed</span> <span class="op">=</span> <span class="ident">gen</span>.<span class="ident">status</span> {
                         } <span class="kw">else</span> {
                             <span class="ident">gen</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseGenerationStatus::Skipped</span>;
@@ -1007,7 +1007,7 @@
                 <span class="ident">status</span>,
                 <span class="ident">part</span>,
                 <span class="ident">num_parts</span>,
-            } <span class="op">=</span><span class="op">&gt;</span> {
+            } =&gt; {
                 <span class="kw">let</span> <span class="ident">task</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">task</span>;
                 <span class="kw">let</span> <span class="ident">eval</span> <span class="op">=</span> <span class="self">self</span>
                     .<span class="ident">evaluations</span>
@@ -1022,40 +1022,40 @@
                     <span class="ident">testcase</span>.<span class="ident">results</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="prelude-val">None</span>; <span class="ident">num_parts</span>];
                 }
                 <span class="kw">match</span> <span class="ident">status</span> {
-                    <span class="ident">UIExecutionStatus::Pending</span> <span class="op">=</span><span class="op">&gt;</span> {}
-                    <span class="ident">UIExecutionStatus::Started</span> { .. } <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="ident">UIExecutionStatus::Pending</span> =&gt; {}
+                    <span class="ident">UIExecutionStatus::Started</span> { .. } =&gt; {
                         <span class="ident">testcase</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseEvaluationStatus::Solving</span>
                     }
-                    <span class="ident">UIExecutionStatus::Done</span> { <span class="ident">result</span> } <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="ident">UIExecutionStatus::Done</span> { <span class="ident">result</span> } =&gt; {
                         <span class="kw">match</span> <span class="ident">result</span>.<span class="ident">status</span> {
-                            <span class="ident">ExecutionStatus::Success</span> <span class="op">=</span><span class="op">&gt;</span> {
+                            <span class="ident">ExecutionStatus::Success</span> =&gt; {
                                 <span class="ident">testcase</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseEvaluationStatus::Solved</span>
                             }
-                            <span class="ident">ExecutionStatus::ReturnCode</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                            <span class="ident">ExecutionStatus::ReturnCode</span>(<span class="kw">_</span>) =&gt; {
                                 <span class="ident">testcase</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseEvaluationStatus::RuntimeError</span>
                             }
-                            <span class="ident">ExecutionStatus::Signal</span>(<span class="kw">_</span>, <span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                            <span class="ident">ExecutionStatus::Signal</span>(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; {
                                 <span class="ident">testcase</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseEvaluationStatus::RuntimeError</span>
                             }
-                            <span class="ident">ExecutionStatus::TimeLimitExceeded</span> <span class="op">=</span><span class="op">&gt;</span> {
+                            <span class="ident">ExecutionStatus::TimeLimitExceeded</span> =&gt; {
                                 <span class="ident">testcase</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseEvaluationStatus::TimeLimitExceeded</span>
                             }
-                            <span class="ident">ExecutionStatus::SysTimeLimitExceeded</span> <span class="op">=</span><span class="op">&gt;</span> {
+                            <span class="ident">ExecutionStatus::SysTimeLimitExceeded</span> =&gt; {
                                 <span class="ident">testcase</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseEvaluationStatus::TimeLimitExceeded</span>
                             }
-                            <span class="ident">ExecutionStatus::WallTimeLimitExceeded</span> <span class="op">=</span><span class="op">&gt;</span> {
+                            <span class="ident">ExecutionStatus::WallTimeLimitExceeded</span> =&gt; {
                                 <span class="ident">testcase</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseEvaluationStatus::WallTimeLimitExceeded</span>
                             }
-                            <span class="ident">ExecutionStatus::MemoryLimitExceeded</span> <span class="op">=</span><span class="op">&gt;</span> {
+                            <span class="ident">ExecutionStatus::MemoryLimitExceeded</span> =&gt; {
                                 <span class="ident">testcase</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseEvaluationStatus::MemoryLimitExceeded</span>
                             }
-                            <span class="ident">ExecutionStatus::InternalError</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                            <span class="ident">ExecutionStatus::InternalError</span>(<span class="kw">_</span>) =&gt; {
                                 <span class="ident">testcase</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseEvaluationStatus::Failed</span>
                             }
                         }
                         <span class="ident">testcase</span>.<span class="ident">results</span>[<span class="ident">part</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">result</span>);
                     }
-                    <span class="ident">UIExecutionStatus::Skipped</span> <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="ident">UIExecutionStatus::Skipped</span> =&gt; {
                         <span class="ident">testcase</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseEvaluationStatus::Skipped</span>
                     }
                 }
@@ -1065,7 +1065,7 @@
                 <span class="ident">testcase</span>,
                 <span class="ident">solution</span>,
                 <span class="ident">status</span>,
-            } <span class="op">=</span><span class="op">&gt;</span> {
+            } =&gt; {
                 <span class="kw">let</span> <span class="ident">task</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">task</span>;
                 <span class="kw">let</span> <span class="ident">eval</span> <span class="op">=</span> <span class="self">self</span>
                     .<span class="ident">evaluations</span>
@@ -1077,13 +1077,13 @@
                     .<span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="ident">testcase</span>)
                     .<span class="ident">expect</span>(<span class="string">&quot;Missing testcase&quot;</span>);
                 <span class="kw">match</span> <span class="ident">status</span> {
-                    <span class="ident">UIExecutionStatus::Started</span> { .. } <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="ident">UIExecutionStatus::Started</span> { .. } =&gt; {
                         <span class="ident">testcase</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseEvaluationStatus::Checking</span>;
                     }
-                    <span class="ident">UIExecutionStatus::Done</span> { <span class="ident">result</span> } <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="ident">UIExecutionStatus::Done</span> { <span class="ident">result</span> } =&gt; {
                         <span class="ident">testcase</span>.<span class="ident">checker</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">result</span>);
                     }
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> {}
+                    <span class="kw">_</span> =&gt; {}
                 }
             }
             <span class="ident">UIMessage::IOITestcaseScore</span> {
@@ -1092,7 +1092,7 @@
                 <span class="ident">solution</span>,
                 <span class="ident">score</span>,
                 <span class="ident">message</span>,
-            } <span class="op">=</span><span class="op">&gt;</span> {
+            } =&gt; {
                 <span class="kw">let</span> <span class="ident">task</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">task</span>;
                 <span class="kw">let</span> <span class="ident">eval</span> <span class="op">=</span> <span class="self">self</span>
                     .<span class="ident">evaluations</span>
@@ -1105,7 +1105,7 @@
                     .<span class="ident">expect</span>(<span class="string">&quot;Missing testcase&quot;</span>);
                 <span class="ident">testcase</span>.<span class="ident">score</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">score</span>);
                 <span class="kw">if</span> <span class="op">!</span><span class="ident">testcase</span>.<span class="ident">status</span>.<span class="ident">has_completed</span>() {
-                    <span class="kw">if</span> <span class="ident">score</span> <span class="op">=</span><span class="op">=</span> <span class="number">0.0</span> {
+                    <span class="kw">if</span> <span class="ident">score</span> <span class="op">==</span> <span class="number">0.0</span> {
                         <span class="ident">testcase</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseEvaluationStatus::WrongAnswer</span>(<span class="ident">message</span>);
                     } <span class="kw">else</span> <span class="kw">if</span> (<span class="ident">score</span> <span class="op">-</span> <span class="number">1.0</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">0.001</span> {
                         <span class="ident">testcase</span>.<span class="ident">status</span> <span class="op">=</span> <span class="ident">TestcaseEvaluationStatus::Accepted</span>(<span class="ident">message</span>);
@@ -1119,7 +1119,7 @@
                 <span class="ident">solution</span>,
                 <span class="ident">score</span>,
                 <span class="ident">normalized_score</span>,
-            } <span class="op">=</span><span class="op">&gt;</span> {
+            } =&gt; {
                 <span class="kw">let</span> <span class="ident">task</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">task</span>;
                 <span class="kw">let</span> <span class="ident">eval</span> <span class="op">=</span> <span class="self">self</span>
                     .<span class="ident">evaluations</span>
@@ -1129,7 +1129,7 @@
                 <span class="ident">subtask</span>.<span class="ident">score</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">score</span>);
                 <span class="ident">subtask</span>.<span class="ident">normalized_score</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">normalized_score</span>);
             }
-            <span class="ident">UIMessage::IOITaskScore</span> { <span class="ident">solution</span>, <span class="ident">score</span> } <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">UIMessage::IOITaskScore</span> { <span class="ident">solution</span>, <span class="ident">score</span> } =&gt; {
                 <span class="kw">let</span> <span class="ident">task</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">task</span>;
                 <span class="kw">let</span> <span class="ident">eval</span> <span class="op">=</span> <span class="self">self</span>
                     .<span class="ident">evaluations</span>
@@ -1137,7 +1137,7 @@
                     .<span class="ident">or_insert_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">SolutionEvaluationState::new</span>(<span class="ident">task</span>));
                 <span class="ident">eval</span>.<span class="ident">score</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">score</span>);
             }
-            <span class="ident">UIMessage::IOIBooklet</span> { <span class="ident">name</span>, <span class="ident">status</span> } <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">UIMessage::IOIBooklet</span> { <span class="ident">name</span>, <span class="ident">status</span> } =&gt; {
                 <span class="self">self</span>.<span class="ident">booklets</span>
                     .<span class="ident">entry</span>(<span class="ident">name</span>)
                     .<span class="ident">or_insert_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">BookletState</span> {
@@ -1152,7 +1152,7 @@
                 <span class="ident">step</span>,
                 <span class="ident">num_steps</span>,
                 <span class="ident">status</span>,
-            } <span class="op">=</span><span class="op">&gt;</span> {
+            } =&gt; {
                 <span class="self">self</span>.<span class="ident">booklets</span>
                     .<span class="ident">entry</span>(<span class="ident">booklet</span>)
                     .<span class="ident">or_insert_with</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">BookletState</span> {
@@ -1172,7 +1172,7 @@
                     .<span class="ident">expect</span>(<span class="string">&quot;Statement dependency step is gone&quot;</span>)
                     .<span class="ident">status</span> <span class="op">=</span> <span class="ident">status</span>;
             }
-            <span class="ident">UIMessage::Warning</span> { <span class="ident">message</span> } <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">UIMessage::Warning</span> { <span class="ident">message</span> } =&gt; {
                 <span class="self">self</span>.<span class="ident">warnings</span>.<span class="ident">push</span>(<span class="ident">message</span>);
             }
             <span class="ident">UIMessage::TerryTask</span> { .. }
@@ -1180,7 +1180,7 @@
             <span class="op">|</span> <span class="ident">UIMessage::TerryValidation</span> { .. }
             <span class="op">|</span> <span class="ident">UIMessage::TerrySolution</span> { .. }
             <span class="op">|</span> <span class="ident">UIMessage::TerryChecker</span> { .. }
-            <span class="op">|</span> <span class="ident">UIMessage::TerrySolutionOutcome</span> { .. } <span class="op">=</span><span class="op">&gt;</span> <span class="macro">unreachable!</span>(<span class="string">&quot;Terry message on IOI UI&quot;</span>),
+            <span class="op">|</span> <span class="ident">UIMessage::TerrySolutionOutcome</span> { .. } =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;Terry message on IOI UI&quot;</span>),
         }
     }
 

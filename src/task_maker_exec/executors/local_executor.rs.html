@@ -156,7 +156,7 @@
         <span class="ident">file_store</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">FileStore</span><span class="op">&gt;</span>,
         <span class="ident">num_workers</span>: <span class="ident">usize</span>,
         <span class="ident">sandbox_path</span>: <span class="ident">P</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">LocalExecutor</span> {
+    ) -&gt; <span class="ident">LocalExecutor</span> {
         <span class="ident">LocalExecutor</span> {
             <span class="ident">num_workers</span>,
             <span class="ident">file_store</span>,
@@ -177,7 +177,7 @@
         <span class="ident">receiver</span>: <span class="ident">ChannelReceiver</span><span class="op">&lt;</span><span class="ident">ExecutorClientMessage</span><span class="op">&gt;</span>,
         <span class="ident">cache</span>: <span class="ident">Cache</span>,
         <span class="ident">sandbox_runner</span>: <span class="ident">R</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span>
+    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="ident">R</span>: <span class="ident">SandboxRunner</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {

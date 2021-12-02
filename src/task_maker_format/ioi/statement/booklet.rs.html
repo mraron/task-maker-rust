@@ -442,7 +442,7 @@
 
 <span class="kw">impl</span> <span class="ident">Booklet</span> {
     <span class="doccomment">/// Make a new `Booklet` using the specified configuration.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">config</span>: <span class="ident">BookletConfig</span>, <span class="ident">dest</span>: <span class="ident">P</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">config</span>: <span class="ident">BookletConfig</span>, <span class="ident">dest</span>: <span class="ident">P</span>) -&gt; <span class="self">Self</span> {
         <span class="ident">Booklet</span> {
             <span class="ident">config</span>,
             <span class="ident">dest</span>: <span class="ident">dest</span>.<span class="ident">into</span>(),
@@ -456,7 +456,7 @@
     }
 
     <span class="doccomment">/// Build the booklet, eventually coping the final PDF to the specified destination.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">build</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">eval</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">EvaluationData</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">build</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">eval</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">EvaluationData</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">booklet_name</span> <span class="op">=</span> <span class="self">self</span>
             .<span class="ident">dest</span>
             .<span class="ident">file_name</span>()
@@ -553,7 +553,7 @@
 
     <span class="doccomment">/// Build the main booklet.tex source file by combining the info from all the statements and</span>
     <span class="doccomment">/// expanding the template.</span>
-    <span class="kw">fn</span> <span class="ident">make_tex</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+    <span class="kw">fn</span> <span class="ident">make_tex</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">String</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">packages</span> <span class="op">=</span> <span class="ident">HashSet::new</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tasks</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
         <span class="kw">for</span> <span class="ident">statement</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">statements</span>.<span class="ident">iter</span>() {
@@ -585,12 +585,12 @@
     }
 
     <span class="doccomment">/// Return a string which is `if_true` if `b` is true, otherwise an empty string.</span>
-    <span class="kw">fn</span> <span class="ident">bool_to_tpl_string</span>(<span class="ident">b</span>: <span class="ident">bool</span>, <span class="ident">if_true</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+    <span class="kw">fn</span> <span class="ident">bool_to_tpl_string</span>(<span class="ident">b</span>: <span class="ident">bool</span>, <span class="ident">if_true</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">String</span> {
         <span class="kw">if</span> <span class="ident">b</span> { <span class="ident">if_true</span> } <span class="kw">else</span> { <span class="string">&quot;&quot;</span> }.<span class="ident">to_string</span>()
     }
 
     <span class="doccomment">/// Given the content of the log from latexmk, extract the errors and emit them as warnings.</span>
-    <span class="kw">fn</span> <span class="ident">emit_warnings</span>(<span class="ident">content</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">sender</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">UIMessageSender</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">emit_warnings</span>(<span class="ident">content</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">sender</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">UIMessageSender</span><span class="op">&gt;</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="macro">lazy_static!</span> {
             <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">FIND_ERRORS</span>: <span class="ident">Regex</span> <span class="op">=</span>
                 <span class="ident">Regex::new</span>(<span class="string">r&quot;(?ms)^!(?: LaTeX Error:)? ([^\n]+).*?(^l\.\d+)&quot;</span>)
@@ -614,13 +614,13 @@
         <span class="ident">language</span>: <span class="ident">S</span>,
         <span class="ident">contest_dir</span>: <span class="ident">P</span>,
         <span class="ident">booklet_solutions</span>: <span class="ident">bool</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">BookletConfig</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">BookletConfig</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">contest_yaml</span>) <span class="op">=</span> <span class="ident"><span class="self">Self</span>::contest_yaml</span>(<span class="ident">contest_dir</span>) {
             <span class="kw">let</span> <span class="ident">contest_yaml</span> <span class="op">=</span> <span class="ident">contest_yaml</span><span class="question-mark">?</span>;
             <span class="prelude-val">Ok</span>(<span class="ident">BookletConfig</span> {
                 <span class="ident">language</span>: <span class="ident">language</span>.<span class="ident">into</span>(),
                 <span class="ident">show_solutions</span>: <span class="ident">booklet_solutions</span>,
-                <span class="ident">show_summary</span>: <span class="ident">contest_yaml</span>.<span class="ident">show_summary</span> <span class="op">=</span><span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">&quot;True&quot;</span>.<span class="ident">to_string</span>()),
+                <span class="ident">show_summary</span>: <span class="ident">contest_yaml</span>.<span class="ident">show_summary</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="string">&quot;True&quot;</span>.<span class="ident">to_string</span>()),
                 <span class="ident">font_enc</span>: <span class="string">&quot;T1&quot;</span>.<span class="ident">into</span>(),
                 <span class="ident">input_enc</span>: <span class="string">&quot;utf8&quot;</span>.<span class="ident">into</span>(),
                 <span class="ident">description</span>: <span class="ident">contest_yaml</span>.<span class="ident">description</span>,
@@ -644,7 +644,7 @@
     }
 
     <span class="doccomment">/// Find and parse the contest.yaml in the provided contest root.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">contest_yaml</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">contest_dir</span>: <span class="ident">P</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ContestYAML</span>, <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">contest_yaml</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">contest_dir</span>: <span class="ident">P</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ContestYAML</span>, <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">contest_yaml_path</span> <span class="op">=</span> <span class="ident">contest_dir</span>.<span class="ident">into</span>().<span class="ident">join</span>(<span class="string">&quot;contest.yaml&quot;</span>);
         <span class="kw">let</span> <span class="ident">parse_yaml</span> <span class="op">=</span> <span class="op">|</span><span class="op">|</span> {
             <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">std::fs::File::open</span>(<span class="kw-2">&amp;</span><span class="ident">contest_yaml_path</span>).<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> {
@@ -672,7 +672,7 @@
 
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
-    <span class="kw">fn</span> <span class="ident">get_outputs_with_logs</span>(<span class="ident">task_root</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">copy_logs</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">get_outputs_with_logs</span>(<span class="ident">task_root</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">copy_logs</span>: <span class="ident">bool</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span> {
         <span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">eval</span>, <span class="ident">_recv</span>) <span class="op">=</span> <span class="ident">EvaluationData::new</span>(<span class="ident">task_root</span>);
         <span class="ident">eval</span>.<span class="ident">dag</span>.<span class="ident">data</span>.<span class="ident">config</span>.<span class="ident">copy_logs</span> <span class="op">=</span> <span class="ident">copy_logs</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">booklet</span> <span class="op">=</span> <span class="ident">Booklet::new</span>(<span class="ident">BookletConfig::default</span>(), <span class="ident">task_root</span>.<span class="ident">join</span>(<span class="string">&quot;dest.pdf&quot;</span>));

@@ -15,7 +15,7 @@ successful</li>
 <p><code>L1</code> is <em>less restrictive</em> than <code>L2</code> if there is no limit on <code>L1</code> that is <em>more restrictive</em>
 than the corresponding one in <code>L2</code>. If a limit is not present, its value is assumed to be
 <em>infinite</em>.</p>
-<h1 id="example" class="section-header"><a href="#example">Example</a></h1>
+<h2 id="example" class="section-header"><a href="#example">Example</a></h2>
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">tempdir::TempDir</span>;
 <span class="kw">use</span> <span class="ident">task_maker_cache</span>::{<span class="ident">Cache</span>, <span class="ident">CacheResult</span>};
 <span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
@@ -62,16 +62,16 @@ than the corresponding one in <code>L2</code>. If a limit is not present, its va
 <span class="comment">// retrieve the result from the cache</span>
 <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">cache</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">exec</span>.<span class="ident">into</span>(), <span class="kw-2">&amp;</span><span class="ident">file_keys</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">store</span>);
 <span class="kw">match</span> <span class="ident">res</span> {
-    <span class="ident">CacheResult::Miss</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic!</span>(<span class="string">&quot;Expecting a hit&quot;</span>),
-    <span class="ident">CacheResult::Hit</span> { <span class="ident">result</span>, <span class="ident">outputs</span> } <span class="op">=</span><span class="op">&gt;</span> {
+    <span class="ident">CacheResult::Miss</span> =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Expecting a hit&quot;</span>),
+    <span class="ident">CacheResult::Hit</span> { <span class="ident">result</span>, <span class="ident">outputs</span> } =&gt; {
         <span class="macro">assert_eq!</span>(<span class="ident">result</span>[<span class="number">0</span>].<span class="ident">status</span>, <span class="ident">ExecutionStatus::Success</span>);
         <span class="macro">assert_eq!</span>(<span class="ident">result</span>[<span class="number">0</span>].<span class="ident">resources</span>.<span class="ident">memory</span>, <span class="number">12345</span>);
     }
 }</code></pre></div>
 </div></details><h2 id="structs" class="section-header"><a href="#structs">Structs</a></h2>
-<div class="item-table"><div class="item-left module-item"><a class="struct" href="struct.Cache.html" title="task_maker_cache::Cache struct">Cache</a></div><div class="item-right docblock-short"><p>Handle the cached executions, loading and storing them to disk.</p>
-</div></div><h2 id="enums" class="section-header"><a href="#enums">Enums</a></h2>
-<div class="item-table"><div class="item-left module-item"><a class="enum" href="enum.CacheResult.html" title="task_maker_cache::CacheResult enum">CacheResult</a></div><div class="item-right docblock-short"><p>The result of a cache query, can be either successful (<code>Hit</code>) or unsuccessful (<code>Miss</code>).</p>
-</div></div></section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../" data-current-crate="task_maker_cache" data-search-index-js="../search-index.js" data-search-js="../search.js"></div>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.Cache.html" title="task_maker_cache::Cache struct">Cache</a></div><div class="item-right docblock-short"><p>Handle the cached executions, loading and storing them to disk.</p>
+</div></div></div><h2 id="enums" class="section-header"><a href="#enums">Enums</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="enum" href="enum.CacheResult.html" title="task_maker_cache::CacheResult enum">CacheResult</a></div><div class="item-right docblock-short"><p>The result of a cache query, can be either successful (<code>Hit</code>) or unsuccessful (<code>Miss</code>).</p>
+</div></div></div></section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../" data-current-crate="task_maker_cache" data-search-index-js="../search-index.js" data-search-js="../search.js"></div>
     <script src="../main.js"></script>
 </body></html>

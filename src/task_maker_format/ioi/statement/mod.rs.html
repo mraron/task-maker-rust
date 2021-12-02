@@ -130,7 +130,7 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_task_booklets</span>(
     <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">IOITask</span>,
     <span class="ident">eval_config</span>: <span class="kw-2">&amp;</span><span class="ident">EvaluationConfig</span>,
-) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Booklet</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Booklet</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">statements</span> <span class="op">=</span> <span class="ident">find_statement_files</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>.<span class="ident">path</span>);
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">booklets</span> <span class="op">=</span> <span class="macro">vec!</span>[];
     <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">StatementConfig::from_task</span>(<span class="ident">task</span>);
@@ -157,7 +157,7 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_context_booklets</span>(
     <span class="ident">tasks</span>: <span class="kw-2">&amp;</span>[<span class="ident">IOITask</span>],
     <span class="ident">eval_config</span>: <span class="kw-2">&amp;</span><span class="ident">EvaluationConfig</span>,
-) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Booklet</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Booklet</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="kw">if</span> <span class="ident">tasks</span>.<span class="ident">is_empty</span>() {
         <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="macro">vec!</span>[]);
     }
@@ -209,7 +209,7 @@
 }
 
 <span class="doccomment">/// Find a list of all the statement files for a task, extracting the language from them.</span>
-<span class="kw">fn</span> <span class="ident">find_statement_files</span>(<span class="ident">task_dir</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">String</span>, <span class="ident">PathBuf</span>)<span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">find_statement_files</span>(<span class="ident">task_dir</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">String</span>, <span class="ident">PathBuf</span>)<span class="op">&gt;</span> {
     <span class="ident">list_files</span>(<span class="ident">task_dir</span>, <span class="macro">vec!</span>[<span class="string">&quot;statement/*.tex&quot;</span>, <span class="string">&quot;testo/*.tex&quot;</span>])
         .<span class="ident">into_iter</span>()
         .<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">path</span><span class="op">|</span> {
