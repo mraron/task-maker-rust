@@ -1,5 +1,6 @@
 var N = null;var sourcesIndex = {};
 sourcesIndex["task_maker"] = {"name":"","files":["main.rs"]};
+sourcesIndex["task_maker_async"] = {"name":"","files":["lib.rs","server.rs","store.rs"]};
 sourcesIndex["task_maker_cache"] = {"name":"","files":["entry.rs","key.rs","lib.rs","storage.rs"]};
 sourcesIndex["task_maker_dag"] = {"name":"","files":["dag.rs","execution.rs","execution_group.rs","file.rs","lib.rs"]};
 sourcesIndex["task_maker_exec"] = {"name":"","dirs":[{"name":"executors","files":["local_executor.rs","mod.rs","remote_executor.rs"]}],"files":["check_dag.rs","client.rs","detect_exe.rs","executor.rs","find_tools.rs","lib.rs","proto.rs","sandbox.rs","sandbox_runner.rs","scheduler.rs","worker.rs","worker_manager.rs"]};
