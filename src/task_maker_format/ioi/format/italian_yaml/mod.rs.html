@@ -662,6 +662,15 @@
 <span id="662">662</span>
 <span id="663">663</span>
 <span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
+<span id="670">670</span>
+<span id="671">671</span>
+<span id="672">672</span>
+<span id="673">673</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The `italian_yaml` format is defined by [`cms`](https://cms.readthedocs.io/en/v1.4/External%20contest%20formats.html#italian-import-format)</span>
 <span class="doccomment">//! and it&#39;s the most used format in the Italian Olympiads.</span>
 <span class="doccomment">//!</span>
@@ -1235,8 +1244,13 @@
         .<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">mut</span> <span class="ident">c</span><span class="op">|</span> {
             <span class="comment">// always copy the custom checker</span>
             <span class="ident">c</span>.<span class="ident">copy_exe</span>();
+
             <span class="comment">// Link the checker statically. This makes sure that it will work also outside this machine.</span>
-            <span class="ident">c</span>.<span class="ident">link_static</span>();
+            <span class="comment">// Doesn&#39;t work on MacOS, see https://github.com/edomora97/task-maker-rust/pull/29</span>
+            <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>)) {
+                <span class="ident">c</span>.<span class="ident">link_static</span>();
+            }
+
             <span class="ident">Checker::Custom</span>(<span class="ident">Arc::new</span>(<span class="ident">c</span>))
         })
         .<span class="ident">unwrap_or</span>(<span class="ident">Checker::WhiteDiff</span>);
@@ -1274,8 +1288,12 @@
     } <span class="kw">else</span> {
         <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
     };
+
     <span class="comment">// Link the manager statically. This makes sure that it will work also outside this machine.</span>
-    <span class="ident">manager</span>.<span class="ident">link_static</span>();
+    <span class="comment">// Doesn&#39;t work on MacOS, see https://github.com/edomora97/task-maker-rust/pull/29</span>
+    <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>)) {
+        <span class="ident">manager</span>.<span class="ident">link_static</span>();
+    }
 
     <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">TaskType::Communication</span>(<span class="ident">CommunicationTypeData</span> {
         <span class="ident">manager</span>: <span class="ident">Arc::new</span>(<span class="ident">manager</span>),
