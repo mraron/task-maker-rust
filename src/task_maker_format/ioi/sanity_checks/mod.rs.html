@@ -105,6 +105,7 @@
 <span id="105">105</span>
 <span id="106">106</span>
 <span id="107">107</span>
+<span id="108">108</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Sanity checks for IOI-like tasks.</span>
 
 <span class="kw">use</span> <span class="ident">std::path::Path</span>;
@@ -142,6 +143,7 @@
         <span class="ident">Box::new</span>(<span class="ident">sol::SolSymlink::default</span>()),
         <span class="ident">Box::new</span>(<span class="ident">statement::StatementSubtasks::default</span>()),
         <span class="ident">Box::new</span>(<span class="ident">statement::StatementValid::default</span>()),
+        <span class="ident">Box::new</span>(<span class="ident">statement::StatementCompiled::default</span>()),
         <span class="ident">Box::new</span>(<span class="ident">statement::StatementGit::default</span>()),
     ];
     <span class="ident">all</span>.<span class="ident">into_iter</span>()

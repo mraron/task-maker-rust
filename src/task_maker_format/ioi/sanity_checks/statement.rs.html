@@ -255,6 +255,56 @@
 <span id="255">255</span>
 <span id="256">256</span>
 <span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::io::Read</span>;
 <span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
 <span class="kw">use</span> <span class="ident">std::process::Command</span>;
@@ -383,6 +433,56 @@
             }
         }
         <span class="prelude-val">Ok</span>(())
+    }
+}
+
+<span class="doccomment">/// Check that the statement file comes out of the compilation of one of the booklets.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StatementCompiled</span>;
+
+<span class="kw">impl</span> <span class="ident">SanityCheck</span><span class="op">&lt;</span><span class="ident">IOITask</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">StatementCompiled</span> {
+    <span class="kw">fn</span> <span class="ident">name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> {
+        <span class="string">&quot;StatementCompiled&quot;</span>
+    }
+
+    <span class="kw">fn</span> <span class="ident">post_hook</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">IOITask</span>, <span class="ident">ui</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">UIMessageSender</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="comment">// If there are no booklets it may mean that the statement is compiled with an external tool</span>
+        <span class="comment">// or that the statement compilation is not done. Either way this sanity check should be</span>
+        <span class="comment">// ignored.</span>
+        <span class="kw">if</span> <span class="ident">task</span>.<span class="ident">booklets</span>.<span class="ident">is_empty</span>() {
+            <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
+        }
+
+        <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">find_statement_pdf</span>(<span class="ident">task</span>) {
+            <span class="prelude-val">Some</span>(<span class="ident">path</span>) =&gt; <span class="ident">path</span>,
+            <span class="kw">_</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Ok</span>(()),
+        };
+        <span class="comment">// The source of the actual statement pdf (symlinks resolved). If the symlink is broken,</span>
+        <span class="comment">// there&#39;s nothing we can do (another sanity check will warn this error).</span>
+        <span class="kw">let</span> <span class="ident">target</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">path</span>.<span class="ident">canonicalize</span>() {
+            <span class="prelude-val">Ok</span>(<span class="ident">path</span>) =&gt; <span class="ident">path</span>,
+            <span class="kw">_</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Ok</span>(()),
+        };
+
+        <span class="kw">for</span> <span class="ident">booklet</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">task</span>.<span class="ident">booklets</span> {
+            <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">booklet</span>.<span class="ident">dest</span>.<span class="ident">canonicalize</span>() {
+                <span class="prelude-val">Ok</span>(<span class="ident">dest</span>) =&gt; <span class="ident">dest</span>,
+                <span class="kw">_</span> =&gt; <span class="kw">continue</span>,
+            };
+            <span class="comment">// this booklet corresponds to the official statement file, so we are good!</span>
+            <span class="kw">if</span> <span class="ident">dest</span> <span class="op">==</span> <span class="ident">target</span> {
+                <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
+            }
+        }
+
+        <span class="comment">// We didn&#39;t find any compiled booklet referring to the official statement, this means that</span>
+        <span class="comment">// the statement that will be used isn&#39;t the one compiled by us.</span>
+        <span class="kw">return</span> <span class="ident">ui</span>.<span class="ident">send</span>(<span class="ident">UIMessage::Warning</span> {
+            <span class="ident">message</span>: <span class="macro">format!</span>(
+                <span class="string">&quot;The official statement at {} is not the one compiled by task-maker&quot;</span>,
+                <span class="ident">path</span>.<span class="ident">strip_prefix</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>.<span class="ident">path</span>).<span class="ident">unwrap</span>().<span class="ident">display</span>()
+            ),
+        });
     }
 }
 
