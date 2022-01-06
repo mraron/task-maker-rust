@@ -634,7 +634,7 @@
         )
     })<span class="question-mark">?</span>;
 
-    <span class="ident">checker_sanity_check</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>, <span class="kw-2">&amp;</span><span class="ident">checker_content</span>)<span class="question-mark">?</span>;
+    <span class="ident">checker_sanity_check</span>(<span class="ident">data</span>, <span class="kw-2">&amp;</span><span class="ident">checker_content</span>)<span class="question-mark">?</span>;
     <span class="ident">patch_checker</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">checker_content</span>).<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">anyhow!</span>(<span class="string">&quot;Failed to patch checker&quot;</span>))<span class="question-mark">?</span>;
 
     <span class="ident">checker_file</span>
