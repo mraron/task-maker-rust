@@ -235,6 +235,16 @@
 <span id="235">235</span>
 <span id="236">236</span>
 <span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
 
 <span class="kw">use</span> <span class="ident">structopt::StructOpt</span>;
@@ -471,6 +481,16 @@
     <span class="doccomment">/// Don&#39;t print the fuzzer output to the console, but redirect it to a file.</span>
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span>)]</span>
     <span class="kw">pub</span> <span class="ident">quiet</span>: <span class="ident">bool</span>,
+
+    <span class="doccomment">/// Don&#39;t run the evaluation for building the output files.</span>
+    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">no_build</span>: <span class="ident">bool</span>,
+
+    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">flatten</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">execution</span>: <span class="ident">ExecutionOpt</span>,
+
+    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">flatten</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">storage</span>: <span class="ident">StorageOpt</span>,
 }
 </code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="task_maker_rust" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>

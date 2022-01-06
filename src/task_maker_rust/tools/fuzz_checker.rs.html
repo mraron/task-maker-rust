@@ -470,6 +470,33 @@
 <span id="470">470</span>
 <span id="471">471</span>
 <span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::io</span>::{<span class="ident">Read</span>, <span class="ident">Write</span>};
 <span class="kw">use</span> <span class="ident">std::os::unix::io</span>::{<span class="ident">FromRawFd</span>, <span class="ident">IntoRawFd</span>};
 <span class="kw">use</span> <span class="ident">std::path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
@@ -480,9 +507,10 @@
 <span class="kw">use</span> <span class="ident">serde::Deserialize</span>;
 
 <span class="kw">use</span> <span class="ident">task_maker_format::ioi</span>::{<span class="ident">Checker</span>, <span class="ident">TaskType</span>};
-<span class="kw">use</span> <span class="ident">task_maker_format::ui</span>::{<span class="ident">StdoutPrinter</span>, <span class="ident">RED</span>};
-<span class="kw">use</span> <span class="ident">task_maker_format</span>::{<span class="ident">cwrite</span>, <span class="ident">find_task</span>, <span class="ident">EvaluationConfig</span>, <span class="ident">TaskFormat</span>};
+<span class="kw">use</span> <span class="ident">task_maker_format::ui</span>::{<span class="ident">StdoutPrinter</span>, <span class="ident">UIType</span>, <span class="ident">RED</span>};
+<span class="kw">use</span> <span class="ident">task_maker_format</span>::{<span class="ident">cwrite</span>, <span class="ident">EvaluationConfig</span>, <span class="ident">TaskFormat</span>};
 
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::context::RuntimeContext</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::tools::opt::FuzzCheckerOpt</span>;
 
 <span class="kw">const</span> <span class="ident">CHECKER_HEADER</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] <span class="op">=</span> <span class="macro">include_bytes!</span>(<span class="string">&quot;./fuzz_checker/checker_header.h&quot;</span>);
@@ -501,27 +529,24 @@
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">main_fuzz_checker</span>(<span class="ident">opt</span>: <span class="ident">FuzzCheckerOpt</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">eval_config</span> <span class="op">=</span> <span class="ident">EvaluationConfig::default</span>();
-    <span class="kw">let</span> <span class="ident">task</span> <span class="op">=</span> <span class="ident">find_task</span>(
-        <span class="kw-2">&amp;</span><span class="ident">opt</span>.<span class="ident">find_task</span>.<span class="ident">task_dir</span>,
-        <span class="ident">opt</span>.<span class="ident">find_task</span>.<span class="ident">max_depth</span>,
-        <span class="kw-2">&amp;</span><span class="ident">eval_config</span>,
-    )
-    .<span class="ident">context</span>(<span class="string">&quot;Failed to locate the task&quot;</span>)<span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">task_format</span> <span class="op">=</span> <span class="ident">opt</span>
+        .<span class="ident">find_task</span>
+        .<span class="ident">find_task</span>(<span class="kw-2">&amp;</span><span class="ident">Default::default</span>())
+        .<span class="ident">context</span>(<span class="string">&quot;Failed to locate the task&quot;</span>)<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">task</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">TaskFormat::IOI</span>(<span class="ident">task</span>) <span class="op">=</span> <span class="ident">task</span> {
+    <span class="kw">let</span> <span class="ident">task</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">TaskFormat::IOI</span>(<span class="ident">task</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">task_format</span> {
         <span class="ident">task</span>
     } <span class="kw">else</span> {
         <span class="macro">bail!</span>(<span class="string">&quot;The fuzz-checker tool only supports IOI-tasks for now&quot;</span>);
     };
 
-    <span class="kw">let</span> <span class="ident">task_type</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">TaskType::Batch</span>(<span class="ident">task_type</span>) <span class="op">=</span> <span class="ident">task</span>.<span class="ident">task_type</span> {
+    <span class="kw">let</span> <span class="ident">task_type</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">TaskType::Batch</span>(<span class="ident">task_type</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">task</span>.<span class="ident">task_type</span> {
         <span class="ident">task_type</span>
     } <span class="kw">else</span> {
         <span class="macro">bail!</span>(<span class="string">&quot;Only Batch tasks are supported&quot;</span>);
     };
 
-    <span class="kw">let</span> <span class="ident">checker</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Checker::Custom</span>(<span class="ident">checker</span>) <span class="op">=</span> <span class="ident">task_type</span>.<span class="ident">checker</span> {
+    <span class="kw">let</span> <span class="ident">checker</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Checker::Custom</span>(<span class="ident">checker</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">task_type</span>.<span class="ident">checker</span> {
         <span class="ident">checker</span>
     } <span class="kw">else</span> {
         <span class="macro">bail!</span>(<span class="string">&quot;Only tasks with a checker are supported&quot;</span>);
@@ -544,13 +569,36 @@
         <span class="ident">opt</span>,
     };
 
-    <span class="kw">for</span> <span class="ident">output</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">fuzz_data</span>.<span class="ident">initial_output_files</span> {
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">output</span>.<span class="ident">exists</span>() {
-            <span class="macro">bail!</span>(<span class="string">&quot;The output files haven&#39;t been generated, please run task-maker&quot;</span>);
-        }
-    }
+    <span class="macro">trace!</span>(<span class="string">&quot;Fuzz data: {:#?}&quot;</span>, <span class="ident">fuzz_data</span>);
 
-    <span class="macro">debug!</span>(<span class="string">&quot;Fuzz data: {:#?}&quot;</span>, <span class="ident">fuzz_data</span>);
+    <span class="kw">if</span> <span class="ident">fuzz_data</span>.<span class="ident">opt</span>.<span class="ident">no_build</span> {
+        <span class="kw">for</span> <span class="ident">output</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">fuzz_data</span>.<span class="ident">initial_output_files</span> {
+            <span class="kw">if</span> <span class="op">!</span><span class="ident">output</span>.<span class="ident">exists</span>() {
+                <span class="macro">bail!</span>(<span class="string">&quot;The output files haven&#39;t been generated, please run task-maker&quot;</span>);
+            }
+        }
+    } <span class="kw">else</span> {
+        <span class="macro">info!</span>(<span class="string">&quot;Running task-maker for building the output files&quot;</span>);
+
+        <span class="kw">let</span> <span class="ident">eval_config</span> <span class="op">=</span> <span class="ident">EvaluationConfig</span> {
+            <span class="ident">solution_filter</span>: <span class="macro">vec!</span>[<span class="string">&quot;do not evaluate the solutions!!&quot;</span>.<span class="ident">into</span>()],
+            <span class="ident">no_statement</span>: <span class="bool-val">true</span>,
+            ..<span class="ident">Default::default</span>()
+        };
+
+        <span class="comment">// setup the configuration and the evaluation metadata</span>
+        <span class="kw">let</span> <span class="ident">context</span> <span class="op">=</span> <span class="ident">RuntimeContext::new</span>(<span class="ident">task_format</span>, <span class="kw-2">&amp;</span><span class="ident">fuzz_data</span>.<span class="ident">opt</span>.<span class="ident">execution</span>, <span class="op">|</span><span class="ident">task</span>, <span class="ident">eval</span><span class="op">|</span> {
+            <span class="comment">// build the DAG for the task</span>
+            <span class="ident">task</span>.<span class="ident">build_dag</span>(<span class="ident">eval</span>, <span class="kw-2">&amp;</span><span class="ident">eval_config</span>)
+                .<span class="ident">context</span>(<span class="string">&quot;Cannot build the task DAG&quot;</span>)
+        })<span class="question-mark">?</span>;
+
+        <span class="comment">// start the execution</span>
+        <span class="kw">let</span> <span class="ident">executor</span> <span class="op">=</span>
+            <span class="ident">context</span>.<span class="ident">connect_executor</span>(<span class="kw-2">&amp;</span><span class="ident">fuzz_data</span>.<span class="ident">opt</span>.<span class="ident">execution</span>, <span class="kw-2">&amp;</span><span class="ident">fuzz_data</span>.<span class="ident">opt</span>.<span class="ident">storage</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">executor</span> <span class="op">=</span> <span class="ident">executor</span>.<span class="ident">start_ui</span>(<span class="kw-2">&amp;</span><span class="ident">UIType::Silent</span>, <span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> {})<span class="question-mark">?</span>;
+        <span class="ident">executor</span>.<span class="ident">execute</span>()<span class="question-mark">?</span>;
+    }
 
     <span class="kw">let</span> <span class="ident">fuzz_dir</span> <span class="op">=</span> <span class="ident">fuzz_data</span>.<span class="ident">task_dir</span>.<span class="ident">join</span>(<span class="kw-2">&amp;</span><span class="ident">fuzz_data</span>.<span class="ident">opt</span>.<span class="ident">fuzz_dir</span>);
     <span class="kw">if</span> <span class="op">!</span><span class="ident">fuzz_dir</span>.<span class="ident">exists</span>() {
@@ -614,7 +662,10 @@
 }
 
 <span class="kw">fn</span> <span class="ident">write_checker_source</span>(<span class="ident">fuzz_dir</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="ident">FuzzData</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">fuzz_dir</span>.<span class="ident">join</span>(<span class="string">&quot;checker-patched.cpp&quot;</span>);
+    <span class="kw">let</span> <span class="ident">sources_dir</span> <span class="op">=</span> <span class="ident">fuzz_dir</span>.<span class="ident">join</span>(<span class="string">&quot;sources&quot;</span>);
+    <span class="ident">std::fs::create_dir_all</span>(<span class="kw-2">&amp;</span><span class="ident">sources_dir</span>)
+        .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">anyhow!</span>(<span class="string">&quot;Failed to create sources dir at {}&quot;</span>, <span class="ident">sources_dir</span>.<span class="ident">display</span>()))<span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">sources_dir</span>.<span class="ident">join</span>(<span class="string">&quot;checker-patched.cpp&quot;</span>);
     <span class="macro">info!</span>(<span class="string">&quot;Writing patched checker source at {}&quot;</span>, <span class="ident">path</span>.<span class="ident">display</span>());
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">checker_file</span> <span class="op">=</span> <span class="ident">std::fs::OpenOptions::new</span>()
         .<span class="ident">write</span>(<span class="bool-val">true</span>)
@@ -647,7 +698,7 @@
             )
         })<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">fuzzer</span> <span class="op">=</span> <span class="ident">fuzz_dir</span>.<span class="ident">join</span>(<span class="string">&quot;fuzzer.cpp&quot;</span>);
+    <span class="kw">let</span> <span class="ident">fuzzer</span> <span class="op">=</span> <span class="ident">sources_dir</span>.<span class="ident">join</span>(<span class="string">&quot;fuzzer.cpp&quot;</span>);
     <span class="macro">info!</span>(<span class="string">&quot;Writing fuzzer source at {}&quot;</span>, <span class="ident">fuzzer</span>.<span class="ident">display</span>());
     <span class="ident">std::fs::OpenOptions::new</span>()
         .<span class="ident">write</span>(<span class="bool-val">true</span>)
@@ -742,7 +793,10 @@
 }
 
 <span class="kw">fn</span> <span class="ident">compile_fuzzer</span>(<span class="ident">fuzz_dir</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="ident">FuzzData</span>, <span class="ident">sources</span>: <span class="kw-2">&amp;</span>[<span class="ident">PathBuf</span>]) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PathBuf</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">target</span> <span class="op">=</span> <span class="ident">fuzz_dir</span>.<span class="ident">join</span>(<span class="string">&quot;fuzzer&quot;</span>);
+    <span class="kw">let</span> <span class="ident">fuzzer_dir</span> <span class="op">=</span> <span class="ident">fuzz_dir</span>.<span class="ident">join</span>(<span class="string">&quot;fuzzer&quot;</span>);
+    <span class="ident">std::fs::create_dir_all</span>(<span class="kw-2">&amp;</span><span class="ident">fuzzer_dir</span>)
+        .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">anyhow!</span>(<span class="string">&quot;Failed to create fuzzer dir at {}&quot;</span>, <span class="ident">fuzzer_dir</span>.<span class="ident">display</span>()))<span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">target</span> <span class="op">=</span> <span class="ident">fuzzer_dir</span>.<span class="ident">join</span>(<span class="string">&quot;fuzzer&quot;</span>);
     <span class="macro">info!</span>(<span class="string">&quot;Compiling {} with clang++&quot;</span>, <span class="ident">target</span>.<span class="ident">display</span>());
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">command</span> <span class="op">=</span> <span class="ident">std::process::Command::new</span>(<span class="string">&quot;clang++&quot;</span>);
@@ -810,7 +864,7 @@
     <span class="ident">command</span>.<span class="ident">arg</span>(<span class="ident">fuzz_dir</span>.<span class="ident">join</span>(<span class="string">&quot;initial_corpus&quot;</span>));
     <span class="ident">command</span>.<span class="ident">arg</span>(<span class="macro">format!</span>(<span class="string">&quot;-artifact_prefix={}/&quot;</span>, <span class="ident">artifacts</span>.<span class="ident">display</span>()));
     <span class="kw">if</span> <span class="ident">data</span>.<span class="ident">opt</span>.<span class="ident">quiet</span> {
-        <span class="kw">let</span> <span class="ident">stdout</span> <span class="op">=</span> <span class="ident">fuzz_dir</span>.<span class="ident">join</span>(<span class="string">&quot;stdout.txt&quot;</span>);
+        <span class="kw">let</span> <span class="ident">stdout</span> <span class="op">=</span> <span class="ident">fuzz_dir</span>.<span class="ident">join</span>(<span class="string">&quot;fuzzer/stdout.txt&quot;</span>);
         <span class="macro">debug!</span>(<span class="string">&quot;Redirecting stdout to {}&quot;</span>, <span class="ident">stdout</span>.<span class="ident">display</span>());
         <span class="kw">let</span> <span class="ident">stdout_file</span> <span class="op">=</span> <span class="ident">std::fs::File::create</span>(<span class="kw-2">&amp;</span><span class="ident">stdout</span>)
             .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">anyhow!</span>(<span class="string">&quot;Failed to create stdout at {}&quot;</span>, <span class="ident">stdout</span>.<span class="ident">display</span>()))<span class="question-mark">?</span>;
@@ -818,7 +872,7 @@
         <span class="kw">let</span> <span class="ident">stdout</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Stdio::from_raw_fd</span>(<span class="ident">stdout_file</span>.<span class="ident">into_raw_fd</span>()) };
         <span class="ident">command</span>.<span class="ident">stdout</span>(<span class="ident">stdout</span>);
 
-        <span class="kw">let</span> <span class="ident">stderr</span> <span class="op">=</span> <span class="ident">fuzz_dir</span>.<span class="ident">join</span>(<span class="string">&quot;stderr.txt&quot;</span>);
+        <span class="kw">let</span> <span class="ident">stderr</span> <span class="op">=</span> <span class="ident">fuzz_dir</span>.<span class="ident">join</span>(<span class="string">&quot;fuzzer/stderr.txt&quot;</span>);
         <span class="macro">debug!</span>(<span class="string">&quot;Redirecting stderr to {}&quot;</span>, <span class="ident">stderr</span>.<span class="ident">display</span>());
         <span class="kw">let</span> <span class="ident">stderr_file</span> <span class="op">=</span> <span class="ident">std::fs::File::create</span>(<span class="kw-2">&amp;</span><span class="ident">stderr</span>)
             .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">anyhow!</span>(<span class="string">&quot;Failed to create stderr at {}&quot;</span>, <span class="ident">stderr</span>.<span class="ident">display</span>()))<span class="question-mark">?</span>;
