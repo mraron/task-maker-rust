@@ -328,7 +328,7 @@
 <span class="doccomment">/// First step of the execution: take a task and build the Execution DAG. This needs setting the</span>
 <span class="doccomment">/// first configurations of the environment.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RuntimeContext</span> {
-    <span class="ident">task</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">TaskFormat</span><span class="op">&gt;</span>,
+    <span class="ident">task</span>: <span class="ident">TaskFormat</span>,
     <span class="ident">eval</span>: <span class="ident">EvaluationData</span>,
     <span class="ident">ui_receiver</span>: <span class="ident">UIChannelReceiver</span>,
     <span class="ident">sandbox_runner</span>: <span class="ident">ToolsSandboxRunner</span>,
@@ -338,7 +338,7 @@
 <span class="doccomment">/// setups the local executor if necessary.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConnectedExecutor</span> {
     <span class="comment">// fields from RuntimeContext</span>
-    <span class="ident">task</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">TaskFormat</span><span class="op">&gt;</span>,
+    <span class="ident">task</span>: <span class="ident">TaskFormat</span>,
     <span class="ident">eval</span>: <span class="ident">EvaluationData</span>,
     <span class="ident">ui_receiver</span>: <span class="ident">UIChannelReceiver</span>,
 
@@ -352,7 +352,7 @@
 <span class="doccomment">/// Third step: start the UI thread.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConnectedExecutorWithUI</span> {
     <span class="comment">// fields from ConnectedExecutor</span>
-    <span class="ident">task</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">TaskFormat</span><span class="op">&gt;</span>,
+    <span class="ident">task</span>: <span class="ident">TaskFormat</span>,
     <span class="ident">eval</span>: <span class="ident">EvaluationData</span>,
     <span class="ident">file_store</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">FileStore</span><span class="op">&gt;</span>,
     <span class="ident">tx</span>: <span class="ident">ChannelSender</span><span class="op">&lt;</span><span class="ident">ExecutorClientMessage</span><span class="op">&gt;</span>,
@@ -369,12 +369,12 @@
     <span class="doccomment">/// execution DAG for the execution. The closure is given a reference to the given task and a</span>
     <span class="doccomment">/// reference to the evaluation data.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">BuildDag</span><span class="op">&gt;</span>(
-        <span class="ident">task</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">TaskFormat</span><span class="op">&gt;</span>,
+        <span class="ident">task</span>: <span class="ident">TaskFormat</span>,
         <span class="ident">opt</span>: <span class="kw-2">&amp;</span><span class="ident">ExecutionOpt</span>,
         <span class="ident">build_dag</span>: <span class="ident">BuildDag</span>,
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">Error</span><span class="op">&gt;</span>
     <span class="kw">where</span>
-        <span class="ident">BuildDag</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">TaskFormat</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">EvaluationData</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span>,
+        <span class="ident">BuildDag</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="ident">TaskFormat</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">EvaluationData</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span>,
     {
         <span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">eval</span>, <span class="ident">ui_receiver</span>) <span class="op">=</span> <span class="ident">EvaluationData::new</span>(<span class="ident">task</span>.<span class="ident">path</span>());
 
@@ -397,7 +397,7 @@
         }
 
         <span class="comment">// build the execution dag</span>
-        <span class="ident">build_dag</span>(<span class="ident">task</span>.<span class="ident">as_ref</span>(), <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">eval</span>)<span class="question-mark">?</span>;
+        <span class="ident">build_dag</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">eval</span>)<span class="question-mark">?</span>;
 
         <span class="macro">trace!</span>(<span class="string">&quot;The DAG is: {:#?}&quot;</span>, <span class="ident">eval</span>.<span class="ident">dag</span>);
         <span class="kw">if</span> <span class="ident">opt</span>.<span class="ident">copy_dag</span> {

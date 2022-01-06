@@ -412,6 +412,21 @@
 <span id="412">412</span>
 <span id="413">413</span>
 <span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The UI functionality for the task formats.</span>
 
 <span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
@@ -420,7 +435,8 @@
 
 <span class="kw">use</span> <span class="ident">anyhow::Error</span>;
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
-<span class="kw">use</span> <span class="ident">termcolor</span>::{<span class="ident">Color</span>, <span class="ident">ColorSpec</span>, <span class="ident">StandardStream</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">termcolor::WriteColor</span>;
+<span class="kw">use</span> <span class="ident">termcolor</span>::{<span class="ident">Color</span>, <span class="ident">ColorChoice</span>, <span class="ident">ColorSpec</span>, <span class="ident">StandardStream</span>};
 <span class="kw">use</span> <span class="ident">typescript_definitions::TypeScriptify</span>;
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">json::JsonUI</span>;
@@ -767,6 +783,21 @@
     }
 }
 
+<span class="doccomment">/// A simple printer that outputs to stdout. This can be used with `cwrite!` and `cwriteln!`.</span>
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StdoutPrinter</span> {
+    <span class="doccomment">/// The actual stream.</span>
+    <span class="kw">pub</span> <span class="ident">stream</span>: <span class="ident">StandardStream</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">StdoutPrinter</span> {
+    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
+        <span class="self">Self</span> {
+            <span class="ident">stream</span>: <span class="ident">StandardStream::stdout</span>(<span class="ident">ColorChoice::Auto</span>),
+        }
+    }
+}
+
 <span class="doccomment">/// Write to `$self.stream`, in the color specified as second parameter. The arguments that follow</span>
 <span class="doccomment">/// will be passed to `write!`.</span>
 <span class="doccomment">///</span>
@@ -774,23 +805,23 @@
 <span class="doccomment">/// #[macro_use]</span>
 <span class="doccomment">/// extern crate task_maker_format;</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// use termcolor::{StandardStream, ColorSpec, ColorChoice};</span>
+<span class="doccomment">/// use termcolor::{ColorSpec, ColorChoice};</span>
+<span class="doccomment">/// use task_maker_format::ui::StdoutPrinter;</span>
 <span class="doccomment">/// use task_maker_format::cwrite;</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # fn main() {</span>
-<span class="doccomment">/// struct Printer { stream: StandardStream }</span>
 <span class="doccomment">/// let mut color = ColorSpec::new();</span>
 <span class="doccomment">/// color.set_bold(true);</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// let mut printer = Printer { stream: StandardStream::stdout(ColorChoice::Auto) };</span>
+<span class="doccomment">/// let mut printer = StdoutPrinter::default();</span>
 <span class="doccomment">/// cwrite!(printer, color, &quot;The output is {}&quot;, 42);</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">cwrite</span> {
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">self</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">color</span>:<span class="ident">expr</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">arg</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {{
-        <span class="kw">use</span> <span class="ident">termcolor::WriteColor</span>;
         <span class="kw">use</span> <span class="ident">std::io::Write</span>;
+        <span class="kw">use</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::ui::WriteColor</span>;
         <span class="macro-nonterminal">$</span><span class="macro-nonterminal">self</span>.<span class="ident">stream</span>.<span class="ident">set_color</span>(<span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">color</span>).<span class="ident">unwrap</span>();
         <span class="macro">write!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">self</span>.<span class="ident">stream</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">arg</span>)<span class="kw-2">*</span>).<span class="ident">unwrap</span>();
         <span class="macro-nonterminal">$</span><span class="macro-nonterminal">self</span>.<span class="ident">stream</span>.<span class="ident">reset</span>().<span class="ident">unwrap</span>();
@@ -803,24 +834,23 @@
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// #[macro_use]</span>
 <span class="doccomment">/// extern crate task_maker_format;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// use termcolor::{StandardStream, ColorSpec, ColorChoice};</span>
-<span class="doccomment">/// use task_maker_format::cwriteln;</span>
+<span class="doccomment">/// use termcolor::{ColorSpec, ColorChoice};</span>
+<span class="doccomment">/// use task_maker_format::ui::StdoutPrinter;</span>
+<span class="doccomment">/// use task_maker_format::cwrite;</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # fn main() {</span>
-<span class="doccomment">/// struct Printer { stream: StandardStream }</span>
 <span class="doccomment">/// let mut color = ColorSpec::new();</span>
 <span class="doccomment">/// color.set_bold(true);</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// let mut printer = Printer { stream: StandardStream::stdout(ColorChoice::Auto) };</span>
+<span class="doccomment">/// let mut printer = StdoutPrinter::default();</span>
 <span class="doccomment">/// cwriteln!(printer, color, &quot;The output is {}&quot;, 42);</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">cwriteln</span> {
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">self</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">color</span>:<span class="ident">expr</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">arg</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {{
-        <span class="kw">use</span> <span class="ident">termcolor::WriteColor</span>;
         <span class="kw">use</span> <span class="ident">std::io::Write</span>;
+        <span class="kw">use</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::ui::WriteColor</span>;
         <span class="macro-nonterminal">$</span><span class="macro-nonterminal">self</span>.<span class="ident">stream</span>.<span class="ident">set_color</span>(<span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">color</span>).<span class="ident">unwrap</span>();
         <span class="macro">writeln!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">self</span>.<span class="ident">stream</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">arg</span>)<span class="kw-2">*</span>).<span class="ident">unwrap</span>();
         <span class="macro-nonterminal">$</span><span class="macro-nonterminal">self</span>.<span class="ident">stream</span>.<span class="ident">reset</span>().<span class="ident">unwrap</span>();
