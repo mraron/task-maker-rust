@@ -306,6 +306,7 @@
 <span id="306">306</span>
 <span id="307">307</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::io::Read</span>;
+<span class="kw">use</span> <span class="ident">std::os::unix::ffi::OsStrExt</span>;
 <span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
 <span class="kw">use</span> <span class="ident">std::process::Command</span>;
 
@@ -500,12 +501,9 @@
             <span class="prelude-val">None</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Ok</span>(()),
             <span class="prelude-val">Some</span>(<span class="ident">path</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">strip_prefix</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>.<span class="ident">path</span>).<span class="ident">unwrap</span>();
+                <span class="kw">let</span> <span class="ident">raw_path</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">as_os_str</span>().<span class="ident">as_bytes</span>();
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">command</span> <span class="op">=</span> <span class="ident">Command::new</span>(<span class="string">&quot;git&quot;</span>);
-                <span class="ident">command</span>
-                    .<span class="ident">arg</span>(<span class="string">&quot;ls-files&quot;</span>)
-                    .<span class="ident">arg</span>(<span class="string">&quot;--&quot;</span>)
-                    .<span class="ident">arg</span>(<span class="kw-2">&amp;</span><span class="ident">path</span>)
-                    .<span class="ident">current_dir</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>.<span class="ident">path</span>);
+                <span class="ident">command</span>.<span class="ident">arg</span>(<span class="string">&quot;ls-files&quot;</span>).<span class="ident">arg</span>(<span class="string">&quot;-z&quot;</span>).<span class="ident">current_dir</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>.<span class="ident">path</span>);
                 <span class="kw">match</span> <span class="ident">command</span>.<span class="ident">output</span>() {
                     <span class="comment">// git not available</span>
                     <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="kw">return</span> <span class="prelude-val">Ok</span>(()),
@@ -515,7 +513,9 @@
                             <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
                         }
                         <span class="comment">// file not know to git</span>
-                        <span class="kw">if</span> <span class="ident">output</span>.<span class="ident">stdout</span>.<span class="ident">is_empty</span>() {
+                        <span class="kw">if</span> <span class="op">!</span><span class="ident">output</span>.<span class="ident">stdout</span>.<span class="ident">is_empty</span>()
+                            <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">output</span>.<span class="ident">stdout</span>.<span class="ident">split</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">b</span><span class="op">|</span> <span class="ident">b</span> <span class="op">==</span> <span class="number">0</span>).<span class="ident">any</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span> <span class="op">==</span> <span class="ident">raw_path</span>)
+                        {
                             <span class="ident">ui</span>.<span class="ident">send</span>(<span class="ident">UIMessage::Warning</span> {
                                 <span class="ident">message</span>: <span class="macro">format!</span>(<span class="string">&quot;File {} is not known to git&quot;</span>, <span class="ident">path</span>.<span class="ident">display</span>()),
                             })<span class="question-mark">?</span>;
