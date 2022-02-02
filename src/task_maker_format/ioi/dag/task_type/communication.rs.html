@@ -287,6 +287,11 @@
 <span id="286">286</span>
 <span id="287">287</span>
 <span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
 <span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
 
@@ -519,6 +524,11 @@
         <span class="kw">let</span> <span class="ident">score</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="ident">score</span>.<span class="ident">trim</span>().<span class="ident">parse</span>().<span class="ident">context</span>(<span class="string">&quot;Invalid score from checker&quot;</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">message</span> <span class="op">=</span> <span class="ident">String::from_utf8_lossy</span>(<span class="kw-2">&amp;</span><span class="ident">stderr</span>).<span class="ident">trim</span>().<span class="ident">to_string</span>();
         <span class="kw">let</span> <span class="ident">message</span> <span class="op">=</span> <span class="ident">Checker::translate_checker_message</span>(<span class="ident">message</span>);
+        <span class="comment">// FIXME: this, combined with the send from the exec of the solution (in case of failures),</span>
+        <span class="comment">//        cause a race condition. If the manager exits first with an outcome (let&#39;s say AC),</span>
+        <span class="comment">//        but the solution afterwards got stuck (or just is slow at exiting, or crashes) the</span>
+        <span class="comment">//        failure is not registered in the score, but the exit status is. The result is that</span>
+        <span class="comment">//        a solution can get the points for a testcase even if it crashes.</span>
         <span class="ident">score_sender</span>.<span class="ident">send</span>(<span class="ident">score</span>, <span class="ident">message</span>)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     });
