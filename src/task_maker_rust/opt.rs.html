@@ -484,12 +484,12 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">enable_log</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">verbose</span> <span class="op">&gt;</span> <span class="number">0</span> {
             <span class="ident">std::env::set_var</span>(<span class="string">&quot;RUST_BACKTRACE&quot;</span>, <span class="string">&quot;1&quot;</span>);
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">verbose</span> {
-                <span class="number">0</span> =&gt; <span class="macro">unreachable!</span>(),
-                <span class="number">1</span> =&gt; <span class="ident">std::env::set_var</span>(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;info,tabox=info&quot;</span>),
-                <span class="number">2</span> =&gt; <span class="ident">std::env::set_var</span>(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;debug,tabox=debug&quot;</span>),
-                <span class="kw">_</span> =&gt; <span class="ident">std::env::set_var</span>(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;trace,tabox=trace&quot;</span>),
-            }
+        }
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">verbose</span> {
+            <span class="number">0</span> =&gt; <span class="ident">std::env::set_var</span>(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;warn,tabox=warn&quot;</span>),
+            <span class="number">1</span> =&gt; <span class="ident">std::env::set_var</span>(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;info,tabox=info&quot;</span>),
+            <span class="number">2</span> =&gt; <span class="ident">std::env::set_var</span>(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;debug,tabox=debug&quot;</span>),
+            <span class="kw">_</span> =&gt; <span class="ident">std::env::set_var</span>(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;trace,tabox=trace&quot;</span>),
         }
 
         <span class="ident">env_logger::Builder::from_default_env</span>()
