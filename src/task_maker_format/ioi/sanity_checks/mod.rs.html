@@ -105,9 +105,6 @@
 <span id="103">103</span>
 <span id="104">104</span>
 <span id="105">105</span>
-<span id="106">106</span>
-<span id="107">107</span>
-<span id="108">108</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Sanity checks for IOI-like tasks.</span>
 
 <span class="kw">use</span> <span class="ident">std::path::Path</span>;
@@ -118,7 +115,6 @@
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ioi::IOITask</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::sanity_checks</span>::{<span class="ident">SanityCheck</span>, <span class="ident">SanityChecks</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ui::UIMessage</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">list_files</span>, <span class="ident">EvaluationData</span>, <span class="ident">UISender</span>};
 <span class="kw">use</span> <span class="ident">std::collections::HashSet</span>;
 
@@ -200,13 +196,11 @@
     <span class="kw">for</span> <span class="ident">grader</span> <span class="kw">in</span> <span class="ident">graders</span> {
         <span class="kw">if</span> <span class="op">!</span><span class="ident">grader</span>.<span class="ident">exists</span>() {
             <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Path::new</span>(<span class="ident">grader</span>.<span class="ident">file_name</span>().<span class="ident">unwrap</span>());
-            <span class="ident">eval</span>.<span class="ident">sender</span>.<span class="ident">send</span>(<span class="ident">UIMessage::Warning</span> {
-                <span class="ident">message</span>: <span class="macro">format!</span>(
-                    <span class="string">&quot;Missing grader at {}/{}&quot;</span>,
-                    <span class="ident">folder</span>.<span class="ident">as_ref</span>().<span class="ident">display</span>(),
-                    <span class="ident">name</span>.<span class="ident">display</span>()
-                ),
-            })<span class="question-mark">?</span>;
+            <span class="ident">eval</span>.<span class="ident">sender</span>.<span class="ident">send_error</span>(<span class="macro">format!</span>(
+                <span class="string">&quot;Missing grader at {}/{}&quot;</span>,
+                <span class="ident">folder</span>.<span class="ident">as_ref</span>().<span class="ident">display</span>(),
+                <span class="ident">name</span>.<span class="ident">display</span>()
+            ))<span class="question-mark">?</span>;
         }
     }
     <span class="prelude-val">Ok</span>(())

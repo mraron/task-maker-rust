@@ -595,6 +595,12 @@
 <span id="593">593</span>
 <span id="594">594</span>
 <span id="595">595</span>
+<span id="596">596</span>
+<span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 <span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
 <span class="kw">use</span> <span class="ident">std::time::SystemTime</span>;
@@ -784,6 +790,8 @@
     <span class="kw">pub</span> <span class="ident">booklets</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">BookletState</span><span class="op">&gt;</span>,
     <span class="doccomment">/// All the emitted warnings.</span>
     <span class="kw">pub</span> <span class="ident">warnings</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// All the emitted errors.</span>
+    <span class="kw">pub</span> <span class="ident">errors</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">TestcaseEvaluationStatus</span> {
@@ -885,6 +893,7 @@
             <span class="ident">executor_status</span>: <span class="prelude-val">None</span>,
             <span class="ident">booklets</span>: <span class="ident">HashMap::new</span>(),
             <span class="ident">warnings</span>: <span class="ident">Vec::new</span>(),
+            <span class="ident">errors</span>: <span class="ident">Vec::new</span>(),
         }
     }
 }
@@ -1176,6 +1185,9 @@
             }
             <span class="ident">UIMessage::Warning</span> { <span class="ident">message</span> } =&gt; {
                 <span class="self">self</span>.<span class="ident">warnings</span>.<span class="ident">push</span>(<span class="ident">message</span>);
+            }
+            <span class="ident">UIMessage::Error</span> { <span class="ident">message</span> } =&gt; {
+                <span class="self">self</span>.<span class="ident">errors</span>.<span class="ident">push</span>(<span class="ident">message</span>);
             }
             <span class="ident">UIMessage::TerryTask</span> { .. }
             <span class="op">|</span> <span class="ident">UIMessage::TerryGeneration</span> { .. }

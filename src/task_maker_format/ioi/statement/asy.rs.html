@@ -257,7 +257,6 @@
 <span id="255">255</span>
 <span id="256">256</span>
 <span id="257">257</span>
-<span id="258">258</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 <span class="kw">use</span> <span class="ident">std::path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
 
@@ -342,9 +341,8 @@
                     .<span class="ident">provide_file</span>(<span class="ident">file</span>, <span class="ident">local</span>)
                     .<span class="ident">context</span>(<span class="string">&quot;Failed to provide asy dependency&quot;</span>)<span class="question-mark">?</span>;
             } <span class="kw">else</span> {
-                <span class="ident">eval</span>.<span class="ident">sender</span>.<span class="ident">send</span>(<span class="ident">UIMessage::Warning</span> {
-                    <span class="ident">message</span>: <span class="macro">format!</span>(<span class="string">&quot;Dependency {:?} of {:?} not found&quot;</span>, <span class="ident">local</span>, <span class="ident">name</span>),
-                })<span class="question-mark">?</span>;
+                <span class="ident">eval</span>.<span class="ident">sender</span>
+                    .<span class="ident">send_error</span>(<span class="macro">format!</span>(<span class="string">&quot;Dependency {:?} of {:?} not found&quot;</span>, <span class="ident">local</span>, <span class="ident">name</span>))<span class="question-mark">?</span>;
             }
         }
         <span class="kw">let</span> <span class="ident">compiled</span> <span class="op">=</span> <span class="ident">comp</span>.<span class="ident">output</span>(<span class="string">&quot;output.pdf&quot;</span>);

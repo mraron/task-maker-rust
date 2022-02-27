@@ -429,6 +429,41 @@
 <span id="427">427</span>
 <span id="428">428</span>
 <span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The UI functionality for the task formats.</span>
 
 <span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
@@ -482,6 +517,14 @@
             .<span class="ident">set_fg</span>(<span class="prelude-val">Some</span>(<span class="kw">if</span> <span class="kw-2">*</span><span class="ident">HAS_256</span> { <span class="ident">Color::Ansi256</span>(<span class="number">196</span>) } <span class="kw">else</span> { <span class="ident">Color::Red</span> }))
             .<span class="ident">set_intense</span>(<span class="bool-val">true</span>)
             .<span class="ident">set_bold</span>(<span class="bool-val">true</span>);
+        <span class="ident">color</span>
+    };
+    <span class="doccomment">/// The RED color to use with `cwrite!` and `cwriteln!`, without bold.</span>
+    <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">SOFT_RED</span>: <span class="ident">ColorSpec</span> <span class="op">=</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">color</span> <span class="op">=</span> <span class="ident">ColorSpec::new</span>();
+        <span class="ident">color</span>
+            .<span class="ident">set_fg</span>(<span class="prelude-val">Some</span>(<span class="kw">if</span> <span class="kw-2">*</span><span class="ident">HAS_256</span> { <span class="ident">Color::Ansi256</span>(<span class="number">196</span>) } <span class="kw">else</span> { <span class="ident">Color::Red</span> }))
+            .<span class="ident">set_intense</span>(<span class="bool-val">true</span>);
         <span class="ident">color</span>
     };
     <span class="doccomment">/// The GREEN color to use with `cwrite!` and `cwriteln!`</span>
@@ -718,12 +761,25 @@
     }
 
     <span class="doccomment">/// Print the warnings.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">print_messages</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">warnings</span>: <span class="kw-2">&amp;</span>[<span class="ident">String</span>]) {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">print_warning_messages</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">warnings</span>: <span class="kw-2">&amp;</span>[<span class="ident">String</span>]) {
         <span class="kw">if</span> <span class="op">!</span><span class="ident">warnings</span>.<span class="ident">is_empty</span>() {
-            <span class="macro">cwriteln!</span>(<span class="self">self</span>, <span class="ident">YELLOW</span>, <span class="string">&quot;Warnings:&quot;</span>);
+            <span class="macro">cwriteln!</span>(<span class="self">self</span>, <span class="ident">YELLOW</span>, <span class="string">&quot;Warnings&quot;</span>);
             <span class="kw">for</span> <span class="ident">warning</span> <span class="kw">in</span> <span class="ident">warnings</span>.<span class="ident">iter</span>() {
                 <span class="macro">println!</span>(<span class="string">&quot; - {}&quot;</span>, <span class="ident">warning</span>);
             }
+            <span class="macro">println!</span>();
+        }
+    }
+
+    <span class="doccomment">/// Print the errors.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">print_error_messages</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">errors</span>: <span class="kw-2">&amp;</span>[<span class="ident">String</span>]) {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">errors</span>.<span class="ident">is_empty</span>() {
+            <span class="macro">cwriteln!</span>(<span class="self">self</span>, <span class="ident">RED</span>, <span class="string">&quot;Errors&quot;</span>);
+            <span class="kw">for</span> <span class="ident">error</span> <span class="kw">in</span> <span class="ident">errors</span>.<span class="ident">iter</span>() {
+                <span class="macro">cwrite!</span>(<span class="self">self</span>, <span class="ident">RED</span>, <span class="string">&quot; - &quot;</span>);
+                <span class="macro">cwriteln!</span>(<span class="self">self</span>, <span class="ident">SOFT_RED</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">error</span>);
+            }
+            <span class="macro">println!</span>();
         }
     }
 }
@@ -744,6 +800,20 @@
     <span class="doccomment">/// Send a message to the channel.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">message</span>: <span class="ident">UIMessage</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">sender</span>.<span class="ident">send</span>(<span class="ident">message</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">into</span>())
+    }
+
+    <span class="doccomment">/// Send a warning message to the channel.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send_warning</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">message</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">send</span>(<span class="ident">UIMessage::Warning</span> {
+            <span class="ident">message</span>: <span class="ident">message</span>.<span class="ident">into</span>(),
+        })
+    }
+
+    <span class="doccomment">/// Send an error message to the channel.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send_error</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">message</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">send</span>(<span class="ident">UIMessage::Error</span> {
+            <span class="ident">message</span>: <span class="ident">message</span>.<span class="ident">into</span>(),
+        })
     }
 }
 

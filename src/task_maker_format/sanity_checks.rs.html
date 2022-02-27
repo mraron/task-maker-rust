@@ -95,9 +95,6 @@
 <span id="93">93</span>
 <span id="94">94</span>
 <span id="95">95</span>
-<span id="96">96</span>
-<span id="97">97</span>
-<span id="98">98</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Sanity checks for IOI-like tasks.</span>
 
 <span class="kw">use</span> <span class="ident">std::sync::Mutex</span>;
@@ -105,7 +102,7 @@
 <span class="kw">use</span> <span class="ident">anyhow::Error</span>;
 <span class="kw">use</span> <span class="ident">itertools::Itertools</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ui</span>::{<span class="ident">UIMessage</span>, <span class="ident">UIMessageSender</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ui::UIMessageSender</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">EvaluationData</span>, <span class="ident">UISender</span>};
 
 <span class="doccomment">/// Trait that describes the behavior of a sanity check.</span>
@@ -156,9 +153,8 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">state</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
         <span class="kw">for</span> <span class="ident">check</span> <span class="kw">in</span> <span class="ident">state</span>.<span class="ident">sanity_checks</span>.<span class="ident">iter_mut</span>() {
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span> <span class="ident">check</span>.<span class="ident">pre_hook</span>(<span class="ident">task</span>, <span class="ident">eval</span>) {
-                <span class="ident">eval</span>.<span class="ident">sender</span>.<span class="ident">send</span>(<span class="ident">UIMessage::Warning</span> {
-                    <span class="ident">message</span>: <span class="macro">format!</span>(<span class="string">&quot;Sanity check {} failed: {}&quot;</span>, <span class="ident">check</span>.<span class="ident">name</span>(), <span class="ident">e</span>),
-                })<span class="question-mark">?</span>;
+                <span class="ident">eval</span>.<span class="ident">sender</span>
+                    .<span class="ident">send_error</span>(<span class="macro">format!</span>(<span class="string">&quot;Sanity check {} failed: {}&quot;</span>, <span class="ident">check</span>.<span class="ident">name</span>(), <span class="ident">e</span>))<span class="question-mark">?</span>;
             }
         }
         <span class="prelude-val">Ok</span>(())
@@ -170,9 +166,7 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">state</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
         <span class="kw">for</span> <span class="ident">check</span> <span class="kw">in</span> <span class="ident">state</span>.<span class="ident">sanity_checks</span>.<span class="ident">iter_mut</span>() {
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span> <span class="ident">check</span>.<span class="ident">post_hook</span>(<span class="ident">task</span>, <span class="ident">ui</span>) {
-                <span class="ident">ui</span>.<span class="ident">send</span>(<span class="ident">UIMessage::Warning</span> {
-                    <span class="ident">message</span>: <span class="macro">format!</span>(<span class="string">&quot;Sanity check {} failed: {}&quot;</span>, <span class="ident">check</span>.<span class="ident">name</span>(), <span class="ident">e</span>),
-                })<span class="question-mark">?</span>;
+                <span class="ident">ui</span>.<span class="ident">send_error</span>(<span class="macro">format!</span>(<span class="string">&quot;Sanity check {} failed: {}&quot;</span>, <span class="ident">check</span>.<span class="ident">name</span>(), <span class="ident">e</span>))<span class="question-mark">?</span>;
             }
         }
         <span class="prelude-val">Ok</span>(())
