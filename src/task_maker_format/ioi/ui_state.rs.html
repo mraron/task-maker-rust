@@ -601,6 +601,43 @@
 <span id="599">599</span>
 <span id="600">600</span>
 <span id="601">601</span>
+<span id="602">602</span>
+<span id="603">603</span>
+<span id="604">604</span>
+<span id="605">605</span>
+<span id="606">606</span>
+<span id="607">607</span>
+<span id="608">608</span>
+<span id="609">609</span>
+<span id="610">610</span>
+<span id="611">611</span>
+<span id="612">612</span>
+<span id="613">613</span>
+<span id="614">614</span>
+<span id="615">615</span>
+<span id="616">616</span>
+<span id="617">617</span>
+<span id="618">618</span>
+<span id="619">619</span>
+<span id="620">620</span>
+<span id="621">621</span>
+<span id="622">622</span>
+<span id="623">623</span>
+<span id="624">624</span>
+<span id="625">625</span>
+<span id="626">626</span>
+<span id="627">627</span>
+<span id="628">628</span>
+<span id="629">629</span>
+<span id="630">630</span>
+<span id="631">631</span>
+<span id="632">632</span>
+<span id="633">633</span>
+<span id="634">634</span>
+<span id="635">635</span>
+<span id="636">636</span>
+<span id="637">637</span>
+<span id="638">638</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 <span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
 <span class="kw">use</span> <span class="ident">std::time::SystemTime</span>;
@@ -698,6 +735,47 @@
     <span class="kw">pub</span> <span class="ident">checker</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ExecutionResult</span><span class="op">&gt;</span>,
 }
 
+<span class="kw">impl</span> <span class="ident">SolutionTestcaseEvaluationState</span> {
+    <span class="doccomment">/// Checks whether the resources used by a solution on a testcase are close to the limits of</span>
+    <span class="doccomment">/// time or memory.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The time &#39;t&#39; is close to the limit TL if:</span>
+    <span class="doccomment">///   TL * threshold &lt;= t &lt;= TL / threshold  &amp;&amp;  t &lt;= ceil(TL + extra time) - 0.1s</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The second condition guards against a value of extra time too small, which would mark every</span>
+    <span class="doccomment">/// TLE as &quot;close to the limits&quot;.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Memory limit is in MiB.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_close_to_limits</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">time_limit</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
+        <span class="ident">extra_time</span>: <span class="ident">f64</span>,
+        <span class="ident">memory_limit</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>,
+        <span class="ident">threshold</span>: <span class="ident">f64</span>,
+    ) -&gt; <span class="ident">bool</span> {
+        <span class="kw">for</span> <span class="ident">result</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">results</span>.<span class="ident">iter</span>().<span class="ident">flatten</span>() {
+            <span class="kw">let</span> <span class="ident">resources</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">result</span>.<span class="ident">resources</span>;
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">time_limit</span>) <span class="op">=</span> <span class="ident">time_limit</span> {
+                <span class="kw">let</span> <span class="ident">lower_bound</span> <span class="op">=</span> <span class="ident">time_limit</span> <span class="op">*</span> <span class="ident">threshold</span>;
+                <span class="kw">let</span> <span class="ident">upper_bound</span> <span class="op">=</span> <span class="ident">time_limit</span> <span class="op">/</span> <span class="ident">threshold</span>;
+                <span class="kw">if</span> <span class="ident">lower_bound</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">resources</span>.<span class="ident">cpu_time</span>
+                    <span class="op">&amp;&amp;</span> <span class="ident">resources</span>.<span class="ident">cpu_time</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">upper_bound</span>
+                    <span class="op">&amp;&amp;</span> <span class="ident">resources</span>.<span class="ident">cpu_time</span> <span class="op">&lt;</span><span class="op">=</span> (<span class="ident">time_limit</span> <span class="op">+</span> <span class="ident">extra_time</span>).<span class="ident">ceil</span>() <span class="op">-</span> <span class="number">0.1</span>
+                {
+                    <span class="kw">return</span> <span class="bool-val">true</span>;
+                }
+            }
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">memory_limit</span>) <span class="op">=</span> <span class="ident">memory_limit</span> {
+                <span class="kw">if</span> <span class="ident">resources</span>.<span class="ident">memory</span> <span class="kw">as</span> <span class="ident">f64</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">memory_limit</span> <span class="kw">as</span> <span class="ident">f64</span> <span class="op">*</span> <span class="number">1024.0</span> <span class="op">*</span> <span class="ident">threshold</span> {
+                    <span class="kw">return</span> <span class="bool-val">true</span>;
+                }
+            }
+        }
+
+        <span class="bool-val">false</span>
+    }
+}
+
 <span class="doccomment">/// State of the evaluation of a subtask.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SolutionSubtaskEvaluationState</span> {
@@ -776,6 +854,8 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UIState</span> {
     <span class="doccomment">/// The task.</span>
     <span class="kw">pub</span> <span class="ident">task</span>: <span class="ident">IOITask</span>,
+    <span class="doccomment">/// The configuration of this evaluation.</span>
+    <span class="kw">pub</span> <span class="ident">config</span>: <span class="ident">ExecutionDAGConfig</span>,
     <span class="doccomment">/// The maximum score of this task.</span>
     <span class="kw">pub</span> <span class="ident">max_score</span>: <span class="ident">f64</span>,
     <span class="doccomment">/// The status of the compilations.</span>
@@ -857,7 +937,7 @@
 
 <span class="kw">impl</span> <span class="ident">UIState</span> {
     <span class="doccomment">/// Make a new `UIState`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">IOITask</span>) -&gt; <span class="ident">UIState</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">IOITask</span>, <span class="ident">config</span>: <span class="ident">ExecutionDAGConfig</span>) -&gt; <span class="ident">UIState</span> {
         <span class="kw">let</span> <span class="ident">generations</span> <span class="op">=</span> <span class="ident">task</span>
             .<span class="ident">subtasks</span>
             .<span class="ident">iter</span>()
@@ -885,6 +965,7 @@
             })
             .<span class="ident">collect</span>();
         <span class="ident">UIState</span> {
+            <span class="ident">config</span>,
             <span class="ident">max_score</span>: <span class="ident">task</span>.<span class="ident">subtasks</span>.<span class="ident">values</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">max_score</span>).<span class="ident">sum</span>(),
             <span class="ident">task</span>: <span class="ident">task</span>.<span class="ident">clone</span>(),
             <span class="ident">compilations</span>: <span class="ident">HashMap::new</span>(),
@@ -899,13 +980,6 @@
 }
 
 <span class="kw">impl</span> <span class="ident">UIStateT</span> <span class="kw">for</span> <span class="ident">UIState</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">message</span>: <span class="kw-2">&amp;</span><span class="ident">UIMessage</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">match</span> <span class="ident">message</span> {
-            <span class="ident">UIMessage::IOITask</span> { <span class="ident">task</span> } =&gt; <span class="ident"><span class="self">Self</span>::new</span>(<span class="ident">task</span>.<span class="ident">as_ref</span>()),
-            <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;Expecting IOITask, got {:?}&quot;</span>, <span class="ident">message</span>),
-        }
-    }
-
     <span class="doccomment">/// Apply a `UIMessage` to this state.</span>
     <span class="kw">fn</span> <span class="ident">apply</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">message</span>: <span class="ident">UIMessage</span>) {
         <span class="kw">match</span> <span class="ident">message</span> {

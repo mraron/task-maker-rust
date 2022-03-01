@@ -432,6 +432,20 @@
 <span id="430">430</span>
 <span id="431">431</span>
 <span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::path::Path</span>;
 
 <span class="kw">use</span> <span class="ident">itertools::Itertools</span>;
@@ -442,18 +456,19 @@
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ioi::ui_state</span>::{<span class="ident">SolutionEvaluationState</span>, <span class="ident">TestcaseEvaluationStatus</span>, <span class="ident">UIState</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ioi</span>::{<span class="ident">SolutionTestcaseEvaluationState</span>, <span class="ident">TestcaseId</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ui</span>::{
-    <span class="ident">FinishUI</span> <span class="kw">as</span> <span class="ident">FinishUITrait</span>, <span class="ident">FinishUIUtils</span>, <span class="ident">UIExecutionStatus</span>, <span class="ident">BLUE</span>, <span class="ident">BOLD</span>, <span class="ident">GREEN</span>, <span class="ident">RED</span>, <span class="ident">YELLOW</span>,
+    <span class="ident">FinishUI</span> <span class="kw">as</span> <span class="ident">FinishUITrait</span>, <span class="ident">FinishUIUtils</span>, <span class="ident">UIExecutionStatus</span>, <span class="ident">BLUE</span>, <span class="ident">BOLD</span>, <span class="ident">GREEN</span>, <span class="ident">ORANGE</span>, <span class="ident">RED</span>,
+    <span class="ident">YELLOW</span>,
 };
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">cwrite</span>, <span class="ident">cwriteln</span>};
 
 <span class="doccomment">/// Percentage threshold for showing a resource usage in bold for a solution. If the maximum</span>
 <span class="doccomment">/// cpu_time used by the solution among the testcases is X, all the cpu_time of that solution that</span>
 <span class="doccomment">/// are &gt;= X*BOLD_RESOURCE_THRESHOLD will be shown in bold. Same for the memory usage.</span>
-<span class="kw">const</span> <span class="ident">BOLD_RESOURCE_THRESHOLD</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="number">0.9</span>;
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">BOLD_RESOURCE_THRESHOLD</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="number">0.9</span>;
 <span class="doccomment">/// Percentage threshold for showing a resource usage in yellow for a solution. If the cpu_time of</span>
 <span class="doccomment">/// a solution is &gt;= time limit of the task * YELLOW_RESOURCE_THRESHOLD, it is shown in yellow. Same</span>
 <span class="doccomment">/// for the memory usage.</span>
-<span class="kw">const</span> <span class="ident">YELLOW_RESOURCE_THRESHOLD</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="number">0.6</span>;
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">YELLOW_RESOURCE_THRESHOLD</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="number">0.6</span>;
 
 <span class="doccomment">/// UI that prints to `stdout` the ending result of the evaluation of a IOI task.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FinishUI</span> {
@@ -700,7 +715,7 @@
                 <span class="kw">let</span> <span class="ident">time_color</span> <span class="op">=</span> <span class="ident">FinishUI::resource_color</span>(
                     <span class="ident">result</span>.<span class="ident">resources</span>.<span class="ident">cpu_time</span>,
                     <span class="ident">max_time</span> <span class="op">*</span> <span class="ident">BOLD_RESOURCE_THRESHOLD</span>,
-                    <span class="ident">state</span>.<span class="ident">task</span>.<span class="ident">time_limit</span>.<span class="ident">unwrap_or</span>(<span class="number">1.0</span> <span class="op">/</span> <span class="number">0.0</span>) <span class="op">*</span> <span class="ident">YELLOW_RESOURCE_THRESHOLD</span>,
+                    <span class="ident">state</span>.<span class="ident">task</span>.<span class="ident">time_limit</span>.<span class="ident">unwrap_or</span>(<span class="ident">f64::INFINITY</span>) <span class="op">*</span> <span class="ident">YELLOW_RESOURCE_THRESHOLD</span>,
                 );
                 <span class="kw">let</span> <span class="ident">memory_color</span> <span class="op">=</span> <span class="ident">FinishUI::resource_color</span>(
                     <span class="ident">result</span>.<span class="ident">resources</span>.<span class="ident">memory</span> <span class="kw">as</span> <span class="ident">f64</span>,
@@ -782,16 +797,29 @@
                 <span class="kw">let</span> <span class="ident">normalized_score</span> <span class="op">=</span> <span class="ident">subtask</span>.<span class="ident">normalized_score</span>.<span class="ident">unwrap_or</span>(<span class="number">0.0</span>);
                 <span class="kw">let</span> <span class="ident">color</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">score_color</span>(<span class="ident">normalized_score</span>);
                 <span class="macro">cwrite!</span>(<span class="self">self</span>, <span class="ident">color</span>, <span class="string">&quot;[&quot;</span>);
+                <span class="kw">let</span> <span class="ident">time_limit</span> <span class="op">=</span> <span class="ident">state</span>.<span class="ident">task</span>.<span class="ident">time_limit</span>;
+                <span class="kw">let</span> <span class="ident">memory_limit</span> <span class="op">=</span> <span class="ident">state</span>.<span class="ident">task</span>.<span class="ident">memory_limit</span>;
+                <span class="kw">let</span> <span class="ident">extra_time</span> <span class="op">=</span> <span class="ident">state</span>.<span class="ident">config</span>.<span class="ident">extra_time</span>;
                 <span class="kw">for</span> <span class="ident">tc_num</span> <span class="kw">in</span> <span class="ident">subtask</span>.<span class="ident">testcases</span>.<span class="ident">keys</span>().<span class="ident">sorted</span>() {
                     <span class="kw">let</span> <span class="ident">testcase</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">subtask</span>.<span class="ident">testcases</span>[<span class="ident">tc_num</span>];
+                    <span class="kw">let</span> <span class="ident">close_color</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">testcase</span>.<span class="ident">is_close_to_limits</span>(
+                        <span class="ident">time_limit</span>,
+                        <span class="ident">extra_time</span>,
+                        <span class="ident">memory_limit</span>,
+                        <span class="ident">YELLOW_RESOURCE_THRESHOLD</span>,
+                    ) {
+                        <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">ORANGE</span>)
+                    } <span class="kw">else</span> {
+                        <span class="prelude-val">None</span>
+                    };
                     <span class="kw">use</span> <span class="ident">TestcaseEvaluationStatus</span>::<span class="kw-2">*</span>;
                     <span class="kw">match</span> <span class="ident">testcase</span>.<span class="ident">status</span> {
-                        <span class="ident">Accepted</span>(<span class="kw">_</span>) =&gt; <span class="macro">cwrite!</span>(<span class="self">self</span>, <span class="ident">GREEN</span>, <span class="string">&quot;A&quot;</span>),
+                        <span class="ident">Accepted</span>(<span class="kw">_</span>) =&gt; <span class="macro">cwrite!</span>(<span class="self">self</span>, <span class="ident">close_color</span>.<span class="ident">unwrap_or</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">GREEN</span>), <span class="string">&quot;A&quot;</span>),
                         <span class="ident">WrongAnswer</span>(<span class="kw">_</span>) =&gt; <span class="macro">cwrite!</span>(<span class="self">self</span>, <span class="ident">RED</span>, <span class="string">&quot;W&quot;</span>),
-                        <span class="ident">Partial</span>(<span class="kw">_</span>) =&gt; <span class="macro">cwrite!</span>(<span class="self">self</span>, <span class="ident">YELLOW</span>, <span class="string">&quot;P&quot;</span>),
-                        <span class="ident">TimeLimitExceeded</span> =&gt; <span class="macro">cwrite!</span>(<span class="self">self</span>, <span class="ident">RED</span>, <span class="string">&quot;T&quot;</span>),
+                        <span class="ident">Partial</span>(<span class="kw">_</span>) =&gt; <span class="macro">cwrite!</span>(<span class="self">self</span>, <span class="ident">close_color</span>.<span class="ident">unwrap_or</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">YELLOW</span>), <span class="string">&quot;P&quot;</span>),
+                        <span class="ident">TimeLimitExceeded</span> =&gt; <span class="macro">cwrite!</span>(<span class="self">self</span>, <span class="ident">close_color</span>.<span class="ident">unwrap_or</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">RED</span>), <span class="string">&quot;T&quot;</span>),
                         <span class="ident">WallTimeLimitExceeded</span> =&gt; <span class="macro">cwrite!</span>(<span class="self">self</span>, <span class="ident">RED</span>, <span class="string">&quot;T&quot;</span>),
-                        <span class="ident">MemoryLimitExceeded</span> =&gt; <span class="macro">cwrite!</span>(<span class="self">self</span>, <span class="ident">RED</span>, <span class="string">&quot;M&quot;</span>),
+                        <span class="ident">MemoryLimitExceeded</span> =&gt; <span class="macro">cwrite!</span>(<span class="self">self</span>, <span class="ident">close_color</span>.<span class="ident">unwrap_or</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">RED</span>), <span class="string">&quot;M&quot;</span>),
                         <span class="ident">RuntimeError</span> =&gt; <span class="macro">cwrite!</span>(<span class="self">self</span>, <span class="ident">RED</span>, <span class="string">&quot;R&quot;</span>),
                         <span class="ident">Failed</span> =&gt; <span class="macro">cwrite!</span>(<span class="self">self</span>, <span class="ident">BOLD</span>, <span class="string">&quot;F&quot;</span>),
                         <span class="ident">Skipped</span> =&gt; <span class="macro">cwrite!</span>(<span class="self">self</span>, <span class="ident">BOLD</span>, <span class="string">&quot;S&quot;</span>),
