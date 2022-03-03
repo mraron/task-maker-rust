@@ -205,18 +205,30 @@
 <span id="203">203</span>
 <span id="204">204</span>
 <span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::collections</span>::{<span class="ident">HashMap</span>, <span class="ident">HashSet</span>};
 <span class="kw">use</span> <span class="ident">std::fs::File</span>;
 <span class="kw">use</span> <span class="ident">std::io</span>::{<span class="ident">Read</span>, <span class="ident">Write</span>};
-<span class="kw">use</span> <span class="ident">std::path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
+<span class="kw">use</span> <span class="ident">std::path::Path</span>;
 <span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
 
 <span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">bail</span>, <span class="ident">Context</span>, <span class="ident">Error</span>};
 <span class="kw">use</span> <span class="ident">itertools::Itertools</span>;
 
 <span class="kw">use</span> <span class="ident">task_maker_format::ioi::UIState</span>;
-<span class="kw">use</span> <span class="ident">task_maker_format::ui</span>::{<span class="ident">StdoutPrinter</span>, <span class="ident">UIStateT</span>, <span class="ident">BLUE</span>};
-<span class="kw">use</span> <span class="ident">task_maker_format</span>::{<span class="ident">cwriteln</span>, <span class="ident">EvaluationConfig</span>, <span class="ident">SolutionCheckResult</span>, <span class="ident">TaskFormat</span>};
+<span class="kw">use</span> <span class="ident">task_maker_format::ui</span>::{<span class="ident">StdoutPrinter</span>, <span class="ident">UIStateT</span>, <span class="ident">BLUE</span>, <span class="ident">YELLOW</span>};
+<span class="kw">use</span> <span class="ident">task_maker_format</span>::{<span class="ident">cwrite</span>, <span class="ident">cwriteln</span>, <span class="ident">EvaluationConfig</span>, <span class="ident">SolutionCheckResult</span>, <span class="ident">TaskFormat</span>};
 <span class="kw">use</span> <span class="ident">task_maker_lang::LanguageManager</span>;
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::context::RuntimeContext</span>;
@@ -229,10 +241,10 @@
 ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="ident">opt</span>.<span class="ident">ui</span>.<span class="ident">disable_if_needed</span>(<span class="kw-2">&amp;</span><span class="ident">logger_opt</span>);
     <span class="kw">let</span> <span class="ident">eval_config</span> <span class="op">=</span> <span class="ident">EvaluationConfig</span> {
-        <span class="ident">solution_filter</span>: <span class="macro">vec!</span>[],
+        <span class="ident">solution_filter</span>: <span class="ident">opt</span>.<span class="ident">filter</span>.<span class="ident">filter</span>,
         <span class="ident">booklet_solutions</span>: <span class="bool-val">false</span>,
         <span class="ident">no_statement</span>: <span class="bool-val">true</span>,
-        <span class="ident">solution_paths</span>: <span class="ident">opt</span>.<span class="ident">solutions</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="ident">PathBuf::from</span>).<span class="ident">collect</span>(),
+        <span class="ident">solution_paths</span>: <span class="ident">opt</span>.<span class="ident">filter</span>.<span class="ident">solution</span>,
         <span class="ident">disabled_sanity_checks</span>: <span class="ident">Default::default</span>(),
         <span class="ident">seed</span>: <span class="ident">Default::default</span>(),
         <span class="ident">dry_run</span>: <span class="bool-val">true</span>,
@@ -280,6 +292,7 @@
     <span class="macro">cwriteln!</span>(<span class="ident">printer</span>, <span class="ident">BLUE</span>, <span class="string">&quot;Solution checks&quot;</span>);
     <span class="kw">let</span> <span class="ident">ui_state</span> <span class="op">=</span> <span class="ident">ui_state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">take</span>().<span class="ident">unwrap</span>();
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">skipped</span> <span class="op">=</span> <span class="macro">vec!</span>[];
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">changes_to_write</span> <span class="op">=</span> <span class="bool-val">false</span>;
     <span class="kw">for</span> <span class="ident">solution_name</span> <span class="kw">in</span> <span class="ident">ui_state</span>.<span class="ident">solutions</span>.<span class="ident">keys</span>() {
         <span class="kw">let</span> <span class="ident">solution</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">ui_state</span>.<span class="ident">solutions</span>[<span class="ident">solution_name</span>];
         <span class="kw">if</span> <span class="ident">solution</span>.<span class="ident">path</span>.<span class="ident">is_symlink</span>() {
@@ -289,21 +302,30 @@
             <span class="ident">skipped</span>.<span class="ident">push</span>(<span class="kw-2">&amp;</span><span class="ident">solution</span>.<span class="ident">name</span>);
             <span class="kw">continue</span>;
         }
-        <span class="ident">process_solution</span>(<span class="kw-2">&amp;</span><span class="ident">ui_state</span>, <span class="ident">solution_name</span>, <span class="ident">opt</span>.<span class="ident">in_place</span>);
+        <span class="kw">let</span> <span class="ident">has_changes</span> <span class="op">=</span> <span class="ident">process_solution</span>(<span class="kw-2">&amp;</span><span class="ident">ui_state</span>, <span class="ident">solution_name</span>, <span class="ident">opt</span>.<span class="ident">in_place</span>);
+        <span class="kw">if</span> <span class="ident">has_changes</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">opt</span>.<span class="ident">in_place</span> {
+            <span class="ident">changes_to_write</span> <span class="op">=</span> <span class="bool-val">true</span>;
+        }
         <span class="macro">println!</span>();
     }
 
     <span class="kw">if</span> <span class="op">!</span><span class="ident">skipped</span>.<span class="ident">is_empty</span>() {
+        <span class="macro">cwrite!</span>(<span class="ident">printer</span>, <span class="ident">YELLOW</span>, <span class="string">&quot;Warning&quot;</span>);
         <span class="macro">println!</span>(
-            <span class="string">&quot;These solutions already have at least one check, so they have been skipped: {}&quot;</span>,
+            <span class="string">&quot;: These solutions already have at least one check, so they have been skipped: {}&quot;</span>,
             <span class="ident">skipped</span>.<span class="ident">iter</span>().<span class="ident">join</span>(<span class="string">&quot;, &quot;</span>)
         );
+    }
+    <span class="kw">if</span> <span class="ident">changes_to_write</span> {
+        <span class="macro">cwrite!</span>(<span class="ident">printer</span>, <span class="ident">BLUE</span>, <span class="string">&quot;Note&quot;</span>);
+        <span class="macro">println!</span>(<span class="string">&quot;: The comments above have not been written to the solution files. To do this automatically pass -i.&quot;</span>);
     }
 
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="kw">fn</span> <span class="ident">process_solution</span>(<span class="ident">state</span>: <span class="kw-2">&amp;</span><span class="ident">UIState</span>, <span class="ident">solution_name</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">in_place</span>: <span class="ident">bool</span>) {
+<span class="doccomment">/// Generate (and add with in_place) the @check comments to this solution.</span>
+<span class="kw">fn</span> <span class="ident">process_solution</span>(<span class="ident">state</span>: <span class="kw-2">&amp;</span><span class="ident">UIState</span>, <span class="ident">solution_name</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">in_place</span>: <span class="ident">bool</span>) -&gt; <span class="ident">bool</span> {
     <span class="kw">let</span> <span class="ident">solution</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">state</span>.<span class="ident">solutions</span>[<span class="ident">solution_name</span>];
     <span class="kw">let</span> <span class="ident">language</span> <span class="op">=</span> <span class="ident">LanguageManager::detect_language</span>(<span class="ident">solution_name</span>);
 
@@ -311,7 +333,7 @@
         <span class="ident">solution_results</span>
     } <span class="kw">else</span> {
         <span class="macro">println!</span>(<span class="string">&quot;Solution &#39;{}&#39; not evaluated, skipping&quot;</span>, <span class="ident">solution</span>.<span class="ident">name</span>);
-        <span class="kw">return</span>;
+        <span class="kw">return</span> <span class="bool-val">false</span>;
     };
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">checks</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
@@ -330,7 +352,7 @@
                 <span class="string">&quot;Solution &#39;{}&#39; not evaluated on all the testcases, skipping.&quot;</span>,
                 <span class="ident">solution</span>.<span class="ident">name</span>
             );
-            <span class="kw">return</span>;
+            <span class="kw">return</span> <span class="bool-val">false</span>;
         }
         <span class="kw">let</span> <span class="ident">testcase_results</span>: <span class="ident">HashSet</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span>
             <span class="ident">testcase_results</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">Option::unwrap</span>).<span class="ident">collect</span>();
@@ -370,7 +392,7 @@
         })
         .<span class="ident">collect_vec</span>();
     <span class="macro">println!</span>(<span class="string">&quot;{}\n{}&quot;</span>, <span class="ident">solution</span>.<span class="ident">name</span>, <span class="ident">comments</span>.<span class="ident">iter</span>().<span class="ident">join</span>(<span class="string">&quot;\n&quot;</span>));
-    <span class="kw">if</span> <span class="ident">in_place</span> {
+    <span class="kw">if</span> <span class="ident">in_place</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">comments</span>.<span class="ident">is_empty</span>() {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span> <span class="ident">write_comments_to_file</span>(<span class="kw-2">&amp;</span><span class="ident">solution</span>.<span class="ident">path</span>, <span class="kw-2">&amp;</span><span class="ident">comments</span>).<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> {
             <span class="macro">format!</span>(
                 <span class="string">&quot;Failed to write @check comments to &#39;{}&#39;&quot;</span>,
@@ -380,6 +402,8 @@
             <span class="macro">eprintln!</span>(<span class="string">&quot;Error: {:?}&quot;</span>, <span class="ident">e</span>);
         }
     }
+
+    <span class="op">!</span><span class="ident">comments</span>.<span class="ident">is_empty</span>()
 }
 
 <span class="kw">fn</span> <span class="ident">write_comments_to_file</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">comments</span>: <span class="kw-2">&amp;</span>[<span class="ident">String</span>]) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {

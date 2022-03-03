@@ -274,7 +274,7 @@
 
 <span class="kw">use</span> <span class="ident">structopt::StructOpt</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">ExecutionOpt</span>, <span class="ident">FindTaskOpt</span>, <span class="ident">LoggerOpt</span>, <span class="ident">StorageOpt</span>, <span class="ident">UIOpt</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">ExecutionOpt</span>, <span class="ident">FilterOpt</span>, <span class="ident">FindTaskOpt</span>, <span class="ident">LoggerOpt</span>, <span class="ident">StorageOpt</span>, <span class="ident">UIOpt</span>};
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">StructOpt</span>, <span class="ident">Debug</span>)]</span>
 <span class="attribute">#[<span class="ident">structopt</span>(
@@ -528,8 +528,8 @@
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">flatten</span>)]</span>
     <span class="kw">pub</span> <span class="ident">storage</span>: <span class="ident">StorageOpt</span>,
 
-    <span class="doccomment">/// Add the checks only to these solutions.</span>
-    <span class="kw">pub</span> <span class="ident">solutions</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">flatten</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">filter</span>: <span class="ident">FilterOpt</span>,
 
     <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">flatten</span>)]</span>
     <span class="kw">pub</span> <span class="ident">execution</span>: <span class="ident">ExecutionOpt</span>,

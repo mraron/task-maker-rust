@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["ExecutionOpt",""],["FindTaskOpt",""],["LoggerOpt",""],["Opt",""],["StorageOpt",""],["UIOpt",""]]});
+initSidebarItems({"struct":[["ExecutionOpt",""],["FilterOpt",""],["FindTaskOpt",""],["LoggerOpt",""],["Opt",""],["StorageOpt",""],["UIOpt",""]]});
