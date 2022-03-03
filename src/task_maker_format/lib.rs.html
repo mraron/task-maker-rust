@@ -413,7 +413,6 @@
 <span id="411">411</span>
 <span id="412">412</span>
 <span id="413">413</span>
-<span id="414">414</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Task parsing and execution using computation DAGs.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This crate allows you to parse the tasks on disk and evaluate the solutions inside of them by</span>
@@ -445,6 +444,7 @@
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
 <span class="kw">use</span> <span class="ident">typescript_definitions::TypeScriptify</span>;
 
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ioi::IOITask</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">detect_format::find_task</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">sanity_checks::get_sanity_check_names</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">source_file::SourceFile</span>;
@@ -454,9 +454,7 @@
 <span class="kw">use</span> <span class="ident">task_maker_lang</span>::{<span class="ident">GraderMap</span>, <span class="ident">LanguageManager</span>};
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ioi::task_info::IOITaskInfo</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ioi::IOITask</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::solution::Solution</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::solution</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::terry</span>::{<span class="ident">Seed</span>, <span class="ident">TerryTask</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ui::UI</span>;
 

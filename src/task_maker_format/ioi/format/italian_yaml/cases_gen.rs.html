@@ -1634,8 +1634,6 @@
 <span id="1632">1632</span>
 <span id="1633">1633</span>
 <span id="1634">1634</span>
-<span id="1635">1635</span>
-<span id="1636">1636</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 <span class="kw">use</span> <span class="ident">std::fmt::Debug</span>;
 <span class="kw">use</span> <span class="ident">std::fmt::Formatter</span>;
@@ -2153,10 +2151,8 @@
             <span class="prelude-val">None</span>
         };
         <span class="self">self</span>.<span class="ident">subtask_description</span> <span class="op">=</span> <span class="ident">description</span>.<span class="ident">clone</span>();
-        <span class="comment">// FIXME: the cases.gen format does not yet support giving the subtasks a name.</span>
         <span class="self">self</span>.<span class="ident">result</span>.<span class="ident">push</span>(<span class="ident">TaskInputEntry::Subtask</span>(<span class="ident">SubtaskInfo</span> {
             <span class="ident">id</span>: <span class="self">self</span>.<span class="ident">subtask_id</span>,
-            <span class="ident">name</span>: <span class="prelude-val">None</span>,
             <span class="ident">description</span>,
             <span class="ident">max_score</span>: <span class="ident">score</span>,
             <span class="ident">testcases</span>: <span class="ident">HashMap::new</span>(),

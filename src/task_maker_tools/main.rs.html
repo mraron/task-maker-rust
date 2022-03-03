@@ -34,12 +34,9 @@
 <span id="32">32</span>
 <span id="33">33</span>
 <span id="34">34</span>
-<span id="35">35</span>
-<span id="36">36</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">structopt::StructOpt</span>;
 
 <span class="kw">use</span> <span class="ident">task_maker_rust::error::NiceError</span>;
-<span class="kw">use</span> <span class="ident">task_maker_rust::tools::add_solution_checks::main_add_solution_checks</span>;
 <span class="kw">use</span> <span class="ident">task_maker_rust::tools::booklet::main_booklet</span>;
 <span class="kw">use</span> <span class="ident">task_maker_rust::tools::clear::main_clear</span>;
 <span class="kw">use</span> <span class="ident">task_maker_rust::tools::fuzz_checker::main_fuzz_checker</span>;
@@ -67,7 +64,6 @@
         <span class="ident">Tool::TaskInfo</span>(<span class="ident">opt</span>) =&gt; <span class="ident">main_task_info</span>(<span class="ident">opt</span>),
         <span class="ident">Tool::Booklet</span>(<span class="ident">opt</span>) =&gt; <span class="ident">main_booklet</span>(<span class="ident">opt</span>),
         <span class="ident">Tool::FuzzChecker</span>(<span class="ident">opt</span>) =&gt; <span class="ident">main_fuzz_checker</span>(<span class="ident">opt</span>),
-        <span class="ident">Tool::AddSolutionChecks</span>(<span class="ident">opt</span>) =&gt; <span class="ident">main_add_solution_checks</span>(<span class="ident">opt</span>),
         <span class="ident">Tool::InternalSandbox</span> =&gt; <span class="kw">return</span> <span class="ident">task_maker_rust::main_sandbox</span>(),
     }
     .<span class="ident">nice_unwrap</span>()
