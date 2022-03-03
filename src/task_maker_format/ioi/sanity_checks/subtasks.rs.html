@@ -140,7 +140,7 @@
         }
         <span class="kw">if</span> <span class="op">!</span><span class="ident">missing_name</span>.<span class="ident">is_empty</span>() {
             <span class="ident">eval</span>.<span class="ident">sender</span>.<span class="ident">send_warning</span>(<span class="macro">format!</span>(
-                <span class="string">&quot;These subtasks are missing a name: {}&quot;</span>,
+                <span class="string">&quot;These subtasks are missing a name (use &#39;#STNAME: name&#39; in gen/GEN): {}&quot;</span>,
                 <span class="ident">missing_name</span>.<span class="ident">join</span>(<span class="string">&quot;, &quot;</span>)
             ))<span class="question-mark">?</span>;
         }

@@ -504,6 +504,10 @@
 <span id="502">502</span>
 <span id="503">503</span>
 <span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The IOI task format.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! In IOI-like tasks there is the concept of _subtask_ and of _testcase_: a testcase is a single</span>
@@ -717,8 +721,12 @@
         <span class="ident">eval</span>.<span class="ident">sender</span>.<span class="ident">send</span>(<span class="ident">UIMessage::IOITask</span> {
             <span class="ident">task</span>: <span class="ident">Box::new</span>(<span class="self">self</span>.<span class="ident">clone</span>()),
         })<span class="question-mark">?</span>;
-        <span class="ident">eval</span>.<span class="ident">solutions</span> <span class="op">=</span>
-            <span class="ident">config</span>.<span class="ident">find_solutions</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">path</span>, <span class="macro">vec!</span>[<span class="string">&quot;sol/*&quot;</span>], <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">grader_map</span>.<span class="ident">clone</span>()), <span class="ident">eval</span>);
+        <span class="ident">eval</span>.<span class="ident">solutions</span> <span class="op">=</span> <span class="ident">config</span>.<span class="ident">find_solutions</span>(
+            <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">path</span>,
+            <span class="macro">vec!</span>[<span class="string">&quot;sol/*&quot;</span>],
+            <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">grader_map</span>.<span class="ident">clone</span>()),
+            <span class="ident">eval</span>,
+        );
         <span class="self">self</span>.<span class="ident">sanity_checks</span>
             .<span class="ident">pre_hook</span>(<span class="self">self</span>, <span class="ident">eval</span>)
             .<span class="ident">context</span>(<span class="string">&quot;Sanity check pre-hooks failed&quot;</span>)<span class="question-mark">?</span>;
