@@ -336,40 +336,40 @@
 <span class="doccomment">/// First step of the execution: take a task and build the Execution DAG. This needs setting the</span>
 <span class="doccomment">/// first configurations of the environment.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RuntimeContext</span> {
-    <span class="ident">task</span>: <span class="ident">TaskFormat</span>,
-    <span class="ident">eval</span>: <span class="ident">EvaluationData</span>,
-    <span class="ident">ui_receiver</span>: <span class="ident">UIChannelReceiver</span>,
-    <span class="ident">sandbox_runner</span>: <span class="ident">ToolsSandboxRunner</span>,
+    <span class="kw">pub</span> <span class="ident">task</span>: <span class="ident">TaskFormat</span>,
+    <span class="kw">pub</span> <span class="ident">eval</span>: <span class="ident">EvaluationData</span>,
+    <span class="kw">pub</span> <span class="ident">ui_receiver</span>: <span class="ident">UIChannelReceiver</span>,
+    <span class="kw">pub</span> <span class="ident">sandbox_runner</span>: <span class="ident">ToolsSandboxRunner</span>,
 }
 
 <span class="doccomment">/// Second step: connect to an executor (either local or remote). This opens the local store and</span>
 <span class="doccomment">/// setups the local executor if necessary.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConnectedExecutor</span> {
     <span class="comment">// fields from RuntimeContext</span>
-    <span class="ident">task</span>: <span class="ident">TaskFormat</span>,
-    <span class="ident">eval</span>: <span class="ident">EvaluationData</span>,
-    <span class="ident">ui_receiver</span>: <span class="ident">UIChannelReceiver</span>,
+    <span class="kw">pub</span> <span class="ident">task</span>: <span class="ident">TaskFormat</span>,
+    <span class="kw">pub</span> <span class="ident">eval</span>: <span class="ident">EvaluationData</span>,
+    <span class="kw">pub</span> <span class="ident">ui_receiver</span>: <span class="ident">UIChannelReceiver</span>,
 
     <span class="comment">// new fields</span>
-    <span class="ident">file_store</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">FileStore</span><span class="op">&gt;</span>,
-    <span class="ident">tx</span>: <span class="ident">ChannelSender</span><span class="op">&lt;</span><span class="ident">ExecutorClientMessage</span><span class="op">&gt;</span>,
-    <span class="ident">rx</span>: <span class="ident">ChannelReceiver</span><span class="op">&lt;</span><span class="ident">ExecutorServerMessage</span><span class="op">&gt;</span>,
-    <span class="ident">local_executor</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">JoinHandle</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">file_store</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">FileStore</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">tx</span>: <span class="ident">ChannelSender</span><span class="op">&lt;</span><span class="ident">ExecutorClientMessage</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">rx</span>: <span class="ident">ChannelReceiver</span><span class="op">&lt;</span><span class="ident">ExecutorServerMessage</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">local_executor</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">JoinHandle</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 }
 
 <span class="doccomment">/// Third step: start the UI thread.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConnectedExecutorWithUI</span> {
     <span class="comment">// fields from ConnectedExecutor</span>
-    <span class="ident">task</span>: <span class="ident">TaskFormat</span>,
-    <span class="ident">eval</span>: <span class="ident">EvaluationData</span>,
-    <span class="ident">file_store</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">FileStore</span><span class="op">&gt;</span>,
-    <span class="ident">tx</span>: <span class="ident">ChannelSender</span><span class="op">&lt;</span><span class="ident">ExecutorClientMessage</span><span class="op">&gt;</span>,
-    <span class="ident">rx</span>: <span class="ident">ChannelReceiver</span><span class="op">&lt;</span><span class="ident">ExecutorServerMessage</span><span class="op">&gt;</span>,
-    <span class="ident">local_executor</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">JoinHandle</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">task</span>: <span class="ident">TaskFormat</span>,
+    <span class="kw">pub</span> <span class="ident">eval</span>: <span class="ident">EvaluationData</span>,
+    <span class="kw">pub</span> <span class="ident">file_store</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">FileStore</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">tx</span>: <span class="ident">ChannelSender</span><span class="op">&lt;</span><span class="ident">ExecutorClientMessage</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">rx</span>: <span class="ident">ChannelReceiver</span><span class="op">&lt;</span><span class="ident">ExecutorServerMessage</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">local_executor</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">JoinHandle</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 
     <span class="comment">// new fields</span>
-    <span class="ident">ui_thread</span>: <span class="ident">JoinHandle</span><span class="op">&lt;</span>()<span class="op">&gt;</span>,
-    <span class="ident">client_sender</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ChannelSender</span><span class="op">&lt;</span><span class="ident">ExecutorClientMessage</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">ui_thread</span>: <span class="ident">JoinHandle</span><span class="op">&lt;</span>()<span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">client_sender</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ChannelSender</span><span class="op">&lt;</span><span class="ident">ExecutorClientMessage</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">RuntimeContext</span> {

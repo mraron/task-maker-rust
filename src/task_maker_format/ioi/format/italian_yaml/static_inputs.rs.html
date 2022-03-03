@@ -159,6 +159,7 @@
 <span id="157">157</span>
 <span id="158">158</span>
 <span id="159">159</span>
+<span id="160">160</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 <span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
 
@@ -199,6 +200,7 @@
             <span class="self">self</span>.<span class="ident">index</span> <span class="op">=</span> <span class="number">1</span>;
             <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">TaskInputEntry::Subtask</span>(<span class="ident">SubtaskInfo</span> {
                 <span class="ident">id</span>: <span class="number">0</span>,
+                <span class="ident">name</span>: <span class="prelude-val">None</span>,
                 <span class="ident">description</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;Static testcases&quot;</span>.<span class="ident">into</span>()),
                 <span class="ident">max_score</span>: <span class="number">100.0</span>,
                 <span class="ident">testcases</span>: <span class="ident">HashMap::new</span>(),

@@ -258,12 +258,20 @@
 <span id="256">256</span>
 <span id="257">257</span>
 <span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The Terry task format.</span>
 <span class="kw">use</span> <span class="ident">std::collections::HashSet</span>;
 <span class="kw">use</span> <span class="ident">std::path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
 <span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
 
 <span class="kw">use</span> <span class="ident">anyhow::Error</span>;
+<span class="kw">use</span> <span class="ident">itertools::Itertools</span>;
 <span class="kw">use</span> <span class="ident">rand::Rng</span>;
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
 <span class="kw">use</span> <span class="ident">typescript_definitions::TypeScriptify</span>;
@@ -272,6 +280,7 @@
 <span class="kw">use</span> <span class="ident">task_maker_dag::ExecutionDAGConfig</span>;
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::sanity_checks::SanityChecks</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::solution::SolutionInfo</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::terry::curses_ui::CursesUI</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::terry::dag</span>::{<span class="ident">Checker</span>, <span class="ident">InputGenerator</span>, <span class="ident">InputValidator</span>, <span class="ident">Solution</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::terry::format::parse_task</span>;
@@ -432,6 +441,11 @@
         })<span class="question-mark">?</span>;
         <span class="ident">eval</span>.<span class="ident">solutions</span> <span class="op">=</span> <span class="ident">config</span>.<span class="ident">find_solutions</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">path</span>, <span class="macro">vec!</span>[<span class="string">&quot;solutions/*&quot;</span>], <span class="prelude-val">None</span>);
         <span class="self">self</span>.<span class="ident">sanity_checks</span>.<span class="ident">pre_hook</span>(<span class="self">self</span>, <span class="ident">eval</span>)<span class="question-mark">?</span>;
+
+        <span class="kw">let</span> <span class="ident">solution_info</span> <span class="op">=</span> <span class="ident">eval</span>.<span class="ident">solutions</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="ident">SolutionInfo::from</span>).<span class="ident">collect_vec</span>();
+        <span class="ident">eval</span>.<span class="ident">sender</span>.<span class="ident">send</span>(<span class="ident">UIMessage::Solutions</span> {
+            <span class="ident">solutions</span>: <span class="ident">solution_info</span>,
+        })<span class="question-mark">?</span>;
 
         <span class="kw">let</span> <span class="ident">solutions</span> <span class="op">=</span> <span class="ident">eval</span>.<span class="ident">solutions</span>.<span class="ident">clone</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="ident">rand::thread_rng</span>();
