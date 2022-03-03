@@ -445,7 +445,6 @@
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
 <span class="kw">use</span> <span class="ident">typescript_definitions::TypeScriptify</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ioi::IOITask</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">detect_format::find_task</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">sanity_checks::get_sanity_check_names</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">source_file::SourceFile</span>;
@@ -455,12 +454,16 @@
 <span class="kw">use</span> <span class="ident">task_maker_lang</span>::{<span class="ident">GraderMap</span>, <span class="ident">LanguageManager</span>};
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ioi::task_info::IOITaskInfo</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ioi::IOITask</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::solution::Solution</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::solution</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::terry</span>::{<span class="ident">Seed</span>, <span class="ident">TerryTask</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ui::UI</span>;
 
 <span class="kw">mod</span> <span class="ident">detect_format</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">ioi</span>;
 <span class="kw">mod</span> <span class="ident">sanity_checks</span>;
+<span class="kw">mod</span> <span class="ident">solution</span>;
 <span class="kw">mod</span> <span class="ident">source_file</span>;
 <span class="kw">mod</span> <span class="ident">tag</span>;
 <span class="kw">mod</span> <span class="ident">task_format</span>;
@@ -518,6 +521,8 @@
     <span class="kw">pub</span> <span class="ident">task_root</span>: <span class="ident">PathBuf</span>,
     <span class="doccomment">/// The DAG with the evaluation data.</span>
     <span class="kw">pub</span> <span class="ident">dag</span>: <span class="ident">ExecutionDAG</span>,
+    <span class="doccomment">/// The list of solutions to evaluate.</span>
+    <span class="kw">pub</span> <span class="ident">solutions</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Solution</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The sender of the UI.</span>
     <span class="kw">pub</span> <span class="ident">sender</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">ui::UIMessageSender</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 }
@@ -530,6 +535,7 @@
             <span class="ident">EvaluationData</span> {
                 <span class="ident">task_root</span>: <span class="ident">task_root</span>.<span class="ident">into</span>(),
                 <span class="ident">dag</span>: <span class="ident">ExecutionDAG::new</span>(),
+                <span class="ident">solutions</span>: <span class="ident">Default::default</span>(),
                 <span class="ident">sender</span>: <span class="ident">Arc::new</span>(<span class="ident">Mutex::new</span>(<span class="ident">sender</span>)),
             },
             <span class="ident">receiver</span>,
@@ -599,12 +605,12 @@
     <span class="doccomment">/// If the configuration is set with a filter, it is applied.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// If the configuration is set to evaluate only some solutions, it is applied.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">filter_solutions</span>(
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_solutions</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">base_dir</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>,
         <span class="ident">patterns</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>,
         <span class="ident">grader_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">GraderMap</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SourceFile</span><span class="op">&gt;</span> {
+    ) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Solution</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">solutions_paths</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">solution_paths</span>(<span class="ident">base_dir</span>, <span class="ident">patterns</span>);
         <span class="kw">let</span> <span class="ident">filter</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">solution_filters</span>();
         <span class="kw">let</span> <span class="ident">graders</span>: <span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">grader_map</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">grader_map</span> {
@@ -625,13 +631,7 @@
                     .<span class="ident">iter</span>()
                     .<span class="ident">any</span>(<span class="op">|</span><span class="ident">filter</span><span class="op">|</span> <span class="ident">name</span>.<span class="ident">starts_with</span>(<span class="ident">filter</span>.<span class="ident">as_str</span>()))
             })
-            .<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">write_to</span> <span class="op">=</span> <span class="ident">base_dir</span>
-                    .<span class="ident">join</span>(<span class="string">&quot;bin&quot;</span>)
-                    .<span class="ident">join</span>(<span class="string">&quot;sol&quot;</span>)
-                    .<span class="ident">join</span>(<span class="ident">p</span>.<span class="ident">file_name</span>().<span class="ident">unwrap</span>());
-                <span class="ident">SourceFile::new</span>(<span class="ident">p</span>, <span class="ident">base_dir</span>, <span class="ident">grader_map</span>.<span class="ident">clone</span>(), <span class="prelude-val">Some</span>(<span class="ident">write_to</span>))
-            })
+            .<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">path</span><span class="op">|</span> <span class="ident">Solution::new</span>(<span class="kw-2">&amp;</span><span class="ident">path</span>, <span class="ident">base_dir</span>, <span class="ident">grader_map</span>.<span class="ident">clone</span>()))
             .<span class="ident">collect</span>()
     }
 }

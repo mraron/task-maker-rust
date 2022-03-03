@@ -683,7 +683,7 @@
         <span class="ident">booklet</span>.<span class="ident">add_statement</span>(<span class="ident">statement</span>);
         <span class="ident">booklet</span>.<span class="ident">build</span>(<span class="kw-2">&amp;mut</span> <span class="ident">eval</span>).<span class="ident">unwrap</span>();
         <span class="ident">eval</span>.<span class="ident">dag</span>
-            .<span class="ident">file_callbacks</span>
+            .<span class="ident">file_callbacks</span>()
             .<span class="ident">values</span>()
             .<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">f</span><span class="op">|</span> <span class="ident">f</span>.<span class="ident">write_to</span>.<span class="ident">as_ref</span>())
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">f</span><span class="op">|</span> <span class="ident">f</span>.<span class="ident">dest</span>.<span class="ident">clone</span>())

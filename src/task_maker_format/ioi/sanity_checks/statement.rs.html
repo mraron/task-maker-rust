@@ -336,6 +336,8 @@
 <span id="334">334</span>
 <span id="335">335</span>
 <span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::io::Read</span>;
 <span class="kw">use</span> <span class="ident">std::os::unix::ffi::OsStrExt</span>;
 <span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
@@ -347,7 +349,6 @@
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ioi</span>::{<span class="ident">IOITask</span>, <span class="ident">SubtaskId</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::sanity_checks::SanityCheck</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ui::UIMessageSender</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">EvaluationData</span>, <span class="ident">UISender</span>};
 
 <span class="doccomment">/// Check that the subtasks in the statement are consistent with the ones of the task.</span>
@@ -421,10 +422,10 @@
         <span class="string">&quot;StatementValid&quot;</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">post_hook</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">IOITask</span>, <span class="ident">ui</span>: <span class="kw-2">&amp;mut</span> <span class="ident">UIMessageSender</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">post_hook</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">IOITask</span>, <span class="ident">eval</span>: <span class="kw-2">&amp;mut</span> <span class="ident">EvaluationData</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="ident">find_statement_pdf</span>(<span class="ident">task</span>) {
             <span class="prelude-val">None</span> =&gt; {
-                <span class="ident">ui</span>.<span class="ident">send_error</span>(
+                <span class="ident">eval</span>.<span class="ident">sender</span>.<span class="ident">send_error</span>(
                     <span class="string">&quot;Missing statement file (statement/statement.pdf or testo/testo.pdf)&quot;</span>,
                 )<span class="question-mark">?</span>;
             }
@@ -444,7 +445,7 @@
                     };
 
                     <span class="kw">if</span> <span class="ident">invalid</span> {
-                        <span class="ident">ui</span>.<span class="ident">send_error</span>(<span class="macro">format!</span>(
+                        <span class="ident">eval</span>.<span class="ident">sender</span>.<span class="ident">send_error</span>(<span class="macro">format!</span>(
                             <span class="string">&quot;Invalid PDF file at {}&quot;</span>,
                             <span class="ident">path</span>.<span class="ident">strip_prefix</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>.<span class="ident">path</span>).<span class="ident">unwrap</span>().<span class="ident">display</span>()
                         ))<span class="question-mark">?</span>;
@@ -453,7 +454,7 @@
                 }
                 <span class="comment">// broken symlink</span>
                 <span class="kw">else</span> <span class="kw">if</span> <span class="ident">path</span>.<span class="ident">read_link</span>().<span class="ident">is_ok</span>() {
-                    <span class="ident">ui</span>.<span class="ident">send_error</span>(<span class="macro">format!</span>(
+                    <span class="ident">eval</span>.<span class="ident">sender</span>.<span class="ident">send_error</span>(<span class="macro">format!</span>(
                         <span class="string">&quot;Statement {} is a broken link&quot;</span>,
                         <span class="ident">path</span>.<span class="ident">strip_prefix</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>.<span class="ident">path</span>).<span class="ident">unwrap</span>().<span class="ident">display</span>()
                     ))<span class="question-mark">?</span>;
@@ -473,7 +474,7 @@
         <span class="string">&quot;StatementCompiled&quot;</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">post_hook</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">IOITask</span>, <span class="ident">ui</span>: <span class="kw-2">&amp;mut</span> <span class="ident">UIMessageSender</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">post_hook</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">IOITask</span>, <span class="ident">eval</span>: <span class="kw-2">&amp;mut</span> <span class="ident">EvaluationData</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="comment">// If there are no booklets it may mean that the statement is compiled with an external tool</span>
         <span class="comment">// or that the statement compilation is not done. Either way this sanity check should be</span>
         <span class="comment">// ignored.</span>
@@ -505,7 +506,7 @@
 
         <span class="comment">// We didn&#39;t find any compiled booklet referring to the official statement, this means that</span>
         <span class="comment">// the statement that will be used isn&#39;t the one compiled by us.</span>
-        <span class="kw">return</span> <span class="ident">ui</span>.<span class="ident">send_warning</span>(<span class="macro">format!</span>(
+        <span class="kw">return</span> <span class="ident">eval</span>.<span class="ident">sender</span>.<span class="ident">send_warning</span>(<span class="macro">format!</span>(
             <span class="string">&quot;The official statement at {} is not the one compiled by task-maker&quot;</span>,
             <span class="ident">path</span>.<span class="ident">strip_prefix</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>.<span class="ident">path</span>).<span class="ident">unwrap</span>().<span class="ident">display</span>()
         ));
@@ -521,7 +522,7 @@
         <span class="string">&quot;StatementGit&quot;</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">post_hook</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">IOITask</span>, <span class="ident">ui</span>: <span class="kw-2">&amp;mut</span> <span class="ident">UIMessageSender</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">post_hook</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">IOITask</span>, <span class="ident">eval</span>: <span class="kw-2">&amp;mut</span> <span class="ident">EvaluationData</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="ident">find_statement_pdf</span>(<span class="ident">task</span>) {
             <span class="prelude-val">None</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Ok</span>(()),
             <span class="prelude-val">Some</span>(<span class="ident">path</span>) =&gt; {
@@ -541,7 +542,10 @@
                         <span class="kw">if</span> <span class="op">!</span><span class="ident">output</span>.<span class="ident">stdout</span>.<span class="ident">is_empty</span>()
                             <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">output</span>.<span class="ident">stdout</span>.<span class="ident">split</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">b</span><span class="op">|</span> <span class="ident">b</span> <span class="op">==</span> <span class="number">0</span>).<span class="ident">any</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span> <span class="op">==</span> <span class="ident">raw_path</span>)
                         {
-                            <span class="ident">ui</span>.<span class="ident">send_error</span>(<span class="macro">format!</span>(<span class="string">&quot;File {} is not known to git&quot;</span>, <span class="ident">path</span>.<span class="ident">display</span>()))<span class="question-mark">?</span>;
+                            <span class="ident">eval</span>.<span class="ident">sender</span>.<span class="ident">send_error</span>(<span class="macro">format!</span>(
+                                <span class="string">&quot;File {} is not known to git&quot;</span>,
+                                <span class="ident">path</span>.<span class="ident">display</span>()
+                            ))<span class="question-mark">?</span>;
                         }
                     }
                 }
