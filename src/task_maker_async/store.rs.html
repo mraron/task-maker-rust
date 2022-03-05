@@ -1,0 +1,205 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `task-maker-async&#x2F;src&#x2F;store.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>store.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a class="sidebar-logo" href="../../task_maker_async/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.png" alt="logo"></div>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../task_maker_async/index.html"><img class="rust-logo" src="../../rust-logo.png" alt="logo"></a><nav class="sub"><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
+<span id="2">  2</span>
+<span id="3">  3</span>
+<span id="4">  4</span>
+<span id="5">  5</span>
+<span id="6">  6</span>
+<span id="7">  7</span>
+<span id="8">  8</span>
+<span id="9">  9</span>
+<span id="10"> 10</span>
+<span id="11"> 11</span>
+<span id="12"> 12</span>
+<span id="13"> 13</span>
+<span id="14"> 14</span>
+<span id="15"> 15</span>
+<span id="16"> 16</span>
+<span id="17"> 17</span>
+<span id="18"> 18</span>
+<span id="19"> 19</span>
+<span id="20"> 20</span>
+<span id="21"> 21</span>
+<span id="22"> 22</span>
+<span id="23"> 23</span>
+<span id="24"> 24</span>
+<span id="25"> 25</span>
+<span id="26"> 26</span>
+<span id="27"> 27</span>
+<span id="28"> 28</span>
+<span id="29"> 29</span>
+<span id="30"> 30</span>
+<span id="31"> 31</span>
+<span id="32"> 32</span>
+<span id="33"> 33</span>
+<span id="34"> 34</span>
+<span id="35"> 35</span>
+<span id="36"> 36</span>
+<span id="37"> 37</span>
+<span id="38"> 38</span>
+<span id="39"> 39</span>
+<span id="40"> 40</span>
+<span id="41"> 41</span>
+<span id="42"> 42</span>
+<span id="43"> 43</span>
+<span id="44"> 44</span>
+<span id="45"> 45</span>
+<span id="46"> 46</span>
+<span id="47"> 47</span>
+<span id="48"> 48</span>
+<span id="49"> 49</span>
+<span id="50"> 50</span>
+<span id="51"> 51</span>
+<span id="52"> 52</span>
+<span id="53"> 53</span>
+<span id="54"> 54</span>
+<span id="55"> 55</span>
+<span id="56"> 56</span>
+<span id="57"> 57</span>
+<span id="58"> 58</span>
+<span id="59"> 59</span>
+<span id="60"> 60</span>
+<span id="61"> 61</span>
+<span id="62"> 62</span>
+<span id="63"> 63</span>
+<span id="64"> 64</span>
+<span id="65"> 65</span>
+<span id="66"> 66</span>
+<span id="67"> 67</span>
+<span id="68"> 68</span>
+<span id="69"> 69</span>
+<span id="70"> 70</span>
+<span id="71"> 71</span>
+<span id="72"> 72</span>
+<span id="73"> 73</span>
+<span id="74"> 74</span>
+<span id="75"> 75</span>
+<span id="76"> 76</span>
+<span id="77"> 77</span>
+<span id="78"> 78</span>
+<span id="79"> 79</span>
+<span id="80"> 80</span>
+<span id="81"> 81</span>
+<span id="82"> 82</span>
+<span id="83"> 83</span>
+<span id="84"> 84</span>
+<span id="85"> 85</span>
+<span id="86"> 86</span>
+<span id="87"> 87</span>
+<span id="88"> 88</span>
+<span id="89"> 89</span>
+<span id="90"> 90</span>
+<span id="91"> 91</span>
+<span id="92"> 92</span>
+<span id="93"> 93</span>
+<span id="94"> 94</span>
+<span id="95"> 95</span>
+<span id="96"> 96</span>
+<span id="97"> 97</span>
+<span id="98"> 98</span>
+<span id="99"> 99</span>
+<span id="100">100</span>
+</pre><pre class="rust"><code><span class="attribute">#![<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
+
+<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
+
+<span class="kw">type</span> <span class="ident">HashData</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">InputFileHash</span>(<span class="ident">HashData</span>);
+
+<span class="doccomment">/// Two-level hash; the outer hash has information about all properties of a computation that are</span>
+<span class="doccomment">/// expected to change the result (such as outer hashes of inputs, or the command line). The inner</span>
+<span class="doccomment">/// hash takes care of properties of the computation that should not change the outputs, such as</span>
+<span class="doccomment">/// time and memory limits; it also includes the first hash.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ComputationHash</span>(<span class="ident">HashData</span>, <span class="ident">HashData</span>);
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FileSetHandle</span>(<span class="ident">usize</span>);
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FileHandle</span>(<span class="ident">usize</span>);
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">FileSetFile</span> {
+    <span class="doccomment">/// Outcome for a computation, input file for an input file.</span>
+    <span class="ident">MainFile</span>,
+    <span class="doccomment">/// Metadata about how the fileset was obtained.</span>
+    <span class="ident">Metadata</span>,
+    <span class="doccomment">/// Any auxiliary file that can be attached to the main input file. For now only used for</span>
+    <span class="doccomment">/// outputs of computations.</span>
+    <span class="ident">AuxiliaryFile</span>(<span class="ident">String</span>),
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">FileReadingOutcome</span> {
+    <span class="doccomment">/// The file has been deleted, for example because the worker responsible for the execution has</span>
+    <span class="doccomment">/// disappeared.</span>
+    <span class="ident">Dropped</span>,
+    <span class="doccomment">/// The file has been fully read.</span>
+    <span class="ident">EndOfFile</span>,
+    <span class="doccomment">/// A new chunk of data is available.</span>
+    <span class="ident">Data</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>),
+}
+
+<span class="attribute">#[<span class="ident">tarpc::service</span>]</span>
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Store</span> {
+    <span class="doccomment">/// Used by the client to upload inputs to the DAG. Returns an error if the file set is already</span>
+    <span class="doccomment">/// present. Either way, this leases the corresponding hash for LEASE_LENGTH_SEC.</span>
+    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">create_input_fileset</span>(<span class="ident">hash</span>: <span class="ident">InputFileHash</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">FileSetHandle</span>, ()<span class="op">&gt;</span>;
+
+    <span class="doccomment">/// Opens a file for reading. Creates a lease for the input fileset that will prevent it</span>
+    <span class="doccomment">/// from being dropped. If the file is not present and finalized, returns an error immediately.</span>
+    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">open_input_file</span>(<span class="ident">hash</span>: <span class="ident">InputFileHash</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">FileSetHandle</span>, ()<span class="op">&gt;</span>;
+
+    <span class="comment">// Creating a computation is not a RPC.</span>
+
+    <span class="doccomment">/// Opens a computed fileset for reading. Creates a lease for the computation data that will prevent it</span>
+    <span class="doccomment">/// from being dropped. If the computation is not present, waits until it is created.</span>
+    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">open_computation</span>(<span class="ident">hash</span>: <span class="ident">ComputationHash</span>) -&gt; <span class="ident">FileSetHandle</span>;
+
+    <span class="doccomment">/// Opens a file inside a fileset. Waits for the file to be created if it doesn&#39;t exist yet and</span>
+    <span class="doccomment">/// the fileset handle is a reading handle, creates the file otherwise.</span>
+    <span class="doccomment">/// Returns an error if the handle is invalid.</span>
+    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">open_file</span>(<span class="ident">handle</span>: <span class="ident">FileSetHandle</span>, <span class="ident">file</span>: <span class="ident">FileSetFile</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">FileHandle</span>, ()<span class="op">&gt;</span>;
+
+    <span class="doccomment">/// Appends data to a file in a fileset that is open for writing. Refreshes the writing lease.</span>
+    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">append_chunk</span>(<span class="ident">file</span>: <span class="ident">FileHandle</span>, <span class="ident">data</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), ()<span class="op">&gt;</span>;
+
+    <span class="doccomment">/// Finalizes a FileSet handle in writing mode. Terminates the writing lease and returns a reading</span>
+    <span class="doccomment">/// lease for the same FileSet. If finalizing an input fileset, returns an error if the hash of</span>
+    <span class="doccomment">/// its MainFile is not correct.</span>
+    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">finalize_fileset</span>(<span class="ident">handle</span>: <span class="ident">FileSetHandle</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">FileSetHandle</span>, ()<span class="op">&gt;</span>;
+
+    <span class="doccomment">/// Tries to read from a file. Refreshes the corresponding lease.</span>
+    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">read_chunk</span>(<span class="ident">file</span>: <span class="ident">FileHandle</span>, <span class="ident">offset</span>: <span class="ident">usize</span>) -&gt; <span class="ident">FileReadingOutcome</span>;
+
+    <span class="doccomment">/// Refreshes the lease for the given fileset.</span>
+    <span class="doccomment">/// It is guaranteed that the fileset will not be deleted while there&#39;s an outstanding lease</span>
+    <span class="doccomment">/// to it. It is an error to refresh a lease of a non-existent input.</span>
+    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">refresh_fileset_lease</span>(<span class="ident">handle</span>: <span class="ident">FileSetHandle</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), ()<span class="op">&gt;</span>;
+}
+
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StoreService</span> {
+    <span class="comment">// TODO</span>
+}
+
+<span class="kw">impl</span> <span class="ident">StoreService</span> {
+    <span class="doccomment">/// Creates the storage for a given computation; this method is called by the server to obtain</span>
+    <span class="doccomment">/// a writing handle that the workers can use. It is an error to create a computation if</span>
+    <span class="doccomment">/// another computation with the same hash already exists, even if it is temporary (i.e. not</span>
+    <span class="doccomment">/// finalized).</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">create_computation</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_hash</span>: <span class="ident">ComputationHash</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">FileSetHandle</span>, ()<span class="op">&gt;</span> {
+        <span class="macro">todo!</span>(<span class="string">&quot;&quot;</span>);
+    }
+
+    <span class="doccomment">/// Lists all the computations that are similar to the given computation, i.e. for which the</span>
+    <span class="doccomment">/// first part of the hash matches.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">similar_computations</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_hash</span>: <span class="ident">ComputationHash</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ComputationHash</span><span class="op">&gt;</span> {
+        <span class="macro">todo!</span>(<span class="string">&quot;&quot;</span>);
+    }
+}
+</code></pre></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="task_maker_async" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.59.0 (9d1b2106e 2022-02-23)" ></div>
+</body></html>
