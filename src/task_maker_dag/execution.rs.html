@@ -966,12 +966,10 @@
 <span id="964">964</span>
 <span id="965">965</span>
 <span id="966">966</span>
-<span id="967">967</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 <span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
 
 <span class="kw">use</span> <span class="ident">anyhow::Error</span>;
-<span class="kw">use</span> <span class="ident">boxfnonce::BoxFnOnce</span>;
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
 <span class="kw">use</span> <span class="ident">typescript_definitions::TypeScriptify</span>;
 <span class="kw">use</span> <span class="ident">uuid::Uuid</span>;
@@ -990,13 +988,13 @@
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">WorkerUuid</span> <span class="op">=</span> <span class="ident">Uuid</span>;
 
 <span class="doccomment">/// Type of the callback called when an [`Execution`](struct.Execution.html) starts.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">OnStartCallback</span> <span class="op">=</span> <span class="ident">BoxFnOnce</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span>, (<span class="ident">WorkerUuid</span>,), <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">OnStartCallback</span> <span class="op">=</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">FnOnce</span>(<span class="ident">WorkerUuid</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// Type of the callback called when an [`Execution`](struct.Execution.html) ends.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">OnDoneCallback</span> <span class="op">=</span> <span class="ident">BoxFnOnce</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span>, (<span class="ident">ExecutionResult</span>,), <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">OnDoneCallback</span> <span class="op">=</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">FnOnce</span>(<span class="ident">ExecutionResult</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// Type of the callback called when an [`Execution`](struct.Execution.html) is skipped.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">OnSkipCallback</span> <span class="op">=</span> <span class="ident">BoxFnOnce</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span>, (), <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">OnSkipCallback</span> <span class="op">=</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">FnOnce</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// Type of the priority value of an `Execution`.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">Priority</span> <span class="op">=</span> <span class="ident">i64</span>;
