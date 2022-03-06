@@ -233,16 +233,12 @@
 <span id="231">231</span>
 <span id="232">232</span>
 <span id="233">233</span>
-<span id="234">234</span>
-<span id="235">235</span>
-<span id="236">236</span>
-<span id="237">237</span>
-<span id="238">238</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 <span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
 <span class="kw">use</span> <span class="ident">std::time::SystemTime</span>;
 
 <span class="kw">use</span> <span class="ident">task_maker_dag</span>::{<span class="ident">ExecutionResult</span>, <span class="ident">ExecutionStatus</span>};
+<span class="kw">use</span> <span class="ident">task_maker_diagnostics::DiagnosticContext</span>;
 <span class="kw">use</span> <span class="ident">task_maker_exec::ExecutorStatus</span>;
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::solution::SolutionInfo</span>;
@@ -261,10 +257,8 @@
     <span class="kw">pub</span> <span class="ident">solutions</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">PathBuf</span>, <span class="ident">SolutionState</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The status of the executor.</span>
     <span class="kw">pub</span> <span class="ident">executor_status</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ExecutorStatus</span><span class="op">&lt;</span><span class="ident">SystemTime</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// All the emitted warnings.</span>
-    <span class="kw">pub</span> <span class="ident">warnings</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// All the emitted errors.</span>
-    <span class="kw">pub</span> <span class="ident">errors</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Diagnostics context.</span>
+    <span class="kw">pub</span> <span class="ident">diagnostics</span>: <span class="ident">DiagnosticContext</span>,
 }
 
 <span class="doccomment">/// The state of the evaluation of a solution.</span>
@@ -344,8 +338,7 @@
             <span class="ident">compilations</span>: <span class="ident">HashMap::new</span>(),
             <span class="ident">solutions</span>: <span class="ident">HashMap::new</span>(),
             <span class="ident">executor_status</span>: <span class="prelude-val">None</span>,
-            <span class="ident">warnings</span>: <span class="ident">Vec::new</span>(),
-            <span class="ident">errors</span>: <span class="ident">Vec::new</span>(),
+            <span class="ident">diagnostics</span>: <span class="ident">Default::default</span>(),
         }
     }
 }
@@ -452,11 +445,8 @@
                     .<span class="ident">expect</span>(<span class="string">&quot;Outcome of an unknown solution&quot;</span>);
                 <span class="ident">sol</span>.<span class="ident">outcome</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">outcome</span>);
             }
-            <span class="ident">UIMessage::Warning</span> { <span class="ident">message</span> } =&gt; {
-                <span class="self">self</span>.<span class="ident">warnings</span>.<span class="ident">push</span>(<span class="ident">message</span>);
-            }
-            <span class="ident">UIMessage::Error</span> { <span class="ident">message</span> } =&gt; {
-                <span class="self">self</span>.<span class="ident">errors</span>.<span class="ident">push</span>(<span class="ident">message</span>);
+            <span class="ident">UIMessage::Diagnostic</span> { <span class="ident">diagnostic</span> } =&gt; {
+                <span class="self">self</span>.<span class="ident">diagnostics</span>.<span class="ident">add_diagnostic</span>(<span class="ident">diagnostic</span>);
             }
             <span class="ident">UIMessage::IOITask</span> { .. }
             <span class="op">|</span> <span class="ident">UIMessage::IOIGeneration</span> { .. }

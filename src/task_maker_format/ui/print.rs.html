@@ -351,10 +351,6 @@
 <span id="349">349</span>
 <span id="350">350</span>
 <span id="351">351</span>
-<span id="352">352</span>
-<span id="353">353</span>
-<span id="354">354</span>
-<span id="355">355</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">itertools::Itertools</span>;
 <span class="kw">use</span> <span class="ident">termcolor</span>::{<span class="ident">ColorChoice</span>, <span class="ident">ColorSpec</span>, <span class="ident">StandardStream</span>};
 
@@ -619,13 +615,9 @@
                     <span class="ident">num_steps</span>
                 ));
             }
-            <span class="ident">UIMessage::Warning</span> { <span class="ident">message</span> } =&gt; {
-                <span class="macro">cwrite!</span>(<span class="self">self</span>, <span class="ident">WARNING</span>, <span class="string">&quot;[WARNING] &quot;</span>);
-                <span class="macro">print!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">message</span>);
-            }
-            <span class="ident">UIMessage::Error</span> { <span class="ident">message</span> } =&gt; {
-                <span class="macro">cwrite!</span>(<span class="self">self</span>, <span class="ident">ERROR</span>, <span class="string">&quot;[ERROR]   &quot;</span>);
-                <span class="macro">print!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">message</span>);
+            <span class="ident">UIMessage::Diagnostic</span> { <span class="ident">diagnostic</span> } =&gt; {
+                <span class="macro">println!</span>(<span class="string">&quot;[DIAGNOSTIC]&quot;</span>);
+                <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">diagnostic</span>);
             }
             <span class="ident">UIMessage::TerryTask</span> { .. } =&gt; {}
             <span class="ident">UIMessage::TerryGeneration</span> {
