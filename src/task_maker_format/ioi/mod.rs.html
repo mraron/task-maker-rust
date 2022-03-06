@@ -508,6 +508,11 @@
 <span id="506">506</span>
 <span id="507">507</span>
 <span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The IOI task format.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! In IOI-like tasks there is the concept of _subtask_ and of _testcase_: a testcase is a single</span>
@@ -697,6 +702,11 @@
     <span class="doccomment">/// Get the root directory of the task.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">Path</span> {
         <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">path</span>
+    }
+
+    <span class="doccomment">/// Get the path relative to the task&#39;s root.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">path_of</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Path</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Path</span> {
+        <span class="ident">path</span>.<span class="ident">strip_prefix</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">path</span>).<span class="ident">unwrap_or</span>(<span class="ident">path</span>)
     }
 
     <span class="doccomment">/// Get an appropriate `UI` for this task.</span>
