@@ -257,11 +257,6 @@
 <span id="255">255</span>
 <span id="256">256</span>
 <span id="257">257</span>
-<span id="258">258</span>
-<span id="259">259</span>
-<span id="260">260</span>
-<span id="261">261</span>
-<span id="262">262</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 <span class="kw">use</span> <span class="ident">std::path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
 
@@ -269,9 +264,8 @@
 <span class="kw">use</span> <span class="ident">regex::Regex</span>;
 
 <span class="kw">use</span> <span class="ident">task_maker_dag</span>::{<span class="ident">Execution</span>, <span class="ident">ExecutionCommand</span>, <span class="ident">File</span>};
-<span class="kw">use</span> <span class="ident">task_maker_diagnostics::Diagnostic</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">bind_exec_callbacks</span>, <span class="ident">ui::UIMessage</span>, <span class="ident">EvaluationData</span>, <span class="ident">Tag</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">bind_exec_callbacks</span>, <span class="ident">ui::UIMessage</span>, <span class="ident">EvaluationData</span>, <span class="ident">Tag</span>, <span class="ident">UISender</span>};
 
 <span class="macro">lazy_static!</span> {
     <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">ASY_INCLUDE</span>: <span class="ident">Regex</span> <span class="op">=</span>
@@ -347,12 +341,8 @@
                     .<span class="ident">provide_file</span>(<span class="ident">file</span>, <span class="ident">local</span>)
                     .<span class="ident">context</span>(<span class="string">&quot;Failed to provide asy dependency&quot;</span>)<span class="question-mark">?</span>;
             } <span class="kw">else</span> {
-                <span class="comment">// TODO: add span of where the dependency comes from</span>
-                <span class="ident">eval</span>.<span class="ident">add_diagnostic</span>(<span class="ident">Diagnostic::warning</span>(<span class="macro">format!</span>(
-                    <span class="string">&quot;Failed to read {} used by {} because it was not found&quot;</span>,
-                    <span class="ident">local</span>.<span class="ident">display</span>(),
-                    <span class="ident">name</span>
-                )))<span class="question-mark">?</span>;
+                <span class="ident">eval</span>.<span class="ident">sender</span>
+                    .<span class="ident">send_error</span>(<span class="macro">format!</span>(<span class="string">&quot;Dependency {:?} of {:?} not found&quot;</span>, <span class="ident">local</span>, <span class="ident">name</span>))<span class="question-mark">?</span>;
             }
         }
         <span class="kw">let</span> <span class="ident">compiled</span> <span class="op">=</span> <span class="ident">comp</span>.<span class="ident">output</span>(<span class="string">&quot;output.pdf&quot;</span>);

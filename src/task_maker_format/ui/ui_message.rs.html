@@ -217,11 +217,15 @@
 <span id="215">215</span>
 <span id="216">216</span>
 <span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
 <span class="kw">use</span> <span class="ident">std::time::SystemTime</span>;
 
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
-<span class="kw">use</span> <span class="ident">task_maker_diagnostics::Diagnostic</span>;
 <span class="kw">use</span> <span class="ident">typescript_definitions::TypeScriptify</span>;
 
 <span class="kw">use</span> <span class="ident">task_maker_exec::ExecutorStatus</span>;
@@ -428,10 +432,16 @@
         <span class="ident">outcome</span>: <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">SolutionOutcome</span>, <span class="ident">String</span><span class="op">&gt;</span>,
     },
 
-    <span class="doccomment">/// A diagnostic message has been emitted.</span>
-    <span class="ident">Diagnostic</span> {
-        <span class="doccomment">/// The diagnostic message.</span>
-        <span class="ident">diagnostic</span>: <span class="ident">Diagnostic</span>,
+    <span class="doccomment">/// A warning has been emitted.</span>
+    <span class="ident">Warning</span> {
+        <span class="doccomment">/// The message of the warning.</span>
+        <span class="ident">message</span>: <span class="ident">String</span>,
+    },
+
+    <span class="doccomment">/// An error has been emitted.</span>
+    <span class="ident">Error</span> {
+        <span class="doccomment">/// The message of the error.</span>
+        <span class="ident">message</span>: <span class="ident">String</span>,
     },
 }
 </code></pre></div>

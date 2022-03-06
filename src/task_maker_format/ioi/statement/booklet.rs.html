@@ -355,7 +355,6 @@
 <span id="353">353</span>
 <span id="354">354</span>
 <span id="355">355</span>
-<span id="356">356</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::collections::HashSet</span>;
 <span class="kw">use</span> <span class="ident">std::path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
 <span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
@@ -368,7 +367,6 @@
 <span class="kw">use</span> <span class="ident">typescript_definitions::TypeScriptify</span>;
 
 <span class="kw">use</span> <span class="ident">task_maker_dag</span>::{<span class="ident">Execution</span>, <span class="ident">ExecutionCommand</span>, <span class="ident">File</span>};
-<span class="kw">use</span> <span class="ident">task_maker_diagnostics::Diagnostic</span>;
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ioi::statement::statement::Statement</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ui::UIMessageSender</span>;
@@ -605,7 +603,7 @@
             <span class="ident">errors</span>.<span class="ident">insert</span>(<span class="macro">format!</span>(<span class="string">&quot;Latex error at line {}: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">cap</span>[<span class="number">2</span>][<span class="number">2</span>..], <span class="kw-2">&amp;</span><span class="ident">cap</span>[<span class="number">1</span>]));
         }
         <span class="kw">for</span> <span class="ident">message</span> <span class="kw">in</span> <span class="ident">errors</span> {
-            <span class="ident">sender</span>.<span class="ident">add_diagnostic</span>(<span class="ident">Diagnostic::warning</span>(<span class="ident">message</span>))<span class="question-mark">?</span>;
+            <span class="ident">sender</span>.<span class="ident">send_warning</span>(<span class="ident">message</span>)<span class="question-mark">?</span>;
         }
         <span class="prelude-val">Ok</span>(())
     }
