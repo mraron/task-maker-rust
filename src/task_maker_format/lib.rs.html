@@ -412,9 +412,6 @@
 <span id="410">410</span>
 <span id="411">411</span>
 <span id="412">412</span>
-<span id="413">413</span>
-<span id="414">414</span>
-<span id="415">415</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Task parsing and execution using computation DAGs.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This crate allows you to parse the tasks on disk and evaluate the solutions inside of them by</span>
@@ -452,6 +449,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">tag</span>::{<span class="ident">Tag</span>, <span class="ident">VALID_TAGS</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">task_format</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">task_maker_dag::ExecutionDAG</span>;
+<span class="kw">use</span> <span class="ident">task_maker_diagnostics::Diagnostic</span>;
 <span class="kw">use</span> <span class="ident">task_maker_lang</span>::{<span class="ident">GraderMap</span>, <span class="ident">LanguageManager</span>};
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ioi::task_info::IOITaskInfo</span>;
@@ -542,6 +540,11 @@
             <span class="ident">receiver</span>,
         )
     }
+
+    <span class="doccomment">/// Add a diagnostic message to the UI.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_diagnostic</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">diagnostic</span>: <span class="ident">Diagnostic</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">sender</span>.<span class="ident">add_diagnostic</span>(<span class="ident">diagnostic</span>)
+    }
 }
 
 <span class="doccomment">/// What can send [`UIMessage`](ui/enum.UIMessage.html)s.</span>
@@ -549,18 +552,9 @@
     <span class="doccomment">/// Send that `UIMessage` to the UI.</span>
     <span class="kw">fn</span> <span class="ident">send</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">message</span>: <span class="ident">ui::UIMessage</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span>;
 
-    <span class="doccomment">/// Send a warning to the UI.</span>
-    <span class="kw">fn</span> <span class="ident">send_warning</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">message</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">send</span>(<span class="ident">ui::UIMessage::Warning</span> {
-            <span class="ident">message</span>: <span class="ident">message</span>.<span class="ident">into</span>(),
-        })
-    }
-
-    <span class="doccomment">/// Send an error to the UI.</span>
-    <span class="kw">fn</span> <span class="ident">send_error</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">message</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">send</span>(<span class="ident">ui::UIMessage::Error</span> {
-            <span class="ident">message</span>: <span class="ident">message</span>.<span class="ident">into</span>(),
-        })
+    <span class="doccomment">/// Send a diagnostic message to the UI.</span>
+    <span class="kw">fn</span> <span class="ident">add_diagnostic</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">diagnostic</span>: <span class="ident">Diagnostic</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">send</span>(<span class="ident">ui::UIMessage::Diagnostic</span> { <span class="ident">diagnostic</span> })
     }
 }
 

@@ -445,31 +445,6 @@
 <span id="443">443</span>
 <span id="444">444</span>
 <span id="445">445</span>
-<span id="446">446</span>
-<span id="447">447</span>
-<span id="448">448</span>
-<span id="449">449</span>
-<span id="450">450</span>
-<span id="451">451</span>
-<span id="452">452</span>
-<span id="453">453</span>
-<span id="454">454</span>
-<span id="455">455</span>
-<span id="456">456</span>
-<span id="457">457</span>
-<span id="458">458</span>
-<span id="459">459</span>
-<span id="460">460</span>
-<span id="461">461</span>
-<span id="462">462</span>
-<span id="463">463</span>
-<span id="464">464</span>
-<span id="465">465</span>
-<span id="466">466</span>
-<span id="467">467</span>
-<span id="468">468</span>
-<span id="469">469</span>
-<span id="470">470</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The UI functionality for the task formats.</span>
 
 <span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
@@ -477,6 +452,7 @@
 <span class="kw">use</span> <span class="ident">std::sync::mpsc</span>::{<span class="ident">channel</span>, <span class="ident">Receiver</span>, <span class="ident">Sender</span>};
 
 <span class="kw">use</span> <span class="ident">anyhow::Error</span>;
+<span class="kw">use</span> <span class="ident">itertools::Itertools</span>;
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">termcolor::WriteColor</span>;
 <span class="kw">use</span> <span class="ident">termcolor</span>::{<span class="ident">Color</span>, <span class="ident">ColorChoice</span>, <span class="ident">ColorSpec</span>, <span class="ident">StandardStream</span>};
@@ -487,6 +463,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">raw::RawUI</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">silent::SilentUI</span>;
 <span class="kw">use</span> <span class="ident">task_maker_dag</span>::{<span class="ident">ExecutionResourcesUsage</span>, <span class="ident">ExecutionResult</span>, <span class="ident">ExecutionStatus</span>, <span class="ident">WorkerUuid</span>};
+<span class="kw">use</span> <span class="ident">task_maker_diagnostics::DiagnosticContext</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">ui_message::UIMessage</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">cwrite</span>, <span class="ident">cwriteln</span>};
@@ -772,26 +749,13 @@
             .<span class="ident">unwrap_or</span>(<span class="number">0</span>)
     }
 
-    <span class="doccomment">/// Print the warnings.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">print_warning_messages</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">warnings</span>: <span class="kw-2">&amp;</span>[<span class="ident">String</span>]) {
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">warnings</span>.<span class="ident">is_empty</span>() {
-            <span class="macro">cwriteln!</span>(<span class="self">self</span>, <span class="ident">YELLOW</span>, <span class="string">&quot;Warnings&quot;</span>);
-            <span class="kw">for</span> <span class="ident">warning</span> <span class="kw">in</span> <span class="ident">warnings</span>.<span class="ident">iter</span>() {
-                <span class="macro">println!</span>(<span class="string">&quot; - {}&quot;</span>, <span class="ident">warning</span>);
+    <span class="doccomment">/// Print the diagnostics.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">print_diagnostic_messages</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">diagnostics</span>: <span class="kw-2">&amp;</span><span class="ident">DiagnosticContext</span>) {
+        <span class="kw">let</span> <span class="ident">diagnostics</span> <span class="op">=</span> <span class="ident">diagnostics</span>.<span class="ident">diagnostics</span>();
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">diagnostics</span>.<span class="ident">is_empty</span>() {
+            <span class="kw">for</span> <span class="ident">diagnostic</span> <span class="kw">in</span> <span class="ident">diagnostics</span>.<span class="ident">iter</span>().<span class="ident">sorted_by_key</span>(<span class="op">|</span><span class="ident">d</span><span class="op">|</span> <span class="ident">d</span>.<span class="ident">level</span>()) {
+                <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">diagnostic</span>);
             }
-            <span class="macro">println!</span>();
-        }
-    }
-
-    <span class="doccomment">/// Print the errors.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">print_error_messages</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">errors</span>: <span class="kw-2">&amp;</span>[<span class="ident">String</span>]) {
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">errors</span>.<span class="ident">is_empty</span>() {
-            <span class="macro">cwriteln!</span>(<span class="self">self</span>, <span class="ident">RED</span>, <span class="string">&quot;Errors&quot;</span>);
-            <span class="kw">for</span> <span class="ident">error</span> <span class="kw">in</span> <span class="ident">errors</span>.<span class="ident">iter</span>() {
-                <span class="macro">cwrite!</span>(<span class="self">self</span>, <span class="ident">RED</span>, <span class="string">&quot; - &quot;</span>);
-                <span class="macro">cwriteln!</span>(<span class="self">self</span>, <span class="ident">SOFT_RED</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">error</span>);
-            }
-            <span class="macro">println!</span>();
         }
     }
 }
@@ -812,20 +776,6 @@
     <span class="doccomment">/// Send a message to the channel.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">message</span>: <span class="ident">UIMessage</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">sender</span>.<span class="ident">send</span>(<span class="ident">message</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">into</span>())
-    }
-
-    <span class="doccomment">/// Send a warning message to the channel.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send_warning</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">message</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">send</span>(<span class="ident">UIMessage::Warning</span> {
-            <span class="ident">message</span>: <span class="ident">message</span>.<span class="ident">into</span>(),
-        })
-    }
-
-    <span class="doccomment">/// Send an error message to the channel.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send_error</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">message</span>: <span class="kw">impl</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">send</span>(<span class="ident">UIMessage::Error</span> {
-            <span class="ident">message</span>: <span class="ident">message</span>.<span class="ident">into</span>(),
-        })
     }
 }
 

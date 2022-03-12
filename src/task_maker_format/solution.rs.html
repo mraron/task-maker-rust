@@ -291,6 +291,18 @@
 <span id="289">289</span>
 <span id="290">290</span>
 <span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::fs::File</span>;
 <span class="kw">use</span> <span class="ident">std::io::Read</span>;
 <span class="kw">use</span> <span class="ident">std::path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
@@ -300,10 +312,11 @@
 <span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">bail</span>, <span class="ident">Error</span>};
 <span class="kw">use</span> <span class="ident">regex::Regex</span>;
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
+<span class="kw">use</span> <span class="ident">task_maker_diagnostics</span>::{<span class="ident">CodeSpan</span>, <span class="ident">Diagnostic</span>};
 
 <span class="kw">use</span> <span class="ident">task_maker_lang::GraderMap</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">EvaluationData</span>, <span class="ident">SourceFile</span>, <span class="ident">UISender</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">EvaluationData</span>, <span class="ident">SourceFile</span>};
 
 <span class="doccomment">/// A solution to evaluate. This includes the source file and some additional metadata.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
@@ -449,7 +462,7 @@
     <span class="ident">eval</span>: <span class="kw-2">&amp;mut</span> <span class="ident">EvaluationData</span>,
 ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SolutionCheck</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="macro">lazy_static!</span> {
-        <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">FIND_CHECKS</span>: <span class="ident">Regex</span> <span class="op">=</span> <span class="ident">Regex::new</span>(<span class="string">r&quot;.*@check-.*&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;Invalid regex&quot;</span>);
+        <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">FIND_CHECKS</span>: <span class="ident">Regex</span> <span class="op">=</span> <span class="ident">Regex::new</span>(<span class="string">r&quot;.*(@check-.*)&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;Invalid regex&quot;</span>);
         <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">EXTRACT_CHECKS</span>: <span class="ident">Regex</span> <span class="op">=</span> <span class="ident">Regex::new</span>(
             <span class="string">r&quot;(?x)
             @check-     # signal the start of a check
@@ -472,10 +485,13 @@
     <span class="ident">file</span>.<span class="ident">read_to_string</span>(<span class="kw-2">&amp;mut</span> <span class="ident">content</span>)<span class="question-mark">?</span>;
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">checks</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-    <span class="kw">for</span> <span class="ident">line</span> <span class="kw">in</span> <span class="ident">content</span>.<span class="ident">lines</span>() {
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">FIND_CHECKS</span>.<span class="ident">is_match</span>(<span class="ident">line</span>) {
-            <span class="kw">continue</span>;
-        }
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file_offset</span> <span class="op">=</span> <span class="number">0</span>;
+    <span class="kw">for</span> <span class="ident">line</span> <span class="kw">in</span> <span class="ident">content</span>.<span class="ident">split</span>(<span class="string">&#39;\n&#39;</span>) {
+        <span class="ident">file_offset</span> <span class="op">+</span><span class="op">=</span> <span class="ident">line</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="number">1</span>; <span class="comment">// Includes the \n.</span>
+        <span class="kw">let</span> <span class="ident">found</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">FIND_CHECKS</span>.<span class="ident">captures</span>(<span class="ident">line</span>).<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span>.<span class="ident">get</span>(<span class="number">1</span>)) {
+            <span class="prelude-val">None</span> =&gt; <span class="kw">continue</span>,
+            <span class="prelude-val">Some</span>(<span class="ident">found</span>) =&gt; <span class="ident">found</span>,
+        };
         <span class="kw">let</span> <span class="ident">captures</span> <span class="op">=</span> <span class="ident">EXTRACT_CHECKS</span>.<span class="ident">captures_iter</span>(<span class="ident">line</span>).<span class="ident">next</span>();
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">captures</span>) <span class="op">=</span> <span class="ident">captures</span> {
             <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">captures</span>[<span class="string">&quot;result&quot;</span>];
@@ -485,11 +501,19 @@
                 <span class="ident">checks</span>.<span class="ident">push</span>(<span class="ident">SolutionCheck::new</span>(<span class="ident">result</span>, <span class="ident">pattern</span>));
             }
         } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">eval</span>.<span class="ident">sender</span>.<span class="ident">send_error</span>(<span class="macro">format!</span>(
+            <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">strip_prefix</span>(<span class="kw-2">&amp;</span><span class="ident">eval</span>.<span class="ident">task_root</span>).<span class="ident">unwrap_or</span>(<span class="ident">path</span>);
+            <span class="comment">// file_offset includes the current line length.</span>
+            <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">file_offset</span> <span class="op">-</span> <span class="number">1</span> <span class="op">-</span> <span class="ident">line</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">found</span>.<span class="ident">start</span>();
+            <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">found</span>.<span class="ident">end</span>() <span class="op">-</span> <span class="ident">found</span>.<span class="ident">start</span>();
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">diagnostic</span> <span class="op">=</span> <span class="ident">Diagnostic::error</span>(<span class="macro">format!</span>(
                 <span class="string">&quot;In &#39;{}&#39; the check &#39;{}&#39; is not valid&quot;</span>,
                 <span class="ident">path</span>.<span class="ident">display</span>(),
                 <span class="ident">line</span>
             ));
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">span</span>) <span class="op">=</span> <span class="ident">CodeSpan::from_str</span>(<span class="ident">path</span>, <span class="kw-2">&amp;</span><span class="ident">content</span>, <span class="ident">offset</span>, <span class="ident">len</span>) {
+                <span class="ident">diagnostic</span> <span class="op">=</span> <span class="ident">diagnostic</span>.<span class="ident">with_code_span</span>(<span class="ident">span</span>);
+            }
+            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">eval</span>.<span class="ident">add_diagnostic</span>(<span class="ident">diagnostic</span>);
         }
     }
     <span class="prelude-val">Ok</span>(<span class="ident">checks</span>)
