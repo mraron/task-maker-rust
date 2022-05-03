@@ -81,6 +81,7 @@
 <span id="76">76</span>
 <span id="77">77</span>
 <span id="78">78</span>
+<span id="79">79</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::fs</span>;
 <span class="kw">use</span> <span class="ident">std::path::Path</span>;
 <span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
@@ -155,7 +156,8 @@
         <span class="macro">bail!</span>(<span class="string">&quot;Multiple managers found: {:?}&quot;</span>, <span class="ident">paths</span>);
     }
     <span class="prelude-val">Ok</span>(<span class="ident">managers</span>.<span class="ident">pop</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">mut</span> <span class="ident">s</span><span class="op">|</span> {
-        <span class="ident">s</span>.<span class="ident">copy_exe</span>(); <span class="comment">// the managers are always copied</span>
+        <span class="ident">s</span>.<span class="ident">copy_exe</span>(); <span class="comment">// The managers are always copied.</span>
+        <span class="ident">s</span>.<span class="ident">link_static</span>(); <span class="comment">// Make sure the managers are statically linked.</span>
         <span class="ident">Arc::new</span>(<span class="ident">s</span>)
     }))
 }
