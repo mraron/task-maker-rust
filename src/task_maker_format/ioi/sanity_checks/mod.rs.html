@@ -111,6 +111,7 @@
 <span id="106">106</span>
 <span id="107">107</span>
 <span id="108">108</span>
+<span id="109">109</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Sanity checks for IOI-like tasks.</span>
 
 <span class="kw">use</span> <span class="ident">std::path::Path</span>;
@@ -145,6 +146,7 @@
         <span class="ident">Box::new</span>(<span class="ident">att::AttTemplates::default</span>()),
         <span class="ident">Box::new</span>(<span class="ident">att::AttSampleFiles::default</span>()),
         <span class="ident">Box::new</span>(<span class="ident">att::AttSampleFilesValid::default</span>()),
+        <span class="ident">Box::new</span>(<span class="ident">att::AttWithNoCheck::default</span>()),
         <span class="ident">Box::new</span>(<span class="ident">sol::SolGraders::default</span>()),
         <span class="ident">Box::new</span>(<span class="ident">sol::SolSymlink::default</span>()),
         <span class="ident">Box::new</span>(<span class="ident">statement::StatementSubtasks::default</span>()),
