@@ -106,6 +106,8 @@ impl ServerService {
             service.store.clone()
         };
 
+        // TODO(veluca): implement skipping things that depend on failed tasks, and in general
+        // declaring executions as being skipped.
         try_join_all(
             dependencies
                 .iter()
@@ -121,6 +123,8 @@ impl ServerService {
             }
             let computation = computation.unwrap();
 
+            // TODO(veluca): modify the code so that the fileset is only created (and waited for)
+            // once a worker picks up the task.
             let task = WorkerTask {
                 scheduling: (options.niceness, execution.niceness, Instant::now()),
                 execution: execution.clone(),
