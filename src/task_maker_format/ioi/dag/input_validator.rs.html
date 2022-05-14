@@ -106,6 +106,7 @@
 <span id="101">101</span>
 <span id="102">102</span>
 <span id="103">103</span>
+<span id="104">104</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
 
 <span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">Context</span>, <span class="ident">Error</span>};
@@ -158,6 +159,7 @@
                     .<span class="ident">priority</span>(<span class="ident">GENERATION_PRIORITY</span> <span class="op">-</span> <span class="ident">testcase_id</span> <span class="kw">as</span> <span class="ident">Priority</span>)
                     .<span class="ident">env</span>(<span class="string">&quot;TM_SUBTASK&quot;</span>, <span class="ident">subtask_id</span>.<span class="ident">to_string</span>())
                     .<span class="ident">env</span>(<span class="string">&quot;TM_TESTCASE&quot;</span>, <span class="ident">testcase_id</span>.<span class="ident">to_string</span>());
+                <span class="ident">exec</span>.<span class="ident">limits_mut</span>().<span class="ident">nproc</span>(<span class="number">1000</span>);
                 <span class="kw">let</span> <span class="ident">stdout</span> <span class="op">=</span> <span class="ident">exec</span>.<span class="ident">stdout</span>();
 
                 <span class="prelude-val">Ok</span>((<span class="prelude-val">Some</span>(<span class="ident">stdout</span>.<span class="ident">uuid</span>), <span class="prelude-val">Some</span>(<span class="ident">exec</span>)))
