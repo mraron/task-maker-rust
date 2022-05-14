@@ -457,6 +457,8 @@
 <span id="452">452</span>
 <span id="453">453</span>
 <span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
 <span class="kw">use</span> <span class="ident">std::collections</span>::{<span class="ident">HashMap</span>, <span class="ident">HashSet</span>};
 <span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
@@ -630,11 +632,13 @@
                 <span class="macro">check_limit!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">left</span>.<span class="ident">sys_time</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">right</span>.<span class="ident">sys_time</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">extra_time</span>);
                 <span class="macro">check_limit!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">left</span>.<span class="ident">wall_time</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">right</span>.<span class="ident">wall_time</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">extra_time</span>);
                 <span class="macro">check_limit!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">left</span>.<span class="ident">memory</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">right</span>.<span class="ident">memory</span>, <span class="number">0</span>);
-                <span class="macro">check_limit!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">left</span>.<span class="ident">nproc</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">right</span>.<span class="ident">nproc</span>, <span class="number">0</span>);
                 <span class="macro">check_limit!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">left</span>.<span class="ident">nofile</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">right</span>.<span class="ident">nofile</span>, <span class="number">0</span>);
                 <span class="macro">check_limit!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">left</span>.<span class="ident">fsize</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">right</span>.<span class="ident">fsize</span>, <span class="number">0</span>);
                 <span class="macro">check_limit!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">left</span>.<span class="ident">memlock</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">right</span>.<span class="ident">memlock</span>, <span class="number">0</span>);
                 <span class="macro">check_limit!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">left</span>.<span class="ident">stack</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">right</span>.<span class="ident">stack</span>, <span class="number">0</span>);
+                <span class="kw">if</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">left</span>.<span class="ident">allow_multiprocess</span> <span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">right</span>.<span class="ident">allow_multiprocess</span> {
+                    <span class="kw">return</span> <span class="bool-val">false</span>;
+                }
                 <span class="kw">if</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">left</span>.<span class="ident">read_only</span> <span class="op">&lt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">right</span>.<span class="ident">read_only</span> {
                     <span class="kw">return</span> <span class="bool-val">false</span>;
                 }

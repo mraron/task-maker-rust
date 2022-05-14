@@ -661,9 +661,9 @@
                 .<span class="ident">priority</span>(<span class="ident">COMPILATION_PRIORITY</span>)
                 .<span class="ident">capture_stdout</span>(<span class="ident">COMPILATION_CONTENT_LENGTH</span>)
                 .<span class="ident">capture_stderr</span>(<span class="ident">COMPILATION_CONTENT_LENGTH</span>);
-            <span class="ident">comp</span>.<span class="ident">limits</span>.<span class="ident">nproc</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-            <span class="comment">// the compilers may need to store some temp files</span>
             <span class="ident">comp</span>.<span class="ident">limits</span>
+                .<span class="ident">allow_multiprocess</span>()
+                <span class="comment">// the compilers may need to store some temp files</span>
                 .<span class="ident">read_only</span>(<span class="bool-val">false</span>)
                 .<span class="ident">mount_tmpfs</span>(<span class="bool-val">true</span>)
                 .<span class="ident">mount_proc</span>(<span class="bool-val">true</span>);

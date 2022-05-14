@@ -506,7 +506,7 @@
         ]);
         <span class="ident">exec</span>.<span class="ident">limits_mut</span>()
             .<span class="ident">read_only</span>(<span class="bool-val">false</span>)
-            .<span class="ident">nproc</span>(<span class="number">1000</span>)
+            .<span class="ident">allow_multiprocess</span>()
             .<span class="ident">add_extra_readable_dir</span>(<span class="string">&quot;/etc&quot;</span>)
             .<span class="ident">mount_tmpfs</span>(<span class="bool-val">true</span>);
         <span class="ident">exec</span>.<span class="ident">tag</span>(<span class="ident">Tag::Booklet</span>.<span class="ident">into</span>());

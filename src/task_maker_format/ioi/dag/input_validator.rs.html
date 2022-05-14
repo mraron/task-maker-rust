@@ -159,7 +159,7 @@
                     .<span class="ident">priority</span>(<span class="ident">GENERATION_PRIORITY</span> <span class="op">-</span> <span class="ident">testcase_id</span> <span class="kw">as</span> <span class="ident">Priority</span>)
                     .<span class="ident">env</span>(<span class="string">&quot;TM_SUBTASK&quot;</span>, <span class="ident">subtask_id</span>.<span class="ident">to_string</span>())
                     .<span class="ident">env</span>(<span class="string">&quot;TM_TESTCASE&quot;</span>, <span class="ident">testcase_id</span>.<span class="ident">to_string</span>());
-                <span class="ident">exec</span>.<span class="ident">limits_mut</span>().<span class="ident">nproc</span>(<span class="number">1000</span>);
+                <span class="ident">exec</span>.<span class="ident">limits_mut</span>().<span class="ident">allow_multiprocess</span>();
                 <span class="kw">let</span> <span class="ident">stdout</span> <span class="op">=</span> <span class="ident">exec</span>.<span class="ident">stdout</span>();
 
                 <span class="prelude-val">Ok</span>((<span class="prelude-val">Some</span>(<span class="ident">stdout</span>.<span class="ident">uuid</span>), <span class="prelude-val">Some</span>(<span class="ident">exec</span>)))

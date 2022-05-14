@@ -291,7 +291,7 @@
                     .<span class="ident">capture_stdout</span>(<span class="number">128</span>)
                     .<span class="ident">capture_stderr</span>(<span class="ident">STDERR_CONTENT_LENGTH</span>)
                     .<span class="ident">priority</span>(<span class="ident">EVALUATION_PRIORITY</span> <span class="op">-</span> <span class="ident">testcase_id</span> <span class="kw">as</span> <span class="ident">Priority</span>);
-                <span class="ident">exec</span>.<span class="ident">limits_mut</span>().<span class="ident">nproc</span>(<span class="number">1000</span>);
+                <span class="ident">exec</span>.<span class="ident">limits_mut</span>().<span class="ident">allow_multiprocess</span>();
                 <span class="kw">let</span> <span class="ident">sender</span> <span class="op">=</span> <span class="ident">eval</span>.<span class="ident">sender</span>.<span class="ident">clone</span>();
                 <span class="ident">eval</span>.<span class="ident">dag</span>.<span class="ident">on_execution_done</span>(<span class="kw-2">&amp;</span><span class="ident">exec</span>.<span class="ident">uuid</span>, <span class="kw">move</span> <span class="op">|</span><span class="ident">res</span><span class="op">|</span> {
                     <span class="kw">let</span> <span class="ident">stdout</span> <span class="op">=</span> <span class="ident">res</span>

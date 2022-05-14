@@ -969,6 +969,12 @@
 <span id="964">964</span>
 <span id="965">965</span>
 <span id="966">966</span>
+<span id="967">967</span>
+<span id="968">968</span>
+<span id="969">969</span>
+<span id="970">970</span>
+<span id="971">971</span>
+<span id="972">972</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 <span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
 
@@ -1168,8 +1174,8 @@
     <span class="doccomment">/// Limit on the number of KiB the process can use in any moment. This can be page-aligned by</span>
     <span class="doccomment">/// the sandbox.</span>
     <span class="kw">pub</span> <span class="ident">memory</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Limit on the number of threads/processes the process can spawn.</span>
-    <span class="kw">pub</span> <span class="ident">nproc</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Allow multiple processes (i.e. forking/threads).</span>
+    <span class="kw">pub</span> <span class="ident">allow_multiprocess</span>: <span class="ident">bool</span>,
     <span class="doccomment">/// Limit on the number of file descriptors the process can keep open.</span>
     <span class="kw">pub</span> <span class="ident">nofile</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Maximum size of the files (in bytes) the process can write/create.</span>
@@ -1249,7 +1255,7 @@
             <span class="ident">sys_time</span>: <span class="prelude-val">None</span>,
             <span class="ident">wall_time</span>: <span class="prelude-val">None</span>,
             <span class="ident">memory</span>: <span class="prelude-val">None</span>,
-            <span class="ident">nproc</span>: <span class="prelude-val">None</span>,
+            <span class="ident">allow_multiprocess</span>: <span class="bool-val">true</span>,
             <span class="ident">nofile</span>: <span class="prelude-val">None</span>,
             <span class="ident">fsize</span>: <span class="prelude-val">None</span>,
             <span class="ident">memlock</span>: <span class="prelude-val">None</span>,
@@ -1285,9 +1291,15 @@
         <span class="self">self</span>
     }
 
-    <span class="doccomment">/// Set the maximum number of processes/threads.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nproc</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">limit</span>: <span class="ident">u32</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">nproc</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">limit</span>);
+    <span class="doccomment">/// Allow multiple processes.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">allow_multiprocess</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">allow_multiprocess</span> <span class="op">=</span> <span class="bool-val">true</span>;
+        <span class="self">self</span>
+    }
+
+    <span class="doccomment">/// Block multiple processes.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">block_multiprocess</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">allow_multiprocess</span> <span class="op">=</span> <span class="bool-val">false</span>;
         <span class="self">self</span>
     }
 
@@ -1341,7 +1353,7 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">std::default::Default</span> <span class="kw">for</span> <span class="ident">ExecutionLimits</span> {
+<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">ExecutionLimits</span> {
     <span class="doccomment">/// Default sane values for the execution limits, the limits listed here</span>
     <span class="doccomment">/// should be safe enough for most of the executions.</span>
     <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
@@ -1350,7 +1362,7 @@
             <span class="ident">sys_time</span>: <span class="prelude-val">None</span>,
             <span class="ident">wall_time</span>: <span class="prelude-val">None</span>,
             <span class="ident">memory</span>: <span class="prelude-val">None</span>,
-            <span class="ident">nproc</span>: <span class="prelude-val">Some</span>(<span class="number">1</span>),
+            <span class="ident">allow_multiprocess</span>: <span class="bool-val">false</span>,
             <span class="ident">nofile</span>: <span class="prelude-val">None</span>,
             <span class="ident">fsize</span>: <span class="prelude-val">Some</span>(<span class="number">1024u64</span>.<span class="ident">pow</span>(<span class="number">3</span>)),
             <span class="ident">memlock</span>: <span class="prelude-val">None</span>,
@@ -1704,12 +1716,12 @@
     <span class="doccomment">/// use task_maker_dag::{Execution, ExecutionCommand, ExecutionLimits};</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let mut exec = Execution::new(&quot;generator of prime numbers&quot;, ExecutionCommand::local(&quot;foo&quot;));</span>
-    <span class="doccomment">/// exec.limits_mut().cpu_time(2.0).sys_time(0.5).wall_time(3.0).memory(1024).nproc(10);</span>
+    <span class="doccomment">/// exec.limits_mut().cpu_time(2.0).sys_time(0.5).wall_time(3.0).memory(1024).allow_multiprocess();</span>
     <span class="doccomment">/// assert_eq!(exec.limits.cpu_time, Some(2.0));</span>
     <span class="doccomment">/// assert_eq!(exec.limits.sys_time, Some(0.5));</span>
     <span class="doccomment">/// assert_eq!(exec.limits.wall_time, Some(3.0));</span>
     <span class="doccomment">/// assert_eq!(exec.limits.memory, Some(1024));</span>
-    <span class="doccomment">/// assert_eq!(exec.limits.nproc, Some(10));</span>
+    <span class="doccomment">/// assert!(exec.limits.allow_multiprocess);</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">limits_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="ident">ExecutionLimits</span> {
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">limits</span>
