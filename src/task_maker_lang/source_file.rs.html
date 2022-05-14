@@ -422,17 +422,17 @@
     <span class="doccomment">/// Language of the source file.</span>
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">serialize_with</span> <span class="op">=</span> <span class="string">&quot;language_serializer&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">deserialize_with</span> <span class="op">=</span> <span class="string">&quot;language_deserializer&quot;</span>)]</span>
-    <span class="ident">language</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Language</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">language</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Language</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Handle to the executable after the compilation/provided file.</span>
-    <span class="ident">executable</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">File</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">executable</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">File</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="doccomment">/// An optional handler to the map of the graders.</span>
-    <span class="ident">grader_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">GraderMap</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">grader_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">GraderMap</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Whether to force the copy-exe option of the DAG for this source file.</span>
-    <span class="ident">copy_exe</span>: <span class="ident">bool</span>,
+    <span class="kw">pub</span> <span class="ident">copy_exe</span>: <span class="ident">bool</span>,
     <span class="doccomment">/// Where to write the compiled executable.</span>
-    <span class="ident">write_bin_to</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">write_bin_to</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Whether this source file should be statically linked.</span>
-    <span class="ident">link_static</span>: <span class="ident">bool</span>,
+    <span class="kw">pub</span> <span class="ident">link_static</span>: <span class="ident">bool</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">SourceFile</span> {
