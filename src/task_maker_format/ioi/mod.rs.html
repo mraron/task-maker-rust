@@ -519,6 +519,12 @@
 <span id="514">514</span>
 <span id="515">515</span>
 <span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The IOI task format.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! In IOI-like tasks there is the concept of _subtask_ and of _testcase_: a testcase is a single</span>
@@ -786,7 +792,13 @@
                     .<span class="ident">context</span>(<span class="string">&quot;Failed to bind input generator&quot;</span>)<span class="question-mark">?</span>;
                 <span class="kw">let</span> <span class="ident">val_handle</span> <span class="op">=</span> <span class="ident">testcase</span>
                     .<span class="ident">input_validator</span>
-                    .<span class="ident">validate_and_bind</span>(<span class="ident">eval</span>, <span class="ident">subtask</span>.<span class="ident">id</span>, <span class="ident">testcase</span>.<span class="ident">id</span>, <span class="ident">input</span>)
+                    .<span class="ident">validate_and_bind</span>(
+                        <span class="ident">eval</span>,
+                        <span class="ident">subtask</span>.<span class="ident">id</span>,
+                        <span class="ident">subtask</span>.<span class="ident">name</span>.<span class="ident">as_deref</span>(),
+                        <span class="ident">testcase</span>.<span class="ident">id</span>,
+                        <span class="ident">input</span>,
+                    )
                     .<span class="ident">context</span>(<span class="string">&quot;Failed to bind validator&quot;</span>)<span class="question-mark">?</span>;
                 <span class="kw">let</span> <span class="ident">output</span> <span class="op">=</span> <span class="ident">testcase</span>
                     .<span class="ident">output_generator</span>
