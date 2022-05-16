@@ -18,9 +18,29 @@
 <span id="13">13</span>
 <span id="14">14</span>
 <span id="15">15</span>
+<span id="16">16</span>
+<span id="17">17</span>
+<span id="18">18</span>
+<span id="19">19</span>
+<span id="20">20</span>
+<span id="21">21</span>
+<span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">Context</span>, <span class="ident">Error</span>};
+<span class="kw">use</span> <span class="ident">clap::Parser</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::tools::opt::TaskInfoOpt</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::FindTaskOpt</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Parser</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TaskInfoOpt</span> {
+    <span class="attribute">#[<span class="ident">clap</span>(<span class="ident">flatten</span>, <span class="ident">next_help_heading</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">&quot;TASK SEARCH&quot;</span>))]</span>
+    <span class="kw">pub</span> <span class="ident">find_task</span>: <span class="ident">FindTaskOpt</span>,
+    <span class="doccomment">/// Produce JSON output.</span>
+    <span class="attribute">#[<span class="ident">clap</span>(<span class="ident">long</span>, <span class="ident">short</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">json</span>: <span class="ident">bool</span>,
+}
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">main_task_info</span>(<span class="ident">opt</span>: <span class="ident">TaskInfoOpt</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">task</span> <span class="op">=</span> <span class="ident">opt</span>.<span class="ident">find_task</span>.<span class="ident">find_task</span>(<span class="kw-2">&amp;</span><span class="ident">Default::default</span>())<span class="question-mark">?</span>;

@@ -37,15 +37,61 @@
 <span id="32">32</span>
 <span id="33">33</span>
 <span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
 
 <span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">Context</span>, <span class="ident">Error</span>};
+<span class="kw">use</span> <span class="ident">clap::Parser</span>;
 
 <span class="kw">use</span> <span class="ident">task_maker_cache::Cache</span>;
 <span class="kw">use</span> <span class="ident">task_maker_exec::executors::RemoteExecutor</span>;
 <span class="kw">use</span> <span class="ident">task_maker_store::FileStore</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::tools::opt::ServerOpt</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::StorageOpt</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Parser</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ServerOpt</span> {
+    <span class="doccomment">/// Address to bind the server on for listening for the clients</span>
+    <span class="attribute">#[<span class="ident">clap</span>(<span class="ident">default_value</span> <span class="op">=</span> <span class="string">&quot;0.0.0.0:27182&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">client_addr</span>: <span class="ident">String</span>,
+
+    <span class="doccomment">/// Address to bind the server on for listening for the workers</span>
+    <span class="attribute">#[<span class="ident">clap</span>(<span class="ident">default_value</span> <span class="op">=</span> <span class="string">&quot;0.0.0.0:27183&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">worker_addr</span>: <span class="ident">String</span>,
+
+    <span class="doccomment">/// Password for the connection of the clients</span>
+    <span class="attribute">#[<span class="ident">clap</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;client-password&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">client_password</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+
+    <span class="doccomment">/// Password for the connection of the workers</span>
+    <span class="attribute">#[<span class="ident">clap</span>(<span class="ident">long</span> <span class="op">=</span> <span class="string">&quot;worker-password&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">worker_password</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+
+    <span class="attribute">#[<span class="ident">clap</span>(<span class="ident">flatten</span>, <span class="ident">next_help_heading</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">&quot;STORAGE&quot;</span>))]</span>
+    <span class="kw">pub</span> <span class="ident">storage</span>: <span class="ident">StorageOpt</span>,
+}
 
 <span class="doccomment">/// Entry point for the server.</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">main_server</span>(<span class="ident">opt</span>: <span class="ident">ServerOpt</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {

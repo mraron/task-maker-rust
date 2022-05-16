@@ -373,13 +373,13 @@
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">clippy::too_many_arguments</span>)]</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">clippy::type_complexity</span>)]</span>
 
-<span class="kw">use</span> <span class="ident">structopt::StructOpt</span>;
+<span class="kw">use</span> <span class="ident">clap::Parser</span>;
 
 <span class="kw">use</span> <span class="ident">task_maker_rust::main_local</span>;
 <span class="kw">use</span> <span class="ident">task_maker_rust::opt</span>;
 
 <span class="kw">fn</span> <span class="ident">main</span>() {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">opt</span> <span class="op">=</span> <span class="ident">opt::Opt::from_args</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">opt</span> <span class="op">=</span> <span class="ident">opt::Opt::parse</span>();
     <span class="ident">opt</span>.<span class="ident">enable_log</span>();
     <span class="ident">main_local</span>(<span class="ident">opt</span>);
 }

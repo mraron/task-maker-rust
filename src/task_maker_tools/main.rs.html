@@ -39,7 +39,7 @@
 <span id="34">34</span>
 <span id="35">35</span>
 <span id="36">36</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">structopt::StructOpt</span>;
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">clap::Parser</span>;
 
 <span class="kw">use</span> <span class="ident">task_maker_rust::error::NiceError</span>;
 <span class="kw">use</span> <span class="ident">task_maker_rust::tools::add_solution_checks::main_add_solution_checks</span>;
@@ -56,7 +56,7 @@
 <span class="kw">use</span> <span class="ident">task_maker_rust::tools::worker::main_worker</span>;
 
 <span class="kw">fn</span> <span class="ident">main</span>() {
-    <span class="kw">let</span> <span class="ident">base_opt</span> <span class="op">=</span> <span class="ident">Opt::from_args</span>();
+    <span class="kw">let</span> <span class="ident">base_opt</span> <span class="op">=</span> <span class="ident">Opt::parse</span>();
     <span class="ident">base_opt</span>.<span class="ident">logger</span>.<span class="ident">enable_log</span>();
 
     <span class="kw">match</span> <span class="ident">base_opt</span>.<span class="ident">tool</span> {
