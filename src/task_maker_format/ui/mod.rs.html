@@ -448,6 +448,9 @@
 <span id="443">443</span>
 <span id="444">444</span>
 <span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The UI functionality for the task formats.</span>
 
 <span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
@@ -461,6 +464,9 @@
 <span class="kw">use</span> <span class="ident">termcolor</span>::{<span class="ident">Color</span>, <span class="ident">ColorChoice</span>, <span class="ident">ColorSpec</span>, <span class="ident">StandardStream</span>};
 <span class="kw">use</span> <span class="ident">typescript_definitions::TypeScriptify</span>;
 
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">curses</span>::{
+    <span class="ident">inner_block</span>, <span class="ident">render_block</span>, <span class="ident">render_server_status</span>, <span class="ident">CursesDrawer</span>, <span class="ident">CursesUI</span>, <span class="ident">FrameType</span>,
+};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">json::JsonUI</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">print::PrintUI</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">raw::RawUI</span>;
@@ -471,7 +477,7 @@
 
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">cwrite</span>, <span class="ident">cwriteln</span>};
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">curses</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">curses</span>;
 <span class="kw">mod</span> <span class="ident">json</span>;
 <span class="kw">mod</span> <span class="ident">print</span>;
 <span class="kw">mod</span> <span class="ident">raw</span>;
