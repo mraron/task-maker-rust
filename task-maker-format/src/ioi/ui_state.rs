@@ -190,9 +190,10 @@ impl SolutionEvaluationState {
                             score: None,
                             normalized_score: None,
                             testcases: subtask
-                                .testcases
-                                .values()
-                                .map(|testcase| {
+                                .testcases_owned
+                                .iter()
+                                .map(|testcase_id| {
+                                    let testcase = task.testcases.get(testcase_id).unwrap();
                                     (
                                         testcase.id,
                                         SolutionTestcaseEvaluationState {
@@ -338,8 +339,8 @@ impl UIState {
                     *st_num,
                     SubtaskGenerationState {
                         testcases: subtask
-                            .testcases
-                            .keys()
+                            .testcases_owned
+                            .iter()
                             .map(|tc_num| {
                                 (
                                     *tc_num,

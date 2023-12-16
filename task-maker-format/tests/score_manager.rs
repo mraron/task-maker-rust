@@ -82,7 +82,9 @@ fn test_score_manager() {
     } else {
         panic!("Expecting UIMessage::IOITestcaseScore but was nothing");
     }
-    assert!(receiver.try_recv().is_err());
+    if let Ok(mex) = receiver.try_recv() {
+        panic!("Expecting nothing but was {:?}", mex);
+    }
 
     manager
         .score(1, 2, 0.0, "foo".into(), sender, "sol".into())
@@ -147,6 +149,7 @@ fn test_score_manager_empty_subtask() {
 
     // Make the second subtask empty.
     task.subtasks.get_mut(&1).unwrap().testcases.clear();
+    task.subtasks.get_mut(&1).unwrap().testcases_owned.clear();
 
     let mut manager = ScoreManager::new(&task);
     let (sender, receiver) = UIMessageSender::new();

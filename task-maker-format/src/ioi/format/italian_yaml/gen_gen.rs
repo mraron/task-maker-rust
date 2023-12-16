@@ -47,6 +47,7 @@ where
     let mut testcase_count = 0;
     let mut subtask_id: SubtaskId = 0;
     let mut entries = vec![];
+    let mut st_deps = Vec::new();
 
     let mut default_subtask = Some(SubtaskInfo {
         id: 0,
@@ -108,6 +109,7 @@ where
                             ..Default::default()
                         }));
                         subtask_id += 1;
+                        st_deps.push(Vec::new());
                     }
                     parser::Rule::subtask_name => {
                         let last_entry = entries.last_mut().ok_or_else(|| {
@@ -128,6 +130,25 @@ where
                             );
                         } else {
                             bail!("#STNAME: must immediately follow a #ST: in gen/GEN");
+                        }
+                    }
+                    parser::Rule::subtask_dep => {
+                        let last_entry = entries.last_mut().ok_or_else(|| {
+                            anyhow!("A #STDEP: rule must immediately follow a #ST: in gen/GEN")
+                        })?;
+                        if let TaskInputEntry::Subtask(_) = last_entry {
+                            let dependency = line
+                                .into_inner()
+                                .next()
+                                .ok_or_else(|| anyhow!("Corrupted parser"))?
+                                .as_str();
+                            st_deps.last_mut().unwrap().push(
+                                cleanup_subtask_name(dependency).with_context(|| {
+                                    format!("Invalid subtask name: {}", dependency)
+                                })?,
+                            );
+                        } else {
+                            bail!("#STDEP: must immediately follow a #ST: in gen/GEN");
                         }
                     }
                     parser::Rule::copy => {
@@ -176,6 +197,34 @@ where
             _ => unreachable!(),
         }
     }
+
+    for i in 0..entries.len() {
+        let TaskInputEntry::Subtask(SubtaskInfo {
+            id: subtask1_id,
+            name: Some(ref subtask1_name),
+            ..
+        }) = entries[i]
+        else {
+            continue;
+        };
+        let subtask1_name = subtask1_name.clone();
+
+        for st2 in &mut entries {
+            let TaskInputEntry::Subtask(SubtaskInfo {
+                id: subtask2_id,
+                dependencies: ref mut subtask2_deps,
+                ..
+            }) = *st2
+            else {
+                continue;
+            };
+
+            if st_deps[subtask2_id as usize].contains(&subtask1_name) {
+                subtask2_deps.push(subtask1_id);
+            }
+        }
+    }
+
     Ok(entries)
 }
 
