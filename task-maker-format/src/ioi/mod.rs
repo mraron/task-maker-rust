@@ -63,6 +63,8 @@ pub type TestcaseId = u32;
 /// a new score is ready.
 #[derive(Debug, Clone)]
 pub struct ScoreManager {
+    /// The path of the solution.
+    solution: PathBuf,
     /// The scores of each subtask.
     subtask_scores: HashMap<SubtaskId, Option<f64>>,
     /// The maximum score of each subtask.
@@ -275,13 +277,22 @@ impl IOITask {
             eval,
         );
 
-        let empty_score_manager = ScoreManager::new(self);
         let solutions: Vec<_> = eval
             .solutions
             .clone()
             .into_iter()
-            .map(|source| (source, Arc::new(Mutex::new(empty_score_manager.clone()))))
-            .collect();
+            .map(|source| {
+                let path = source.source_file.path.clone();
+                Ok((
+                    source,
+                    Arc::new(Mutex::new(ScoreManager::new(
+                        self,
+                        eval.sender.clone(),
+                        path,
+                    )?)),
+                ))
+            })
+            .collect::<Result<_, Error>>()?;
 
         let solution_info = solutions
             .iter()
@@ -534,31 +545,30 @@ impl FromStr for TestcaseScoreAggregator {
 
 impl ScoreManager {
     /// Make a new `ScoreManager` based on the subtasks and testcases of the specified task.
-    pub fn new(task: &IOITask) -> ScoreManager {
-        // NOTE: this will ignore the subtask without any testcase since they will never be
-        // notified.
-        ScoreManager {
-            subtask_scores: task
-                .subtasks
-                .iter()
-                .filter(|(_, st)| !st.testcases.is_empty())
-                .map(|(st_num, _)| (*st_num, None))
-                .collect(),
+    pub fn new(
+        task: &IOITask,
+        sender: Arc<Mutex<UIMessageSender>>,
+        solution: PathBuf,
+    ) -> Result<ScoreManager, Error> {
+        let mut this = ScoreManager {
+            solution,
+            subtask_scores: task.subtasks.keys().map(|st_num| (*st_num, None)).collect(),
             max_subtask_scores: task
                 .subtasks
                 .values()
-                .filter(|st| !st.testcases.is_empty())
                 .map(|st| (st.id, st.max_score))
                 .collect(),
             testcase_scores: task.testcases.keys().map(|&tc| (tc, None)).collect(),
             subtask_testcases: task
                 .subtasks
                 .iter()
-                .filter(|(_, st)| !st.testcases.is_empty())
                 .map(|(st_num, st)| (*st_num, st.testcases.clone()))
                 .collect(),
             aggregator: task.testcase_score_aggregator.clone(),
-        }
+        };
+
+        this.update_subtasks(sender)?;
+        Ok(this)
     }
 
     /// Store the score of the testcase and eventually compute the score of the subtask and of the
@@ -570,27 +580,22 @@ impl ScoreManager {
         score: f64,
         message: String,
         sender: Arc<Mutex<UIMessageSender>>,
-        solution: PathBuf,
     ) -> Result<(), Error> {
         // testcase score
         self.testcase_scores.insert(testcase_id, Some(score));
         sender.send(UIMessage::IOITestcaseScore {
             subtask: subtask_id,
             testcase: testcase_id,
-            solution: solution.clone(),
+            solution: self.solution.clone(),
             score,
             message,
         })?;
 
-        self.update_subtasks(sender, solution)?;
+        self.update_subtasks(sender)?;
         Ok(())
     }
 
-    fn update_subtasks(
-        &mut self,
-        sender: Arc<Mutex<UIMessageSender>>,
-        solution: PathBuf,
-    ) -> Result<(), Error> {
+    fn update_subtasks(&mut self, sender: Arc<Mutex<UIMessageSender>>) -> Result<(), Error> {
         // subtasks' scores
         let mut updated = true;
         while updated {
@@ -612,7 +617,7 @@ impl ScoreManager {
                     self.subtask_scores.insert(subtask_id, Some(subtask_score));
                     sender.send(UIMessage::IOISubtaskScore {
                         subtask: subtask_id,
-                        solution: solution.clone(),
+                        solution: self.solution.clone(),
                         score: subtask_score,
                         normalized_score,
                     })?;
@@ -630,7 +635,7 @@ impl ScoreManager {
                 .map(|score| score.unwrap())
                 .sum();
             sender.send(UIMessage::IOITaskScore {
-                solution,
+                solution: self.solution.clone(),
                 score: task_score,
             })?;
         }
