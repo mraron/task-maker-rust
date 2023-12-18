@@ -306,7 +306,7 @@ impl IOITask {
             .prepare_dag(eval)
             .context("Failed to prepare DAG")?;
 
-        let mut generated_io: HashMap<_, HashMap<_, _>> = HashMap::new();
+        let mut generated_io: HashMap<_, _> = HashMap::new();
 
         for subtask in self.subtasks.values() {
             trace!("Executing the generation of subtask {}", subtask.id);
@@ -340,10 +340,7 @@ impl IOITask {
                     .context("Failed to bind output generator")?;
                 // Store the generated input and output files for setting them into the task
                 // outside the loop.
-                generated_io
-                    .entry(subtask.id)
-                    .or_default()
-                    .insert(testcase.id, (input, output));
+                generated_io.insert(testcase.id, (input, output));
 
                 for (solution, score_manager) in solutions.iter() {
                     trace!(
@@ -371,12 +368,10 @@ impl IOITask {
         }
         // Store inside the task the FileUuid of the input and official output files. This cannot
         // be done while generating because task cannot be borrowed mutably in the loop.
-        for (_subtask_id, subtask) in generated_io {
-            for (testcase_id, (input, output)) in subtask {
-                let testcase = self.testcases.get_mut(&testcase_id).unwrap();
-                testcase.input_file = Some(input);
-                testcase.official_output_file = output;
-            }
+        for (testcase_id, (input, output)) in generated_io {
+            let testcase = self.testcases.get_mut(&testcase_id).unwrap();
+            testcase.input_file = Some(input);
+            testcase.official_output_file = output;
         }
         for booklet in self.booklets.iter() {
             booklet
