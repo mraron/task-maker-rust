@@ -133,22 +133,17 @@ where
                         }
                     }
                     parser::Rule::subtask_dep => {
-                        let last_entry = entries.last_mut().ok_or_else(|| {
-                            anyhow!("A #STDEP: rule must immediately follow a #ST: in gen/GEN")
-                        })?;
-                        if let TaskInputEntry::Subtask(_) = last_entry {
-                            let dependency = line
-                                .into_inner()
-                                .next()
-                                .ok_or_else(|| anyhow!("Corrupted parser"))?
-                                .as_str();
-                            st_deps.last_mut().unwrap().push(
-                                cleanup_subtask_name(dependency).with_context(|| {
-                                    format!("Invalid subtask name: {}", dependency)
-                                })?,
-                            );
+                        if let Some(TaskInputEntry::Subtask(_)) = entries.last_mut() {
+                            for dependency in line.into_inner() {
+                                let dependency_str = dependency.as_str();
+                                st_deps.last_mut().unwrap().push(
+                                    cleanup_subtask_name(dependency_str).with_context(|| {
+                                        format!("Invalid subtask name: {}", dependency_str)
+                                    })?,
+                                );
+                            }
                         } else {
-                            bail!("#STDEP: must immediately follow a #ST: in gen/GEN");
+                            bail!("#STDEP: rule must immediately follow a #ST: in gen/GEN");
                         }
                     }
                     parser::Rule::copy => {
