@@ -7,6 +7,7 @@ use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::sync::Arc;
 
+use anyhow::ensure;
 use anyhow::{anyhow, bail, Context, Error};
 use pest::Parser;
 
@@ -131,6 +132,8 @@ where
     testcase_id: TestcaseId,
     /// The list of dependencies of each subtask.
     st_deps: Vec<Vec<String>>,
+    /// The table of subtask names to subtask ids.
+    stname_table: HashMap<String, SubtaskId>,
 }
 
 impl<OutGen> CasesGen<OutGen>
@@ -172,6 +175,7 @@ where
             subtask_name: None,
             testcase_id: 0,
             st_deps: Vec::new(),
+            stname_table: HashMap::new(),
         };
 
         for line in file.into_inner() {
@@ -270,33 +274,23 @@ where
 
     /// Resolve the dependencies names to the subtask ids.
     fn resolve_dependencies(&mut self) -> Result<(), Error> {
-        for i in 0..self.result.len() {
+        for entry in &mut self.result {
             let TaskInputEntry::Subtask(SubtaskInfo {
-                id: subtask1_id,
-                name: Some(ref subtask1_name),
-                ..
-            }) = self.result[i]
+                id, dependencies, ..
+            }) = entry
             else {
                 continue;
             };
-            let subtask1_name = subtask1_name.clone();
-
-            for st2 in &mut self.result {
-                let TaskInputEntry::Subtask(SubtaskInfo {
-                    id: subtask2_id,
-                    dependencies: ref mut subtask2_deps,
-                    ..
-                }) = *st2
-                else {
-                    continue;
-                };
-
-                if self.st_deps[subtask2_id as usize].contains(&subtask1_name) {
-                    subtask2_deps.push(subtask1_id);
-                }
-            }
+            *dependencies = self.st_deps[*id as usize]
+                .iter()
+                .map(|dep| {
+                    self.stname_table
+                        .get(dep)
+                        .copied()
+                        .ok_or_else(|| anyhow!("Unknown subtask name: {dep}"))
+                })
+                .collect::<Result<_, _>>()?;
         }
-
         Ok(())
     }
 
@@ -565,21 +559,21 @@ where
                 self.subtask_id, score
             )
         })?;
-        let description = if line.len() >= 2 {
-            Some(line[1].as_str().to_string())
-        } else {
-            None
-        };
-        let name = description
-            .as_deref()
-            .map(|s| {
+        let (description, name) = if line.len() >= 2 {
+            let desc = line[1].as_str().to_string();
+            let name = desc
                 // Remove whitespaces for retrocompatibility with descriptions
-                s.chars()
-                    .filter(|&c| c != ' ' && c != '\t')
-                    .collect::<String>()
-            })
-            .map(|s| cleanup_subtask_name(&s))
-            .transpose()?;
+                .chars()
+                .filter(|&c| c != ' ' && c != '\t')
+                .collect::<String>();
+            let name = cleanup_subtask_name(&name)?;
+            let old_id = self.stname_table.insert(name.clone(), self.subtask_id);
+            ensure!(old_id.is_none(), "Subtask name {:?} already used", name);
+
+            (Some(desc), Some(name))
+        } else {
+            (None, None)
+        };
         self.subtask_name = name.clone();
         self.result.push(TaskInputEntry::Subtask(
             #[allow(deprecated)]
