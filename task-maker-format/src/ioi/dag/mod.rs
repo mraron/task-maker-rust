@@ -23,7 +23,7 @@ pub const EVALUATION_PRIORITY: Priority = 1_000;
 pub const STDERR_CONTENT_LENGTH: usize = 10 * 1024;
 
 /// The aggregator of testcase scores for computing the subtask score.
-#[derive(Debug, Clone, Serialize, Deserialize, TypeScriptify)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize, TypeScriptify)]
 pub enum TestcaseScoreAggregator {
     /// Take the minimum of all the testcases, formally:
     ///
