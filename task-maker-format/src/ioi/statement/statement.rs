@@ -15,6 +15,9 @@ use crate::EvaluationData;
 lazy_static! {
     /// This regex will match all the `\usepackage` inside a latex file.
     static ref USE_PACKAGE_REGEX: Regex = Regex::new(r"\\usepackage.+").expect("Invalid regex");
+    static ref HYPERREF_REGEX: Regex = Regex::new(r"\\hypersetup\s*\{([^{}]|\{[^{}]*\})*\}").expect("Invalid regex");
+    static ref CONTEST_REGEX: Regex = Regex::new(r"\\contest.+").expect("Invalid regex");
+    static ref PROBLEM_REGEX: Regex = Regex::new(r"\\begin\{problem\}[\s\S]*\\end\{problem\}*").expect("Invalid regex");
 }
 
 /// The configuration of a `Statement`.
@@ -157,11 +160,19 @@ impl Statement {
                 .syllabus_level
                 .map(|x| x.to_string())
                 .unwrap_or_default(),
-            content: USE_PACKAGE_REGEX
-                .replace_all(&self.content, r"$0")
-                .to_string(),
+            content: PROBLEM_REGEX.find(&self.content).unwrap().as_str().to_owned(),
         };
         template.to_string()
+    }
+
+    /// Return the pdf information (the full string inside `\hyperref`, including itself)
+    pub fn author_info(&self) -> String {
+        HYPERREF_REGEX.find(&self.content).unwrap().as_str().to_owned()
+    }
+
+    /// Return the contest information (the line with `\contest`)
+    pub fn contest(&self) -> String {
+        CONTEST_REGEX.find(&self.content).unwrap().as_str().to_owned()
     }
 
     /// Return a list of all the `\usepackage` used by the statement.

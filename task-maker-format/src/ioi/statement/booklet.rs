@@ -1,3 +1,4 @@
+use std::borrow::Borrow;
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
@@ -58,6 +59,8 @@ pub struct BookletTemplate {
     packages: String,
     tasks: String,
     intro_page: String,
+    author_info: String,
+    contest: String,
 }
 
 /// A `Booklet` is a pdf file containing the statements of some tasks. It is compiled from a series
@@ -207,15 +210,18 @@ impl Booklet {
     fn make_tex(&self) -> String {
         let mut packages = HashSet::new();
         let mut tasks = Vec::new();
+        let mut author_info = String::new();
+        let mut contest = String::new();
         for statement in self.statements.iter() {
             for package in statement.packages() {
                 packages.insert(package);
             }
-            tasks.push(statement.tex());
-            /*tasks.push(format!(
+            tasks.push(format!(
                 r"\subimport{{./{}/}}{{statement.tex}}",
                 statement.config().name
-            ));*/
+            ));
+            author_info = statement.author_info();
+            contest = statement.contest();
         }
         BookletTemplate {
             language: self.config.language.clone(),
@@ -239,6 +245,9 @@ impl Booklet {
                 .map(std::fs::read_to_string)
                 .unwrap_or_else(|| Ok(String::new()))
                 .unwrap_or_default(),
+            author_info,
+            contest,
+                
         }
         .to_string()
     }
