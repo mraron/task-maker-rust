@@ -211,10 +211,11 @@ impl Booklet {
             for package in statement.packages() {
                 packages.insert(package);
             }
-            tasks.push(format!(
+            tasks.push(statement.tex());
+            /*tasks.push(format!(
                 r"\subimport{{./{}/}}{{statement.tex}}",
                 statement.config().name
-            ));
+            ));*/
         }
         BookletTemplate {
             language: self.config.language.clone(),

@@ -115,6 +115,7 @@ impl Statement {
             Path::new("../gen/limiti.py"),
             Path::new("../gen/constraints.py"),
             Path::new("../gen/GEN"),
+            Path::new("feladat.sty"),
         ] {
             let full_path = base_dir.join(path);
             if !full_path.is_file() {
@@ -157,7 +158,7 @@ impl Statement {
                 .map(|x| x.to_string())
                 .unwrap_or_default(),
             content: USE_PACKAGE_REGEX
-                .replace_all(&self.content, r"% $0")
+                .replace_all(&self.content, r"$0")
                 .to_string(),
         };
         template.to_string()

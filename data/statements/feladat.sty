@@ -1,0 +1,314 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{feladat} %feladat.sty v3 verzió
+
+\usepackage[margin=0.98in]{geometry}
+\addtolength{\topmargin}{-0.27in}
+\setlength{\headheight}{0.49in}
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{0.08in}
+
+\usepackage{verbatim}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.05pt}
+\renewcommand{\footrulewidth}{0.05pt}
+\usepackage{xspace,colortbl}
+
+\usepackage{enumitem}
+\setlist{topsep=2pt,itemsep=2pt}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[magyar]{babel}
+
+\usepackage[lining,tabular,semibold]{ebgaramond}
+\usepackage{courier}
+\usepackage{mathastext}
+\MTfamily{\ttdefault}\Mathastext
+
+\usepackage{amsmath}
+\RequirePackage{amssymb}
+\usepackage{multicol}
+\usepackage{makecell}
+\usepackage[pdftex]{graphicx}
+\usepackage{t1enc}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{datetime}
+\usepackage{siunitx}
+\usepackage{hyperref}
+
+\usepackage{xifthen}
+\usepackage{xargs}
+
+\cfoot{\thepage. oldal}
+
+\usepackage{xcolor}
+\usepackage{sectsty}
+\definecolor{myRed}{rgb}{0.5,0,0}
+\sectionfont{\color{myRed}\centering\fontsize{16}{16}\selectfont}
+\subsectionfont{\color{myRed}\fontsize{14}{14}\selectfont}
+
+\usepackage{titlesec}
+\titlespacing*{\section}
+{0pt}{5pt}{8pt}
+\titlespacing*{\subsection}
+{0pt}{3pt}{3pt}
+
+% -- Language specific stuff --
+
+% Labels
+\newcommand{\Input}{Bemenet}
+\newcommand{\InputFile}{Bemenet}
+\newcommand{\Output}{Kimenet}
+\newcommand{\OutputFile}{Kimenet}
+\newcommand{\Example}{Példa}
+\newcommand{\Examples}{Példák}
+\newcommand{\Note}{Megyjegyzés}
+\newcommand{\Notes}{Megyjegyzések}
+\newcommand{\Explanation}{Magyarázat}
+\newcommand{\Constraints}{Korlátok}
+\newcommand{\Grading}{Értékelés}
+\newcommand{\Scoring}{Pontozás}
+\newcommand{\Library}{Könyvtár}
+\newcommand{\Practice}{Gyakorlás}
+
+\newcommand{\TimeLimit}{Időlimit}
+\newcommand{\MemoryLimit}{Memórialimit}
+\newcommand{\Subtask}{Részfeladat}
+\newcommand{\Points}{Pontszám}
+
+% Default format for time and memory limits
+\newcommand{\Tlim}[1]{\par \textbf{\TimeLimit:} #1}
+\newcommand{\Mlim}[1]{\par \textbf{\MemoryLimit:} #1}
+
+% Headings for subsections
+\newcommand{\In}{\subsection*{\Input}}
+\newcommand{\InFile}{\subsection*{\InputFile}}
+\newcommand{\Out}{\subsection*{\Output}}
+\newcommand{\OutFile}{\subsection*{\OutputFile}}
+\newcommand{\Ex}{\subsection*{\Example}}
+\newcommand{\Exm}{\subsection*{\Examples}}
+\newcommand{\Exs}{\subsection*{\Examples}}
+\newcommand{\Nt}{\subsection*{\Note}}
+\newcommand{\Nts}{\subsection*{\Notes}}
+\newcommand{\Expl}{\subsection*{\Explanation}}
+\newcommand{\Con}{\subsection*{\Constraints}}
+\newcommand{\Grd}{\subsection*{\Grading}}
+\newcommand{\Sco}{\subsection*{\Scoring}}
+\newcommand{\Lib}{\subsection*{\Library}}
+\newcommand{\Prac}{\subsection*{\Practice}}
+
+% NT Scoring subsection template
+\newcommand{\ScoSectNT}[8]{
+   \Sco
+   \par A pontszám #1\%-a szerezhető olyan tesztekre, ahol #2.
+   \ifthenelse{\isempty{#3}}{}{\par A pontszám további #3\%-a szerezhető olyan tesztekre, ahol #4.}
+   \ifthenelse{\isempty{#5}}{}{\par A pontszám további #5\%-a szerezhető olyan tesztekre, ahol #6.}
+   \ifthenelse{\isempty{#7}}{}{\par A pontszám további #7\%-a szerezhető olyan tesztekre, ahol #8.}
+}
+
+% -----------------------------
+
+\newcommandx{\contest}[4][3=,4=]{
+   \lhead{#1}
+   \rhead{#2}
+   \lfoot{#3}
+   \rfoot{#4}
+}
+
+\newcommand{\exmp}[3][]{
+   \begin{tabular}{@{}l l}
+      \texttt{\Input}&
+      \texttt{\Output}\\[0.08in]
+      \ttfamily\begin{minipage}[t]{0.48\textwidth}#2\end{minipage}&
+      \begin{minipage}[t]{0.50\textwidth}
+         \par \ttfamily #3
+         \ifthenelse{\isempty{#1}}{}{\par \rmfamily #1}
+      \end{minipage}\\
+   \end{tabular}
+}
+\newcommand{\exmpfile}[3][]{
+   \ifthenelse{\isempty{#1}}{
+      \exmp{\verbatiminput{#2}}{\verbatiminput{#3}}
+   }{
+      \exmp[#1]{\verbatiminput{#2}}{\verbatiminput{#3}}
+   }
+}
+
+% including figures
+\newcommand{\Fig}[3]{
+   \begin{figure}[H]
+      \begin{center}
+         \resizebox{#2in}{!}{
+            \includegraphics{#1}
+         }
+         \def\temp{#3}\ifx\temp\empty\else
+            \caption*{#3}
+         \fi
+      \end{center}
+   \end{figure}
+}
+% figure to the right of column of current page / minipage
+\newcommand{\FigR}[3]{
+   \endgraf\hspace{0.5\textwidth}\minipage[t]{0.5\textwidth}%
+   \begin{figure}[H]
+      \begin{center}
+         \resizebox{#2in}{!}{
+            \includegraphics{#1}
+         }
+         \def\temp{#3}\ifx\temp\empty\else
+            \caption*{#3}
+         \fi
+      \end{center}
+   \end{figure}
+   \endminipage
+}
+% figure to the left side of current page / minipage
+\newcommand{\FigL}[3]{
+   \begin{figure}[H]
+      \resizebox{#2in}{!}{
+         \includegraphics{#1}
+      }
+      \def\temp{#3}\ifx\temp\empty\else
+         \caption*{#3}
+      \fi
+   \end{figure}
+}
+
+
+\newcommandx{\ConSectList}[9][3=,4=,5=,6=,7=,8=,9=]{
+   \ifthenelse{\isempty{#3}}{}{\par #3}
+   \ifthenelse{\isempty{#4}}{}{\par #4}
+   \ifthenelse{\isempty{#5}}{}{\par #5}
+   \ifthenelse{\isempty{#6}}{}{\par #6}
+   \ifthenelse{\isempty{#7}}{}{\par #7}
+   \ifthenelse{\isempty{#8}}{}{\par #8}
+   \ifthenelse{\isempty{#9}}{
+      \Tlim{#1}
+      \Mlim{#2}
+   }{\ConSectList{#1}{#2}[#9]}
+}
+
+
+\definecolor{GradingHeaderColor}{gray}{0.9}
+\newenvironment{grading}[1][1]{
+	\setlength{\extrarowheight}{2pt}
+	\setlength\arrayrulewidth{1pt}
+	\ifx\c@subtasknum\undefined
+      \newcounter{subtasknum}
+   \fi
+	\setcounter{subtasknum}{#1}
+	\newcommand{\subtask}[2]{$\thesubtasknum$\stepcounter{subtasknum} &
+                           \makecell[tl]{##2} & {##1} \tabularnewline\hline}
+   
+   \begin{center}
+	\begin{tabular}{| c | l | c |}\hline
+		\rowcolor{GradingHeaderColor} \Subtask & \Constraints & \Points \tabularnewline\hline
+}
+{
+	\end{tabular}
+	\end{center}
+}
+
+
+\newcommand{\ScoSectRender}{
+   \begin{grading}[\stcnt]
+      \ScoSectColl
+   \end{grading}
+}
+\newcommandx{\ScoSectList}[9][1=,2=,3=,4=,5=,6=,7=,8=,9=]{
+   \ifthenelse{\isempty{#1}}{}{
+      \xdef\ScoSectColl{\unexpanded\expandafter{\ScoSectColl} \unexpanded{\subtask{#1}{#2}}}
+   }
+   \ifthenelse{\isempty{#3}}{}{
+      \xdef\ScoSectColl{\unexpanded\expandafter{\ScoSectColl} \unexpanded{\subtask{#3}{#4}}}
+   }
+   \ifthenelse{\isempty{#5}}{}{
+      \xdef\ScoSectColl{\unexpanded\expandafter{\ScoSectColl} \unexpanded{\subtask{#5}{#6}}}
+   }
+   \ifthenelse{\isempty{#7}}{}{
+      \xdef\ScoSectColl{\unexpanded\expandafter{\ScoSectColl} \unexpanded{\subtask{#7}{#8}}}
+   }
+   \ifthenelse{\isempty{#9}}{
+      \ScoSectRender
+   }{
+      \ScoSectList[#9]
+   }
+}
+
+
+\newenvironment{problem}[3]{
+   \renewcommand{\Tlim}[1]{\par \textbf{\TimeLimit:} ##1 s}
+   \renewcommand{\Mlim}[1]{\par \textbf{\MemoryLimit:} ##1 MB}
+   \newcommand{\ConSect}{
+      \Con
+      \ConSectList{#2}{#3}
+   }
+   \newcommand{\ScoSect}[1]{
+      \gdef\stcnt{##1} \gdef\ScoSectColl{}
+      \Sco
+      \ScoSectList
+   }
+
+   \section*{#1}
+}{}
+
+\newenvironmentx{ntproblem}[3]{
+   \renewcommand{\Tlim}[1]{\par \TimeLimit: ##1 s}
+   \renewcommand{\Mlim}[1]{\par \MemoryLimit: ##1 MB}
+   \ifx\c@consectnum\undefined
+      \newcounter{consectnum}
+   \fi
+	\setcounter{consectnum}{0}
+   \newcommand{\ConSect}{
+      \stepcounter{consectnum}
+      \Con
+      \ConSectList{#2}{#3}
+   }
+   \def\ScoSectText{}
+   \newcommandx{\ScoSect}[8][1=,2=,3=,4=,5=,6=,7=,8=]{
+      \def\ScoSectText{\ScoSectNT{##1}{##2}{##3}{##4}{##5}{##6}{##7}{##8}}
+   }
+
+   \section*{#1}
+}{
+   \ifnum \value{consectnum} = 0
+      \ConSect
+   \fi
+   \ScoSectText
+   \pagebreak
+}
+
+
+% TODO
+\newenvironment{tutorial}[1]{
+   \subsection*{#1}
+}{}
+
+
+% Deprecated legacy stuff
+
+\newcommand{\head}[1]{
+   \section*{#1}
+   \thispagestyle{fancy}
+}
+
+\newenvironment{exin}{
+   \ttfamily\minipage[t]{0.5\textwidth}
+   \endgraf\Input\vspace{-2ex}
+   \endgraf\verbatim
+}{
+   \endverbatim
+   \endminipage
+}
+
+\newenvironment{exout}{
+   \ttfamily\minipage[t]{0.5\textwidth}
+   \endgraf\Output\vspace{-2ex}
+   \endgraf\verbatim
+}{
+   \endverbatim
+   \endminipage
+}
