@@ -195,6 +195,10 @@ impl Statement {
         logo: &Option<PathBuf>,
     ) -> Result<(), Error> {
         let suffix = path.strip_prefix(base_dir).unwrap();
+        let my_suffix = self.path.strip_prefix(base_dir).unwrap();
+        if suffix == my_suffix {
+            return Ok(())
+        }
         let ext = path
             .extension()
             .map(|s| s.to_string_lossy().to_string())
