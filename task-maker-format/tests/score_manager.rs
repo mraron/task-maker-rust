@@ -14,7 +14,9 @@ fn test_score_manager() {
     let task = utils::new_task();
     let (sender, receiver) = UIMessageSender::new();
     let sender = Arc::new(Mutex::new(sender));
-    let mut manager = ScoreManager::new(&task, "sol".into(), sender.clone()).unwrap();
+    let mut manager = ScoreManager::new(&task, sender.clone(), "sol".into()).unwrap();
+
+    assert!(receiver.try_recv().is_err());
 
     manager
         .score(0, 0, 1.0, "foo".into(), sender.clone())
@@ -82,7 +84,9 @@ fn test_score_manager() {
     } else {
         panic!("Expecting UIMessage::IOITestcaseScore but was nothing");
     }
-    assert!(receiver.try_recv().is_err());
+    if let Ok(mex) = receiver.try_recv() {
+        panic!("Expecting nothing but was {:?}", mex);
+    }
 
     manager.score(1, 2, 0.0, "foo".into(), sender).unwrap();
     if let Ok(mex) = receiver.try_recv() {
@@ -145,9 +149,11 @@ fn test_score_manager_empty_subtask() {
 
     // Make the second subtask empty.
     task.subtasks.get_mut(&1).unwrap().testcases.clear();
+    task.subtasks.get_mut(&1).unwrap().testcases_owned.clear();
 
     let (sender, receiver) = UIMessageSender::new();
     let sender = Arc::new(Mutex::new(sender));
+<<<<<<< HEAD
     let mut manager = ScoreManager::new(&task, "sol".into(), sender.clone()).unwrap();
     if let Ok(mex) = receiver.try_recv() {
         match mex {
@@ -168,6 +174,30 @@ fn test_score_manager_empty_subtask() {
         panic!("Expecting UIMessage::IOISubtaskScore but was nothing");
     }
 
+=======
+    let mut manager = ScoreManager::new(&task, sender.clone(), "sol".into()).unwrap();
+
+    if let Ok(mex) = receiver.try_recv() {
+        match mex {
+            UIMessage::IOISubtaskScore {
+                subtask,
+                solution,
+                score,
+                normalized_score,
+            } => {
+                assert_eq!(subtask, 1);
+                assert_eq!(solution, PathBuf::from("sol"));
+                assert_abs_diff_eq!(score, 90.0);
+                assert_abs_diff_eq!(normalized_score, 1.0);
+            }
+            _ => panic!("Expecting UIMessage::IOISubtaskScore but was {:?}", mex),
+        }
+    } else {
+        panic!("Expecting UIMessage::IOISubtaskScore but was nothing");
+    }
+    assert!(receiver.try_recv().is_err());
+
+>>>>>>> Virv12/st-deps
     manager.score(0, 0, 1.0, "foo".into(), sender).unwrap();
     if let Ok(mex) = receiver.try_recv() {
         match mex {
